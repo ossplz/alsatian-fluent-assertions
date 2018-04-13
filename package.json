@@ -1,0 +1,50 @@
+{
+  "name": "alsatian-fluent-assertions",
+  "version": "1.0.0-alpha001",
+  "description": "Fluent assertions extension to Alsatian xUnit framework.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "npm-run-all clean tsc",
+    "clean": "rimraf ./dist/* ./coverage/*",
+    "e2e": "alsatian --tap test/e2e/*.e2e.js",
+    "test": "npm-run-all unittest",
+    "tsc": "tsc -p tsconfig-build.json",
+    "ts-node": "ts-node",
+    "unittest": "ts-node --project tsconfig-xunit.json test/runner.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ossplz/alsatian-fluent-assertions.git"
+  },
+  "keywords": [
+    "alsatian",
+    "typescript",
+    "assertion",
+    "expect",
+    "xunit",
+    "fluent",
+    "framework",
+    "javascript",
+    "node"
+  ],
+  "author": "Chris Dibbern <chris.dibbern@gmail.com> (https://github.com/cdibbs)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ossplz/alsatian-fluent-assertions/issues"
+  },
+  "homepage": "https://github.com/ossplz/alsatian-fluent-assertions#readme",
+  "devDependencies": {
+    "@types/deep-equal": "^1.0.1",
+    "alsatian": "^2.2.1",
+    "deep-equal": "^1.0.1",
+    "inversify": "^4.11.1",
+    "npm-run-all": "^4.1.2",
+    "reflect-metadata": "^0.1.12",
+    "rimraf": "^2.6.2",
+    "ts-node": "^5.0.1",
+    "typescript": "^2.8.1"
+  }
+}

@@ -1,0 +1,17 @@
+language: node_js
+sudo: true
+dist: trusty
+
+os:
+- linux
+- osx
+
+node_js:
+- '6.9.4'
+
+install:
+- npm install
+
+script:
+  - npm run cover
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then npm run report_coverage; fi
