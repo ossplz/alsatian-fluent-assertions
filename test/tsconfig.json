@@ -1,6 +1,7 @@
 {
+	"#": "This file is only an aid to your code editor. See root dir for real tsconfig files.",
+
 	"compilerOptions": {
-        "baseUrl": "./",
 		"experimentalDecorators": true,
 		"lib": ["es6", "dom"],
 		"module": "commonjs",
@@ -9,24 +10,22 @@
 		"suppressImplicitAnyIndexErrors": true,
 		"moduleResolution": "node",
 		"emitDecoratorMetadata": true,
-		"sourceMap": true,
+		"sourceMap": false,
 		"declaration": true,
 		"outDir": "test",
 		"removeComments": false,
 		"typeRoots": [
 			"node_modules/@types",
-			"src/lib/types"
+			"lib/types"
 		],
 		"types": [
 			"@types/node",
-			"@types/mocha"
+			"requireg"
 		]
 	},
 	"include": [
-		"test/**/*.spec.ts"
+		"**/*.ts"
 	],
 	"exclude": [
-		"src/e2e/resources",
-		"node_modules"
 	]
 }

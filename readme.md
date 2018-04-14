@@ -43,7 +43,7 @@ Please visit our [wiki] for an overview of the fluent assertions API.
 [travis-ci-badge]: https://travis-ci.org/ossplz/alsatian-fluent-assertions.svg?branch=master
 [travis-ci-link]: https://travis-ci.org/ossplz/alsatian-fluent-assertions
 [win-build-badge]: https://ci.appveyor.com/api/projects/status/6ngl64ck83opvekl?svg=true
-[win-build-link]: https://ci.appveyor.com/project/OSSPlz/alsatian-fluent-assertions
+[win-build-link]: https://ci.appveyor.com/project/cdibbs/alsatian-fluent-assertions
 [deps-badge]: https://david-dm.org/ossplz/alsatian-fluent-assertions/status.svg
 [deps-link]: https://david-dm.org/ossplz/alsatian-fluent-assertions
 [dev-deps-badge]: https://david-dm.org/ossplz/alsatian-fluent-assertions/dev-status.svg
