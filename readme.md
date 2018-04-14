@@ -11,8 +11,7 @@
 # Alsatian fluent assertions plugin
 
 This is a fluent assertions plugin for the [Alsatian xUnit framework][alsatian], for JavaScript and TypeScript. It provides
-a way to chain assertions while narrowing the assertion scope, enabling the clear and concise expression of your code
-specifications.
+a way to chain assertions while narrowing the scope, enabling the clear and concise expression of code specifications.
 
 ```typescript
 Assert(obj)

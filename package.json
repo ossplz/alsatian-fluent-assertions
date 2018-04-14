@@ -12,6 +12,7 @@
     "e2e": "alsatian --tap test/e2e/*.e2e.js",
     "test": "npm-run-all unittest",
     "tsc": "tsc -p tsconfig-build.json",
+    "report_coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "precover": "rimraf ./coverage/*",
     "cover": "nyc --all npm run unittest",
     "ts-node": "ts-node",
