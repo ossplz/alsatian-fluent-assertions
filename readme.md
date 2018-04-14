@@ -11,7 +11,8 @@
 # Alsatian fluent assertions plugin
 
 This is a fluent assertions plugin for the [Alsatian xUnit framework][alsatian], for JavaScript and TypeScript. It provides
-a way to chain assertions while narrowing the scope, enabling the clear and concise expression of code specifications.
+a way to chain assertions while narrowing the scope, enabling the clear and concise expression of code specifications using
+a fluent style. By contrast, the default expectations framework in Alsatian is not currently fluent.
 
 ```typescript
 Assert(obj)
@@ -19,10 +20,10 @@ Assert(obj)
   .has(o => o.prop)
   .that.hasMatch(/(\d+)/) // alt 'matches' that returns match result scope
   .that.has(matchParts => +matchParts[0])
-  .that.equals(3);
+  .that.equals(7);
 Assert(obj).equals(expected);
 Assert(obj).has({
-  myProp: 3,
+  prop: "user 007",
   other: p => Assert(p).matches(...)
 });
 ```
