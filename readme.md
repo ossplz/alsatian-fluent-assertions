@@ -11,7 +11,7 @@
 # Alsatian fluent assertions plugin
 
 This is a fluent assertions plugin for the [Alsatian xUnit framework][alsatian], for JavaScript and TypeScript. It provides
-a way to chain assertions while narrowing the scope, enabling the clear and concise expression of code specifications using
+a way to chain assertions while narrowing the scope, enabling the clear and concise expression of code specifications for those who prefer
 a fluent style. By contrast, the default expectations framework in Alsatian is not currently fluent.
 
 ```typescript
