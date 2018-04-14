@@ -6,7 +6,6 @@ import {
   PropertiesMatcher
 } from "./matchers";
 import { IAssert } from "./assert.i";
-import { MixedMatcher } from "./matchers/mixed-matcher";
 
 function Assert<T, TNext>(value?: T, nextValue?: TNext, invert: boolean = false): IFluentCore<T> {
   return new PropertiesMatcher<T>(value, nextValue, invert);
