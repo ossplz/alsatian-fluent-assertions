@@ -44,6 +44,16 @@ export class PropertiesMatcher<T>
   }
 
   /** @inheritDoc */
+  public hasProperties(
+    dict: SubsetPropertyAssertsDict<T>
+  ): IFluentCore<T> {
+    this._properties(this.actualValue, dict, []);
+
+    this.setFluentState(this.actualValue, null, false);
+    return <any>this;
+  }
+
+  /** @inheritDoc */
   public hasAll(
     dict: AllPropertyAssertsDict<T>
   ): IFluentCore<T> {

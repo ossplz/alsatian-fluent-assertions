@@ -53,7 +53,7 @@ export interface ISimpleMatcher<T> {
   /**
    * Checks whether the value is defined.
    */
-  isDefined(): IFluentCore<T>;
+  defined(): IFluentCore<T>;
 
   /**
    * Validates the contextual, string value with a regular expression. Preserves context.
@@ -65,7 +65,7 @@ export interface ISimpleMatcher<T> {
    * Same as matches, except that it narrows the context to the matches themselves.
    * @param matcher The regular expression to match the contextual value.
    */
-  hasMatches(
+  hasMatch(
     matcher: RegExp
   ): INarrowableFluentCore<T, Array<string>>;
 

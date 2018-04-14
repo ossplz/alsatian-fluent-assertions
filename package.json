@@ -12,6 +12,8 @@
     "e2e": "alsatian --tap test/e2e/*.e2e.js",
     "test": "npm-run-all unittest",
     "tsc": "tsc -p tsconfig-build.json",
+    "precover": "rimraf ./coverage/*",
+    "cover": "nyc --all npm run unittest",
     "ts-node": "ts-node",
     "unittest": "ts-node --project tsconfig-xunit.json test/runner.ts"
   },
@@ -40,11 +42,29 @@
     "@types/deep-equal": "^1.0.1",
     "alsatian": "^2.2.1",
     "deep-equal": "^1.0.1",
-    "inversify": "^4.11.1",
     "npm-run-all": "^4.1.2",
+    "nyc": "^11.6.0",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
     "ts-node": "^5.0.1",
     "typescript": "^2.8.1"
+  },
+  "nyc": {
+    "include": [
+      "src/**"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "exclude": [
+      "typings",
+      "**/*.d.ts",
+      "**/*.test.ts",
+      "**/*.spec.ts"
+    ],
+    "reporter": [
+      "json",
+      "html"
+    ]
   }
 }

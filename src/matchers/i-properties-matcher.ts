@@ -10,13 +10,35 @@ import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
  */
 export interface IPropertiesMatcher<T> {
   /**
+   * Ensures the contextual value has the given key.
+   * @param key The key whose existence to check.
+   */
+  has<K extends keyof T>(key: K): INarrowableFluentCore<T, T[K]>;
+
+  /**
+   * Intended to select a property from the contextual value, but may return others, at
+   * the developer's discretion.
+   * @param selector A lambda that returns a property from the object.
+   */
+  has<K extends keyof T>(selector: (o: T) => T[K]): INarrowableFluentCore<T, T[K]>;
+
+  /**
+   * Checks the contextual value for the existence of the given keys.
+   * @param keys An array of keys.
+   */
+  has(keys: string[]): IFluentCore<T>;
+
+  /**
    * Ensures the expected object contains the provided subset of property definitions. See https://git.io/vAH9p
    * @param subsetDict A subset of the original object's properties, with assertions for values.
    */
-  has<K extends keyof T>(key: K): INarrowableFluentCore<T, T[K]>;
-  has<K extends keyof T>(selector: (o: T) => T[K]): INarrowableFluentCore<T, T[K]>;
-  has(keys: string[]): IFluentCore<T>;
   has(subsetDict: SubsetPropertyAssertsDict<T>): IFluentCore<T>;
+
+  /**
+   * Ensures the expected object contains the provided subset of property definitions. See https://git.io/vAH9p
+   * @param subsetDict A subset of the original object's properties, with assertions for values.
+   */
+  hasProperties(dict: SubsetPropertyAssertsDict<T>): IFluentCore<T>;
 
   /**
    * Like properties(...) but ensures compile-time errors when properties are missing from the expected

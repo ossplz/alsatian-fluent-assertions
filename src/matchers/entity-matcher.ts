@@ -101,7 +101,7 @@ export class EntityMatcher<T>
   }
 
   /** @inheritDoc */
-  public isDefined(): IFluentCore<T> {
+  public defined(): IFluentCore<T> {
     if (this.checkInvert(typeof this.actualValue === "undefined")) {
       throw new MatchError(`should${this.negation}be defined.`);
     }
@@ -121,7 +121,7 @@ export class EntityMatcher<T>
   }
 
   /** @inheritDoc */
-  public hasMatches(
+  public hasMatch(
     matcher: RegExp
   ): INarrowableFluentCore<T, Array<string>> {
     this._match(matcher);

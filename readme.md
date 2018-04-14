@@ -1,6 +1,6 @@
 [![npm version](https://badge.fury.io/js/alsatian-fluent-assertions.svg)](https://badge.fury.io/js/alsatian-fluent-assertions)
 [![Build Status](https://travis-ci.org/ossplz/alsatian-fluent-assertions.svg?branch=master)](https://travis-ci.org/ossplz/alsatian-fluent-assertions)
-//[![Windows Build status](https://ci.appveyor.com/api/projects/status/6ngl64ck83opvekl?svg=true)](https://ci.appveyor.com/project/OSSPlz/alsatian-fluent-assertions)
+[![Windows Build status](https://ci.appveyor.com/api/projects/status/6ngl64ck83opvekl?svg=true)](https://ci.appveyor.com/project/OSSPlz/alsatian-fluent-assertions)
 [![dependencies Status](https://david-dm.org/ossplz/alsatian-fluent-assertions/status.svg)](https://david-dm.org/ossplz/alsatian-fluent-assertions)
 [![devDependencies Status](https://david-dm.org/ossplz/alsatian-fluent-assertions/dev-status.svg)](https://david-dm.org/ossplz/alsatian-fluent-assertions?type=dev)
 [![codecov](https://codecov.io/gh/ossplz/alsatian-fluent-assertions/branch/master/graph/badge.svg)](https://codecov.io/gh/ossplz/alsatian-fluent-assertions)

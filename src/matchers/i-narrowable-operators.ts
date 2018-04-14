@@ -8,7 +8,7 @@ export interface INarrowableOperators<TNext> {
   lastContextualValue: TNext;
 
   /**
-   * Chooses to narrow the assertion scope to the last operation's implied result.
+   * Narrows the assertion scope to the last operation's implied result.
    * Example:
    *   .has(o => o.prop).that.has(p => p.itsOwnProp)
    */
