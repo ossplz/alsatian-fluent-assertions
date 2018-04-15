@@ -1,7 +1,7 @@
 import deepEqual = require("deep-equal");
 import { MatchError } from "alsatian";
 
-import { ErrorMatchError, SpecError } from "../errors";
+import { SpecError } from "../errors";
 import { ISimpleMatcher } from "./i-simple-matcher";
 import { EqType } from "../types/eq-types";
 import { IFluentCore } from "./i-fluent-core";
