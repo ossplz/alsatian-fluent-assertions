@@ -6,6 +6,8 @@
 [![codecov][codecov-badge]][codecov-link]
 [![MIT License][license-badge]][LICENSE]
 [![PRs Welcome][prs-badge]][prs]
+[![Maintainability][codeclim-badge]][codeclim-link]
+[![Known Vulnerabilities][snyk-badge]][snyk-link]
 [![Code of Conduct][coc-badge]][coc]
 
 # Alsatian fluent assertions plugin
@@ -50,5 +52,9 @@ Please visit our [wiki].
 [dev-deps-link]: https://david-dm.org/ossplz/alsatian-fluent-assertions?type=dev
 [codecov-badge]: https://codecov.io/gh/ossplz/alsatian-fluent-assertions/branch/master/graph/badge.svg
 [codecov-link]: https://codecov.io/gh/ossplz/alsatian-fluent-assertions
+[codeclim-badge]: https://api.codeclimate.com/v1/badges/6ff4031198fa28ee42e4/maintainability
+[codeclim-link]: https://codeclimate.com/github/ossplz/alsatian-fluent-assertions/maintainability
+[snyk-badge]: https://snyk.io/test/github/ossplz/alsatian-fluent-assertions/badge.svg?targetFile=package.json
+[snyk-link]: https://snyk.io/test/github/ossplz/alsatian-fluent-assertions?targetFile=package.json
 [alsatian]: https://github.com/alsatian-test/alsatian
 [wiki]: https://github.com/ossplz/alsatian-fluent-assertions/wiki
