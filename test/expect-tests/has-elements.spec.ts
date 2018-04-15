@@ -6,7 +6,7 @@ import {
 } from "alsatian";
 import { Assert } from "../../src/assert";
 
-export class WithElementsTests {
+export class HasElementsTests {
   @TestCase(undefined)
   @TestCase(null)
   public nonArrayTypesThrow(value: any) {

@@ -20,7 +20,7 @@ class MyError extends Error {
 
 class SomeError extends MyError {}
 
-export class ToThrowTests {
+export class ThrowsTests {
   @TestCase((t: any) => {
     throw new Error();
   }, Error)

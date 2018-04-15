@@ -8,7 +8,7 @@ import {
 } from "alsatian";
 import { Assert } from "../../src/assert";
 
-export class WithPropertiesTests {
+export class HasPropertiesTests {
   @TestCase(undefined)
   @TestCase(null)
   public propertylessTypesThrow(value: any) {

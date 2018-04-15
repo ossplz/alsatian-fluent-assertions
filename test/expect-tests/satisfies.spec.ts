@@ -5,7 +5,7 @@ import {
 } from "alsatian";
 import { Assert } from "../../src/assert";
 
-export class ToSatifyTests {
+export class SatifiesTests {
   @TestCase((t: any) => true)
   @TestCase((t: any) => "truthy")
   public shouldMatchPredicate(predicate: (t: any) => boolean) {

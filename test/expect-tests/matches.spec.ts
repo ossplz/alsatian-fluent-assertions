@@ -6,7 +6,7 @@ import {
 } from "alsatian";
 import { Assert } from "../../src/assert";
 
-export class ToMatchTests {
+export class MatchesTests {
   @TestCase("asdfasdf", /asdf/)
   public matchesString(target: string, regexp: RegExp) {
     const assert = Assert(target);

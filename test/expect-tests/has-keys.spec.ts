@@ -6,7 +6,7 @@ import {
 } from "alsatian";
 import { Assert } from "../../src/assert";
 
-export class WithKeysTests {
+export class HasKeysTests {
   @TestCase(undefined)
   @TestCase(null)
   public propertylessTypesThrow(value: any) {

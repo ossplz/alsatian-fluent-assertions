@@ -5,7 +5,7 @@ import {
 } from "alsatian";
 import { Assert } from "../../src/assert";
 
-export class BeInstanceOfTests {
+export class DefinedTests {
   @TestCase(null)
   @TestCase("asdf")
   @TestCase(123)

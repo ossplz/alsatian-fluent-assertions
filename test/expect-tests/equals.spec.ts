@@ -6,7 +6,7 @@ import {
 import { Assert } from "../../src/assert";
 import { EqType } from "../../src/types";
 
-export class ToEqualTests {
+export class EqualsTests {
   @TestCase(undefined)
   @TestCase(null)
   @TestCase(0)

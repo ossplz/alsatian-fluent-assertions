@@ -30,7 +30,7 @@ Assert(obj).has({
 
 ## Basic Usage & Documentation
 
-Please visit our [wiki] for an overview of the fluent assertions API.
+Please visit our [wiki].
 
 [license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [LICENSE]: https://github.com/ossplz/alsatian-fluent-assertions/blob/master/LICENSE
@@ -42,7 +42,7 @@ Please visit our [wiki] for an overview of the fluent assertions API.
 [npm-link]: https://badge.fury.io/js/alsatian-fluent-assertions
 [travis-ci-badge]: https://travis-ci.org/ossplz/alsatian-fluent-assertions.svg?branch=master
 [travis-ci-link]: https://travis-ci.org/ossplz/alsatian-fluent-assertions
-[win-build-badge]: https://ci.appveyor.com/api/projects/status/6ngl64ck83opvekl?svg=true
+[win-build-badge]: https://ci.appveyor.com/api/projects/status/bl0exqb3w2lp7ra8?svg=true
 [win-build-link]: https://ci.appveyor.com/project/cdibbs/alsatian-fluent-assertions
 [deps-badge]: https://david-dm.org/ossplz/alsatian-fluent-assertions/status.svg
 [deps-link]: https://david-dm.org/ossplz/alsatian-fluent-assertions
