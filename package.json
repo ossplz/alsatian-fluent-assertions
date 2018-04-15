@@ -41,6 +41,7 @@
   "homepage": "https://github.com/ossplz/alsatian-fluent-assertions#readme",
   "devDependencies": {
     "@types/deep-equal": "^1.0.1",
+    "@types/stacktrace-js": "0.0.32",
     "alsatian": "^2.2.1",
     "codecov": "^3.0.0",
     "deep-equal": "^1.0.1",
@@ -48,6 +49,7 @@
     "nyc": "^11.6.0",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
+    "stacktrace-js": "^2.0.0",
     "ts-node": "^5.0.1",
     "typescript": "^2.8.1"
   },

@@ -1,9 +1,17 @@
+import { FluentNode } from "../types/fluent-node";
+import { SpecError } from "../errors";
+
 export class FluentMatcherBase {
+  protected lastNode: FluentNode;
+  protected currentNode: FluentNode;
+
   constructor(
     protected actualValue: any,
     protected nextValue: any,
     protected invert: boolean = false
-  ) {}
+  ) {
+    this.lastNode = new FluentNode("Assert", typeof actualValue, null);
+  }
 
   /**
    * Inverts assertions, as in Expect(value).not.to.equal(something).
@@ -18,6 +26,8 @@ export class FluentMatcherBase {
   }
 
   protected setFluentState<TActual, TNext>(actualValue: any, nextValue: any, invert: boolean): void {
+    this.lastNode = this.currentNode;
+    this.currentNode = null; // will be set at beginning of next assert.
     this.actualValue = actualValue;
     this.nextValue = nextValue;
     this.invert = invert;
@@ -37,5 +47,12 @@ export class FluentMatcherBase {
   protected getFnString(fn: (...args: Array<any>) => any): string {
     const mAlias = fn.toString();
     return mAlias.substr(Math.max(mAlias.length, 500 /* fns can get long */));
+  }
+
+  protected specError(
+    message: string,
+    expected: any,
+    actual: any): SpecError {
+      throw new SpecError(this.currentNode, message, expected, actual);
   }
 }

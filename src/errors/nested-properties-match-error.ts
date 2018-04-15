@@ -1,14 +1,16 @@
-import { MatchError } from "alsatian";
+import { SpecError } from "./spec-error";
+import { FluentNode } from "../types/fluent-node";
 
-export class NestedPropertiesMatchError extends MatchError {
-  public constructor(message: string, path: string, error: Error) {
+export class NestedPropertiesMatchError extends SpecError {
+  public constructor(node: FluentNode, message: string, path: string, error: Error) {
     /* istanbul ignore next */
     super(
+      node,
       `Property at path '${path}': ${message}.` +
         "\n" +
         error.message +
         "\n" +
-        error.stack
+        error.stack, undefined, undefined
     );
   }
 }

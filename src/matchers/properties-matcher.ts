@@ -1,18 +1,18 @@
 import { MatchError } from "alsatian";
 
 import { IPropertiesMatcher } from "./i-properties-matcher";
-import { PropertiesMatchError } from "../errors/properties-match-error";
 import { NestedPropertiesMatchError } from "../errors/nested-properties-match-error";
 import { SubsetPropertyAssertsDict, AllPropertyAssertsDict, ArrayMatchMode, ElementMode, PropertyLambda } from "../types";
 import { Assert } from '../assert';
-import { EntityMatcher } from "./entity-matcher";
+import { SimpleMatcher } from "./simple-matcher";
 import { IFluentCore } from "./i-fluent-core";
 import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
 import { FluentMatcherBase } from "./fluent-matcher-base";
+import { FluentNode } from "../types/fluent-node";
 
 /** @inheritDoc */
 export class PropertiesMatcher<T>
-  extends EntityMatcher<T>
+  extends SimpleMatcher<T>
   implements IPropertiesMatcher<T>
 {
   constructor(
@@ -31,6 +31,7 @@ export class PropertiesMatcher<T>
     something: any
   ): IFluentCore<T>
   {
+    this.currentNode = new FluentNode(this.has.name, typeof(something), this.lastNode);
     if (something instanceof Function) {
       return this.hasProperty(something);
     } else if (typeof something === "string") {
@@ -47,6 +48,9 @@ export class PropertiesMatcher<T>
   public hasProperties(
     dict: SubsetPropertyAssertsDict<T>
   ): IFluentCore<T> {
+    if (this.currentNode == null) {
+      this.currentNode = new FluentNode(this.hasProperties.name, null, this.lastNode);
+    }
     this._properties(this.actualValue, dict, []);
 
     this.setFluentState(this.actualValue, null, false);
@@ -57,6 +61,9 @@ export class PropertiesMatcher<T>
   public hasAll(
     dict: AllPropertyAssertsDict<T>
   ): IFluentCore<T> {
+    if (this.currentNode == null) {
+      this.currentNode = new FluentNode(this.hasAll.name, null, this.lastNode);
+    }
     this._properties(this.actualValue, dict, []);
 
     this.setFluentState(this.actualValue, null, false);
@@ -67,16 +74,15 @@ export class PropertiesMatcher<T>
   public hasKeys<K extends keyof T>(
     expectedKeys: Array<K>
   ): IFluentCore<T> {
+    if (this.currentNode == null) {
+      this.currentNode = new FluentNode(this.hasKeys.name, null, this.lastNode);
+    }
     if (!this.actualValue) {
-      throw new MatchError("should be defined.");
+      this.specError(`should be defined`, undefined, undefined);
     }
 
     if (!expectedKeys.every(k => typeof this.actualValue[k] !== "undefined")) {
-      throw new MatchError(
-        "does not contain all",
-        expectedKeys,
-        this.actualValue
-      );
+      this.specError(`should${this.negation}contain all`, expectedKeys, this.actualValue);
     }
 
     this.setFluentState(this.actualValue, null, false);
@@ -89,12 +95,15 @@ export class PropertiesMatcher<T>
     matchMode: ArrayMatchMode = ArrayMatchMode.contains,
     elMode: ElementMode = ElementMode.interpretive
   ): IFluentCore<Array<any>> {
+    if (this.currentNode == null) {
+      this.currentNode = new FluentNode(this.hasElements.name, `${matchMode}, ${elMode}`, this.lastNode);
+    }
     if (!(this.actualValue instanceof Array)) {
-      throw new MatchError("not an array type", expected, this.actualValue);
+      this.specError("not an array type", expected, this.actualValue);
     }
 
     if (!expected.every(e => this.actualValue.indexOf(e) > -1)) {
-      throw new MatchError("does not contain all", expected, this.actualValue);
+      this.specError(`should${this.negation}contain all`, expected, this.actualValue);
     }
 
     this.setFluentState(this.actualValue, null, false);
@@ -151,13 +160,12 @@ export class PropertiesMatcher<T>
   ) {
     if (typeof actualObject === "undefined" || actualObject === null) {
       if (path.length > 0) {
-        throw new MatchError(
-          `property '${
-            path[path.length - 1]
-          }' should be defined at path '${this.formatKeyPath(path)}'`
-        );
+        let prop = path[path.length - 1];
+        let fpath = this.formatKeyPath(path);
+        let msg = `property '${prop}' should be defined at path '${fpath}'`
+        this.specError(msg, undefined, undefined);
       } else {
-        throw new MatchError("should be defined.");
+        this.specError("should be defined", undefined, undefined);
       }
     }
   }
@@ -183,13 +191,9 @@ export class PropertiesMatcher<T>
     ) {
       this._properties(actual, expected, curPath);
     } else if (this.checkInvert(expected !== actual)) {
-      throw new MatchError(
-        `property ${k} at path '${this.formatKeyPath(curPath)}' should${
-          this.negation
-        }equal`,
-        expected,
-        actual
-      );
+      let fpath = this.formatKeyPath(curPath);
+      let msg = `property ${k} at path '${fpath}' should${this.negation}equal`
+      this.specError(msg, expected, actual);
     }
   }
 
@@ -221,12 +225,14 @@ export class PropertiesMatcher<T>
   protected failFnError(err: Error, path: Array<string>) {
     if (err instanceof MatchError) {
       throw new NestedPropertiesMatchError(
+        this.currentNode,
         "failed nested expectation",
         this.formatKeyPath(path),
         err
       );
     } else {
       throw new NestedPropertiesMatchError(
+        this.currentNode,
         "threw unexpected error",
         this.formatKeyPath(path),
         err
@@ -240,20 +246,14 @@ export class PropertiesMatcher<T>
     actual: T[TKey],
     path: Array<string>
   ) {
+    let fpath = this.formatKeyPath(path);
+    let msg = `Property at path '${fpath}': `;
     if (typeof check === "boolean" && this.checkInvert(!check)) {
-      throw new PropertiesMatchError(
-        `failed ${this.invert ? "(inverted) " : " "}boolean lambda assertion`,
-        this.formatKeyPath(path),
-        this.getFnString(assertion),
-        actual
-      );
+      msg = msg + `should${this.negation} satisfy lambda assertion`, 
+      this.specError(msg, this.getFnString(assertion), actual);
     } else if (this.invert) {
-      throw new PropertiesMatchError(
-        "expected lambda to return false, or yield a failed nested expectation or error",
-        this.formatKeyPath(path),
-        this.getFnString(assertion),
-        actual
-      );
+      msg = msg + "expected lambda to return false, or yield a failed nested expectation or error", 
+      this.specError(msg, this.getFnString(assertion), actual);
     }
   }
 
@@ -266,24 +266,15 @@ export class PropertiesMatcher<T>
     const kpath: string = this.formatKeyPath(path);
     if (actual instanceof RegExp) {
       if (this.checkInvert(actual.toString() !== regexp.toString())) {
-        throw new MatchError(
-          `regular expressions at path '${kpath}' should${this.negation}match`,
-          regexp,
-          actual
-        );
+        let msg = `regular expressions at path '${kpath}' should${this.negation}be equal`;
+        this.specError(msg, regexp, actual);
       }
     } else if (typeof actual !== "string") {
-      throw new MatchError(
-        `expected type 'string' for regexp match at path '${kpath}'`,
-        "string",
-        typeof actual
-      );
+      let msg = `expected type 'string' for regexp match at path '${kpath}'`;
+      this.specError(msg, "string", typeof actual);
     } else if (this.checkInvert(!regexp.test(actual))) {
-      throw new MatchError(
-        `regular expression at path '${kpath}' should${this.negation}match`,
-        regexp.toString(),
-        actual
-      );
+      let msg = `regular expression at path '${kpath}' should${this.negation}match`;
+      this.specError(msg, regexp, actual);
     }
   }
 }
