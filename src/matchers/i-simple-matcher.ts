@@ -98,7 +98,7 @@ export interface ISimpleMatcher<T> {
    * @param expectedType The expected type.
    */
   is(expectedType: {
-    new (): any;
+    new (...args: any[]): any;
   }): IFluentCore<T>;
 
   /**

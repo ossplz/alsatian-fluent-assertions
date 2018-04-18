@@ -3,32 +3,29 @@ import { FluentMatcherBase } from "./fluent-matcher-base";
 import { IFluentCore } from "./i-fluent-core";
 import { INarrowableFluentCore, PropertiesMatcher } from ".";
 import { INarrowableOperators } from "./i-narrowable-operators";
-import { FluentNode } from "../types/fluent-node";
 
 export class Operators<T, TNext>
   extends FluentMatcherBase
   implements IOperators<T, TNext>, INarrowableOperators<TNext>
    {
   constructor(
-    protected actualValue: T,
-    protected nextValue: TNext,
-    protected invert: boolean
+    actualValue: T,
+    nextValue: TNext,
+    initial: boolean = false
   ) {
-    super(actualValue, null, invert);
+    super(actualValue, null, initial);
   }
 
   /** @inheritDoc */
   public get not(): IFluentCore<T> {
-    this.currentNode = new FluentNode("not", null, this.lastNode);
-    this.setFluentState(this.actualValue, this.nextValue, !this.invert);
-    return <any>this;
+    this.setCurrentNode("not", null);
+    return this.setFluentState(this.actualValue, this.nextValue, !this.invert);
   }
 
   /** @inheritDoc */
   public maybe(yayNay: boolean): IFluentCore<T> {
-    this.currentNode = new FluentNode(this.maybe.name, `${yayNay}`, this.lastNode);
-    this.setFluentState(this.actualValue, this.nextValue, !yayNay);
-    return <any>this;
+    this.setCurrentNode(this.maybe.name, `${yayNay}`);
+    return this.setFluentState(this.actualValue, this.nextValue, !yayNay);
   }
 
   /** @inheritDoc */
@@ -38,8 +35,7 @@ export class Operators<T, TNext>
 
   /** @inheritDoc */
   public get that(): IFluentCore<TNext> {
-    this.currentNode = new FluentNode("that", null, this.lastNode);
-    this.setFluentState(this.nextValue, null, false);
-    return <any>this;
+    this.setCurrentNode("that", null);
+    return this.setFluentState(this.nextValue, null, false);
   }
 }

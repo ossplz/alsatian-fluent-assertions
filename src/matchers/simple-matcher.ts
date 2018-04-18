@@ -8,18 +8,17 @@ import { IFluentCore } from "./i-fluent-core";
 import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
 import { Operators } from "./operators";
 import { PropertiesMatcher } from "./properties-matcher";
-import { FluentNode } from "../types/fluent-node";
 
 /** @inheritDoc */
 export class SimpleMatcher<T>
     extends Operators<T, any>
     implements ISimpleMatcher<T> {
   constructor(
-    protected actualValue: any,
-    protected nextValue: any,
-    protected invert: boolean
+    actualValue: any,
+    nextValue: any,
+    initial: boolean = false
   ) {
-    super(actualValue, nextValue, invert);
+    super(actualValue, nextValue, initial);
   }
 
   /** @inheritDoc */
@@ -27,7 +26,7 @@ export class SimpleMatcher<T>
     expected: T,
     eqType: EqType = EqType.strictly
   ): IFluentCore<T> {
-    this.currentNode = new FluentNode(this.equals.name, typeof(expected) + ", " + eqType, this.lastNode);
+    this.setCurrentNode(this.equals.name, typeof(expected) + ", " + eqType);
     switch (eqType) {
       case EqType.strictly:
         return this.strictlyEquals(expected);
@@ -44,30 +43,24 @@ export class SimpleMatcher<T>
 
   /** @inheritDoc */
   public strictlyEquals(expected: T): IFluentCore<T> {
-    if (this.currentNode == null) {
-      this.currentNode = new FluentNode(this.strictlyEquals.name, typeof(expected), this.lastNode);
-    }
+    this.setCurrentNode(this.strictlyEquals.name, typeof(expected));
     if (this.checkInvert(this.actualValue !== expected)) {
       this.specError("should strictly (===) equal", expected, this.actualValue);
     }
 
-    this.setFluentState(this.actualValue, null, false);
-    return <any>this;
+    return this.setFluentState(this.actualValue, null, false);
   }
 
   /** @inheritDoc */
   public looselyEquals(expected: T): IFluentCore<T> {
-    if (this.currentNode == null) {
-      this.currentNode = new FluentNode(this.looselyEquals.name, typeof(expected), this.lastNode);
-    }
+    this.setCurrentNode(this.looselyEquals.name, typeof(expected));
     /*tslint:disable:triple-equals*/
     if (this.checkInvert(this.actualValue != expected)) {
       /*tslint:enable:triple-equals*/
       this.specError("should loosely (==) equal", expected, this.actualValue);
     }
 
-    this.setFluentState(this.actualValue, null, false);
-    return <any>this;
+    return this.setFluentState(this.actualValue, null, false);
   }
 
   /** @inheritDoc */
@@ -75,9 +68,7 @@ export class SimpleMatcher<T>
     expected: T,
     eqType: EqType.strictly | EqType.loosely = EqType.strictly
   ): IFluentCore<T> {
-    if (this.currentNode == null) {
-      this.currentNode = new FluentNode(this.deeplyEquals.name, typeof(expected) + ", " + eqType, this.lastNode);
-    }
+    this.setCurrentNode(this.deeplyEquals.name, typeof(expected) + ", " + eqType);
     const equal = deepEqual(expected, this.actualValue, {
       strict: eqType === EqType.strictly
     });
@@ -85,45 +76,38 @@ export class SimpleMatcher<T>
       this.specError(`should${this.negation}deeply equal (${eqType})`, expected, this.actualValue);
     }
 
-    this.setFluentState(this.actualValue, null, false);
-    return <any>this;
+    return this.setFluentState(this.actualValue, null, false);
   }
 
   /** @inheritDoc */
   public deepStrictlyEquals(expected: T): IFluentCore<T> {
-    if (this.currentNode == null) {
-      this.currentNode = new FluentNode(this.deepStrictlyEquals.name, typeof(expected), this.lastNode);
-    }
+    this.setCurrentNode(this.deepStrictlyEquals.name, typeof(expected));
     return this.deeplyEquals(expected, EqType.strictly);
   }
 
   /** @inheritDoc */
   public deepLooselyEquals(expected: T): IFluentCore<T> {
-    if (this.currentNode == null) {
-      this.currentNode = new FluentNode(this.deepLooselyEquals.name, typeof(expected), this.lastNode);
-    }
+    this.setCurrentNode(this.deepLooselyEquals.name, typeof(expected));
     return this.deeplyEquals(expected, EqType.loosely);
   }
 
   /** @inheritDoc */
   public defined(): IFluentCore<T> {
-    this.currentNode = new FluentNode(this.defined.name, null, this.lastNode);
+    this.setCurrentNode(this.defined.name, null);
     if (this.checkInvert(typeof this.actualValue === "undefined")) {
       this.specError(`should${this.negation}be defined`, undefined, undefined);
     }
 
-    this.setFluentState(this.actualValue, null, false);
-    return <any>this;
+    return this.setFluentState(this.actualValue, null, false);
 
   }
 
   /** @inheritDoc */
   public matches(matcher: RegExp): IFluentCore<string> {
-    this.currentNode = new FluentNode(this.matches.name, matcher.toString(), this.lastNode);
+    this.setCurrentNode(this.matches.name, matcher.toString());
     this._match(matcher);
 
-    this.setFluentState(this.actualValue, null, false);
-    return <any>this;
+    return this.setFluentState(this.actualValue, null, false);
 
   }
 
@@ -132,10 +116,9 @@ export class SimpleMatcher<T>
     matcher: RegExp
   ): INarrowableFluentCore<T, Array<string>> {
     this._match(matcher);
-    this.currentNode = new FluentNode(this.hasMatch.name, matcher.toString(), this.lastNode);
+    this.setCurrentNode(this.hasMatch.name, matcher.toString());
     const matches = this.actualValue.match(matcher);
-    this.setFluentState(this.actualValue, matches, false);
-    return <any>this;
+    return this.setFluentState(this.actualValue, matches, false);
 
   }
 
@@ -145,7 +128,7 @@ export class SimpleMatcher<T>
   public throws<TError extends Error>(errorType?: {
     new (...args: Array<any>): TError;
   }): INarrowableFluentCore<T, TError> {
-    this.currentNode = new FluentNode(this.throws.name, errorType ? typeof errorType : null, this.lastNode);
+    this.setCurrentNode(this.throws.name, errorType ? typeof errorType : null);
     let threw: TError = null;
     try {
       this.actualValue();
@@ -161,41 +144,37 @@ export class SimpleMatcher<T>
       this.specError(`should${this.negation}throw type ${errorType} but threw ${threw}`, errorType, threw);
     }
 
-    this.setFluentState(this.actualValue, threw, false);
-    return <any>this;
+    return this.setFluentState(this.actualValue, threw, false);
   }
 
   /** @inheritDoc */
   public satisfies(predicate: (t: T) => boolean): IFluentCore<T> {
-    this.currentNode = new FluentNode(this.satisfies.name, null, this.lastNode);
+    this.setCurrentNode(this.satisfies.name, null);
     if (this.checkInvert(!predicate(this.actualValue))) {
       this.specError(`should${this.negation}match lambda`, this.getFnString(predicate), this.actualValue);
     }
 
-    this.setFluentState(this.actualValue, null, false);
-    return <any>this;
+    return this.setFluentState(this.actualValue, null, false);
   }
 
   /** @inheritDoc */
   public is(expectedType: {
     new (...args: any[]): any;
   }): IFluentCore<T> {
-    this.currentNode = new FluentNode(this.is.name, typeof(expectedType), this.lastNode);
+    let eActualName = (expectedType || <any>{}).name;
+    this.setCurrentNode(this.is.name, eActualName);
     if (this.checkInvert(!(this.actualValue instanceof expectedType))) {
-      let ename = (expectedType || <any>{}).name || `(Unnamed type; JS type: ${typeof expectedType})`;
+      let ename = eActualName || `(Unnamed type; JS type: ${typeof expectedType})`;
       let aname = (this.actualValue.name || <any>{}).name || `(Unnamed type; JS type: ${typeof this.actualValue})`;
       this.specError(`should${this.negation}be of type`, ename, aname);
     }
 
-    this.setFluentState(this.actualValue, null, false);
-    return <any>this;
+    return this.setFluentState(this.actualValue, null, false);
   }
 
   /** @inheritDoc */
   public hasProperty<R>(selector: (t: T) => R): INarrowableFluentCore<T, R> {
-    if (this.currentNode == null) {
-      this.currentNode = new FluentNode(this.hasProperty.name, null, this.lastNode);
-    }
+    this.setCurrentNode(this.hasProperty.name, null);
     if (!(selector instanceof Function)) {
       this.specError("Provided selector was not a function.", undefined, undefined);
     }
@@ -207,8 +186,7 @@ export class SimpleMatcher<T>
       this.specError(`should${this.negation}be defined`, fn, this.actualValue);
     }
 
-    this.setFluentState(this.actualValue, selected, false);
-    return <any>this;
+    return this.setFluentState(this.actualValue, selected, false);
   }
 
   private _match(matcher: RegExp): void {

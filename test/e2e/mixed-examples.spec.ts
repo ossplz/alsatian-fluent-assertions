@@ -5,7 +5,6 @@ import {
     Expect
   } from "alsatian";
 import { Assert } from "../../src/assert";
-import { FluentNode } from "../../src/types/fluent-node";
 import { SpecError } from "../../src/errors/spec-error";
 
 class SomeClass {
@@ -39,14 +38,5 @@ export class MixedExamples {
             Assert.fail("Should have errored before here.");
         } catch(err) {
         }
-    }
-
-    @Test()
-    public TestErrors() {
-        let n = new FluentNode("Assert", typeof(""));
-        let n2 = new FluentNode("has", "fn", n);
-        let n3 = new FluentNode("that", null, n2);
-        let n4 = new FluentNode("matches", /123/.toString(), n3);
-        throw new SpecError(n4, "Something didn't match something", undefined, undefined);
     }
 }

@@ -4,3 +4,5 @@ export * from './array-match-mode';
 export * from './element-mode';
 export * from './property-lambda';
 export * from './eq-types';
+export * from './root-node';
+export * from './i-fluent-node';

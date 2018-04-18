@@ -32,6 +32,6 @@ export class HasKeysTests {
 
     Assert(() => expect.hasKeys(["somethingElse"]))
       .throws(MatchError)
-      .that.has({ message: /does not contain all/ });
+      .that.has({ message: /should contain all/ });
   }
 }

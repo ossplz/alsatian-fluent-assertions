@@ -7,8 +7,8 @@ import {
 } from "./matchers";
 import { IAssert } from "./assert.i";
 
-function Assert<T, TNext>(value?: T, nextValue?: TNext, invert: boolean = false): IFluentCore<T> {
-  return new PropertiesMatcher<T>(value, nextValue, invert);
+function Assert<T, TNext>(value?: T): IFluentCore<T> {
+  return new PropertiesMatcher<T>(value, undefined, true);
 }
 namespace Assert {
   export function fail(message: string) {

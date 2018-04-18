@@ -32,7 +32,7 @@ export class HasElementsTests {
 
     Assert(() => expect.hasElements(["somethingElse"]))
       .throws(MatchError)
-      .that.has({ message: /does not contain all/ });
+      .that.has({ message: /should contain all/ });
   }
 
   /*@TestCase([1, 2, 3], [Element.oneOrMore(e => e >= 1), 3], true)

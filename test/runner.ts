@@ -5,6 +5,7 @@ import { TestSet, TestRunner } from "alsatian";
 {
     const testSet = TestSet.create();
     testSet.addTestsFromFiles('./test/expect-tests/*.spec.ts');
+    testSet.addTestsFromFiles('./test/errors-tests/*.spec.ts');
     testSet.addTestsFromFiles('./test/e2e/*.spec.ts');
 
     const testRunner = new TestRunner();

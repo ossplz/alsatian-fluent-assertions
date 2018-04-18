@@ -1,10 +1,10 @@
 import * as StackTrace from "stacktrace-js";
 import { BaseError } from "./base-error";
-import { FluentNode } from "../types/fluent-node";
+import { IFluentNode } from "../types/i-fluent-node";
 
 export class SpecError extends BaseError {
     constructor(
-        node: FluentNode,
+        node: IFluentNode,
         _message: string,
         expected: any,
         actual: any
@@ -19,7 +19,7 @@ export class SpecError extends BaseError {
         super(message, expected, actual);
     }
 
-    private static _stringifyPosition(node: FluentNode): string {
+    private static _stringifyPosition(node: IFluentNode): string {
         let current = node;
         let result = current.name;
         while (current = current.parent) {

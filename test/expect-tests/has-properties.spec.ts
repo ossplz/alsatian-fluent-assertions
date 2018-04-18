@@ -88,12 +88,12 @@ export class HasPropertiesTests {
   }
 
   @Test()
-  public failsWhenRegexpsDontMatch() {
+  public failsWhenActualIsRegexpAndRegexpsDontMatch() {
     const expect = Assert({ one: /123/ });
     Assert(() => expect.has({ one: /321/ }))
       .throws(MatchError)
       .that.has({
-        message: /regular expressions at path.*should match/
+        message: /regular expressions at path.*should be equal/
       });
   }
 
@@ -162,7 +162,7 @@ export class HasPropertiesTests {
     Assert(() => expect.not.has({ one: () => true }))
       .throws(MatchError)
       .that.has({
-        message: /failed \(inverted\) boolean lambda assertion/
+        message: /should not satisfy lambda assertion/
       });
   }
 

@@ -3,12 +3,10 @@ import { MatchError } from "alsatian";
 import { IPropertiesMatcher } from "./i-properties-matcher";
 import { NestedPropertiesMatchError } from "../errors/nested-properties-match-error";
 import { SubsetPropertyAssertsDict, AllPropertyAssertsDict, ArrayMatchMode, ElementMode, PropertyLambda } from "../types";
-import { Assert } from '../assert';
 import { SimpleMatcher } from "./simple-matcher";
 import { IFluentCore } from "./i-fluent-core";
 import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
 import { FluentMatcherBase } from "./fluent-matcher-base";
-import { FluentNode } from "../types/fluent-node";
 
 /** @inheritDoc */
 export class PropertiesMatcher<T>
@@ -16,11 +14,11 @@ export class PropertiesMatcher<T>
   implements IPropertiesMatcher<T>
 {
   constructor(
-    protected actualValue: any,
-    protected nextValue: any,
-    protected invert: boolean
+    actualValue: any,
+    nextValue: any,
+    initial: boolean = false
   ) {
-    super(actualValue, nextValue, invert);
+    super(actualValue, nextValue, initial);
   }
 
   /** @inheritDoc */
@@ -31,7 +29,7 @@ export class PropertiesMatcher<T>
     something: any
   ): IFluentCore<T>
   {
-    this.currentNode = new FluentNode(this.has.name, typeof(something), this.lastNode);
+    this.setCurrentNode(this.has.name, typeof(something));
     if (something instanceof Function) {
       return this.hasProperty(something);
     } else if (typeof something === "string") {
@@ -40,43 +38,34 @@ export class PropertiesMatcher<T>
       this._properties(this.actualValue, <any>something, []);
     }
 
-    this.setFluentState(this.actualValue, null, false);
-    return <any>this;
+    return this.setFluentState(this.actualValue, null, false);
   }
 
   /** @inheritDoc */
   public hasProperties(
     dict: SubsetPropertyAssertsDict<T>
   ): IFluentCore<T> {
-    if (this.currentNode == null) {
-      this.currentNode = new FluentNode(this.hasProperties.name, null, this.lastNode);
-    }
+    this.setCurrentNode(this.hasProperties.name, null);
     this._properties(this.actualValue, dict, []);
 
-    this.setFluentState(this.actualValue, null, false);
-    return <any>this;
+    return this.setFluentState(this.actualValue, null, false);
   }
 
   /** @inheritDoc */
   public hasAll(
     dict: AllPropertyAssertsDict<T>
   ): IFluentCore<T> {
-    if (this.currentNode == null) {
-      this.currentNode = new FluentNode(this.hasAll.name, null, this.lastNode);
-    }
+    this.setCurrentNode(this.hasAll.name, null);
     this._properties(this.actualValue, dict, []);
 
-    this.setFluentState(this.actualValue, null, false);
-    return <any>this;
+    return this.setFluentState(this.actualValue, null, false);
   }
 
   /** @inheritDoc */
   public hasKeys<K extends keyof T>(
     expectedKeys: Array<K>
   ): IFluentCore<T> {
-    if (this.currentNode == null) {
-      this.currentNode = new FluentNode(this.hasKeys.name, null, this.lastNode);
-    }
+    this.setCurrentNode(this.hasKeys.name, null);
     if (!this.actualValue) {
       this.specError(`should be defined`, undefined, undefined);
     }
@@ -85,8 +74,7 @@ export class PropertiesMatcher<T>
       this.specError(`should${this.negation}contain all`, expectedKeys, this.actualValue);
     }
 
-    this.setFluentState(this.actualValue, null, false);
-    return <any>this;
+    return this.setFluentState(this.actualValue, null, false);
   }
 
   /** @inheritDoc */
@@ -95,9 +83,7 @@ export class PropertiesMatcher<T>
     matchMode: ArrayMatchMode = ArrayMatchMode.contains,
     elMode: ElementMode = ElementMode.interpretive
   ): IFluentCore<Array<any>> {
-    if (this.currentNode == null) {
-      this.currentNode = new FluentNode(this.hasElements.name, `${matchMode}, ${elMode}`, this.lastNode);
-    }
+    this.setCurrentNode(this.hasElements.name, `${matchMode}, ${elMode}`);
     if (!(this.actualValue instanceof Array)) {
       this.specError("not an array type", expected, this.actualValue);
     }
@@ -106,8 +92,7 @@ export class PropertiesMatcher<T>
       this.specError(`should${this.negation}contain all`, expected, this.actualValue);
     }
 
-    this.setFluentState(this.actualValue, null, false);
-    return <any>this;
+    return this.setFluentState(this.actualValue, null, false);
   }
 
   /*  public allPairs<K extends keyof T>(
@@ -225,14 +210,14 @@ export class PropertiesMatcher<T>
   protected failFnError(err: Error, path: Array<string>) {
     if (err instanceof MatchError) {
       throw new NestedPropertiesMatchError(
-        this.currentNode,
+        this,
         "failed nested expectation",
         this.formatKeyPath(path),
         err
       );
     } else {
       throw new NestedPropertiesMatchError(
-        this.currentNode,
+        this,
         "threw unexpected error",
         this.formatKeyPath(path),
         err
@@ -249,7 +234,7 @@ export class PropertiesMatcher<T>
     let fpath = this.formatKeyPath(path);
     let msg = `Property at path '${fpath}': `;
     if (typeof check === "boolean" && this.checkInvert(!check)) {
-      msg = msg + `should${this.negation} satisfy lambda assertion`, 
+      msg = msg + `should${this.negation}satisfy lambda assertion`, 
       this.specError(msg, this.getFnString(assertion), actual);
     } else if (this.invert) {
       msg = msg + "expected lambda to return false, or yield a failed nested expectation or error", 
