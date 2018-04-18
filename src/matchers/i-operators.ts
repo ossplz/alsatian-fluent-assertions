@@ -9,7 +9,9 @@ export interface IOperators<T, TNext> {
 
   /**
    * A conditional version of 'not' designed to facilitate test parameterization.
-   * Using maybe(false) is equivalent to using not.
+   * Using 'maybe(false)' is equivalent to using 'not'.
+   * CAUTION: As with 'not', 'maybe' negations do not propagate. Only the next term is negated.
+   * See: https
    * @param yayNay Boolean representing whether the next term should remain unnegated.
    */
   maybe(yayNay: boolean): IFluentCore<T>;

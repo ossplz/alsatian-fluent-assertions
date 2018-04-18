@@ -124,8 +124,12 @@ export class PropertiesMatcher<T>
     expectedObject: any,
     path: Array<string>
   ): void {
-    this.assertNestedPropertiesDefined(actualObject, expectedObject, path);
+    let notDefined = !this.assertNestedPropertiesDefined(actualObject, expectedObject, path);
     const keys = Object.keys(expectedObject);
+    if (this.maybeInvert(false) && notDefined) {
+      return;
+    }
+
     /*tslint:disable:forin*/
     for (const i in keys) {
       /*tslint:enable:forin*/
@@ -142,17 +146,23 @@ export class PropertiesMatcher<T>
     actualObject: any,
     expectedObject: any,
     path: Array<string>
-  ) {
+  ): boolean {
     if (typeof actualObject === "undefined" || actualObject === null) {
-      if (path.length > 0) {
+      if (this.maybeInvert(true) && path.length > 0) {
         let prop = path[path.length - 1];
         let fpath = this.formatKeyPath(path);
         let msg = `property '${prop}' should be defined at path '${fpath}'`
         this.specError(msg, undefined, undefined);
-      } else {
-        this.specError("should be defined", undefined, undefined);
       }
+
+      if (path.length === 0) {
+        this.specError("expected object should be defined", undefined, undefined);
+      }
+
+      return false;
     }
+
+    return true;
   }
 
   protected assertPropertyByType(
@@ -172,10 +182,10 @@ export class PropertiesMatcher<T>
       this.assertRegExpProperty(k, expected, actual, curPath);
     } else if (
       typeof expected === "object" &&
-      Object.keys(expected as any).length > 0
+      Object.keys(expected as any).length > 0 // not a no-op
     ) {
       this._properties(actual, expected, curPath);
-    } else if (this.checkInvert(expected !== actual)) {
+    } else if (this.maybeInvert(expected !== actual)) {
       let fpath = this.formatKeyPath(curPath);
       let msg = `property ${k} at path '${fpath}' should${this.negation}equal`
       this.specError(msg, expected, actual);
@@ -233,7 +243,7 @@ export class PropertiesMatcher<T>
   ) {
     let fpath = this.formatKeyPath(path);
     let msg = `Property at path '${fpath}': `;
-    if (typeof check === "boolean" && this.checkInvert(!check)) {
+    if (typeof check === "boolean" && this.maybeInvert(!check)) {
       msg = msg + `should${this.negation}satisfy lambda assertion`, 
       this.specError(msg, this.getFnString(assertion), actual);
     } else if (this.invert) {
@@ -250,14 +260,14 @@ export class PropertiesMatcher<T>
   ): void {
     const kpath: string = this.formatKeyPath(path);
     if (actual instanceof RegExp) {
-      if (this.checkInvert(actual.toString() !== regexp.toString())) {
+      if (this.maybeInvert(actual.toString() !== regexp.toString())) {
         let msg = `regular expressions at path '${kpath}' should${this.negation}be equal`;
         this.specError(msg, regexp, actual);
       }
     } else if (typeof actual !== "string") {
       let msg = `expected type 'string' for regexp match at path '${kpath}'`;
       this.specError(msg, "string", typeof actual);
-    } else if (this.checkInvert(!regexp.test(actual))) {
+    } else if (this.maybeInvert(!regexp.test(actual))) {
       let msg = `regular expression at path '${kpath}' should${this.negation}match`;
       this.specError(msg, regexp, actual);
     }

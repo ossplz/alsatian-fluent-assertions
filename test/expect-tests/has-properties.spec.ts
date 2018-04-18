@@ -113,6 +113,17 @@ export class HasPropertiesTests {
       .that.has({ message: /expected type 'string' for regexp match/ });
   }
 
+  @Test()
+  public notProperties_nestedUndefinedPasses() {
+    const props = {
+        first: {
+            a: "b"
+        }
+    };
+    Assert(() => Assert({}).not.has(props))
+      .not.throws();
+  }
+
   @TestCase(
     { one: "321" },
     { one: /321/ },

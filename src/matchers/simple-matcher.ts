@@ -44,7 +44,7 @@ export class SimpleMatcher<T>
   /** @inheritDoc */
   public strictlyEquals(expected: T): IFluentCore<T> {
     this.setCurrentNode(this.strictlyEquals.name, typeof(expected));
-    if (this.checkInvert(this.actualValue !== expected)) {
+    if (this.maybeInvert(this.actualValue !== expected)) {
       this.specError("should strictly (===) equal", expected, this.actualValue);
     }
 
@@ -55,7 +55,7 @@ export class SimpleMatcher<T>
   public looselyEquals(expected: T): IFluentCore<T> {
     this.setCurrentNode(this.looselyEquals.name, typeof(expected));
     /*tslint:disable:triple-equals*/
-    if (this.checkInvert(this.actualValue != expected)) {
+    if (this.maybeInvert(this.actualValue != expected)) {
       /*tslint:enable:triple-equals*/
       this.specError("should loosely (==) equal", expected, this.actualValue);
     }
@@ -72,7 +72,7 @@ export class SimpleMatcher<T>
     const equal = deepEqual(expected, this.actualValue, {
       strict: eqType === EqType.strictly
     });
-    if (this.checkInvert(!equal)) {
+    if (this.maybeInvert(!equal)) {
       this.specError(`should${this.negation}deeply equal (${eqType})`, expected, this.actualValue);
     }
 
@@ -94,7 +94,7 @@ export class SimpleMatcher<T>
   /** @inheritDoc */
   public defined(): IFluentCore<T> {
     this.setCurrentNode(this.defined.name, null);
-    if (this.checkInvert(typeof this.actualValue === "undefined")) {
+    if (this.maybeInvert(typeof this.actualValue === "undefined")) {
       this.specError(`should${this.negation}be defined`, undefined, undefined);
     }
 
@@ -135,11 +135,11 @@ export class SimpleMatcher<T>
     } catch (err) {
       threw = err;
     }
-    if (this.checkInvert(!threw)) {
+    if (this.maybeInvert(!threw)) {
       this.specError(`should${this.negation}throw`, errorType, threw);
     } else if (
       typeof errorType !== "undefined" &&
-      this.checkInvert(!(threw instanceof errorType))
+      this.maybeInvert(!(threw instanceof errorType))
     ) {
       this.specError(`should${this.negation}throw type ${errorType} but threw ${threw}`, errorType, threw);
     }
@@ -150,7 +150,7 @@ export class SimpleMatcher<T>
   /** @inheritDoc */
   public satisfies(predicate: (t: T) => boolean): IFluentCore<T> {
     this.setCurrentNode(this.satisfies.name, null);
-    if (this.checkInvert(!predicate(this.actualValue))) {
+    if (this.maybeInvert(!predicate(this.actualValue))) {
       this.specError(`should${this.negation}match lambda`, this.getFnString(predicate), this.actualValue);
     }
 
@@ -163,7 +163,7 @@ export class SimpleMatcher<T>
   }): IFluentCore<T> {
     let eActualName = (expectedType || <any>{}).name;
     this.setCurrentNode(this.is.name, eActualName);
-    if (this.checkInvert(!(this.actualValue instanceof expectedType))) {
+    if (this.maybeInvert(!(this.actualValue instanceof expectedType))) {
       let ename = eActualName || `(Unnamed type; JS type: ${typeof expectedType})`;
       let aname = (this.actualValue.name || <any>{}).name || `(Unnamed type; JS type: ${typeof this.actualValue})`;
       this.specError(`should${this.negation}be of type`, ename, aname);
@@ -181,7 +181,7 @@ export class SimpleMatcher<T>
 
     const selected = selector(this.actualValue);
 
-    if (this.checkInvert(typeof selected === "undefined")) {
+    if (this.maybeInvert(typeof selected === "undefined")) {
       let fn = this.getFnString(selector);
       this.specError(`should${this.negation}be defined`, fn, this.actualValue);
     }
@@ -194,7 +194,7 @@ export class SimpleMatcher<T>
       throw new MatchError("actual value type was not a string");
     }
 
-    if (this.checkInvert(!matcher.test(this.actualValue))) {
+    if (this.maybeInvert(!matcher.test(this.actualValue))) {
       this.specError(`should${this.negation}match`, matcher.toString(), this.actualValue);
     }
   }

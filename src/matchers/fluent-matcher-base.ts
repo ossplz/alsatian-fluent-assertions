@@ -2,20 +2,15 @@ import { SpecError } from "../errors";
 import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
 import { IFluentNode } from "../types/i-fluent-node";
 import { RootNode } from "../types";
+import { Z_VERSION_ERROR } from "zlib";
 
 export class FluentMatcherBase extends RootNode {
-  //protected lastNode: FluentNode;
-  //protected currentNode: FluentNode;
   public name: string;
   public details: string;
   public actualValue: any;
   public nextValue: any;
-  public invert: boolean = false;
   public parent: IFluentNode;
-  /*protected get actualValue(): any { return (this.currentNode || <any>{}).actualValue; }
-  protected get nextValue(): any { return (this.currentNode || <any>{}).nextValue; }
-  protected get invert(): boolean { return (this.currentNode || <any>{}).invert === true; }*/
-
+  protected invert: boolean = false;
   constructor(
     actualValue: any,
     nextValue: any,
@@ -31,10 +26,10 @@ export class FluentMatcherBase extends RootNode {
   }
 
   /**
-   * Inverts assertions, as in Expect(value).not.to.equal(something).
+   * Inverts conditionals according to any current, fluent negation.
    * @param original The original boolean.
    */
-  protected checkInvert(original: boolean): boolean {
+  protected maybeInvert(original: boolean): boolean {
     if (this.invert) {
       return !original;
     }
@@ -51,6 +46,13 @@ export class FluentMatcherBase extends RootNode {
     this.details = details;
   }
 
+  /**
+   * 
+   * @param actualValue 
+   * @param nextValue 
+   * @param invert Inverts the next term.
+   * @param thatInvert Indicates that a negation of the current .that chain occurred.
+   */
   protected setFluentState<TActual, TNext>(
     actualValue: any,
     nextValue: any,
