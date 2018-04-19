@@ -13,17 +13,17 @@ export class SpecErrorTests {
     @Test()
     public constructor_buildsCorrectAssertPath() {
         let node = new RootNode("Assert", "object");
-        let child = new FluentMatcherBase({}, null);
+        let child = new FluentMatcherBase({}, null, false);
         child.parent = node;
         child.name = "equals";
         child.details = "object";
         node = child;
-        child = new FluentMatcherBase({}, null);
+        child = new FluentMatcherBase({}, null, false);
         child.parent = node;
         child.name = "that";
         child.details = undefined;        
         node = child;
-        child = new FluentMatcherBase({}, null);
+        child = new FluentMatcherBase({}, null, false);
         child.parent = node;
         child.name = "has";
         child.details = undefined;

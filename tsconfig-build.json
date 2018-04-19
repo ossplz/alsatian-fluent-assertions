@@ -19,7 +19,6 @@
 			"src/lib/types"
 		],
 		"types": [
-			"@types/node"
 		]
 	},
 	"files": [
