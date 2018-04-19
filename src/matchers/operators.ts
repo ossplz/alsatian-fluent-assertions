@@ -29,8 +29,8 @@ export class Operators<T, TNext>
   }
 
   /** @inheritDoc */
-  public get lastContextualValue(): TNext {
-    return this.nextValue;
+  public get lastContextualValue(): T {
+    return this.actualValue;
   }
 
   /** @inheritDoc */

@@ -230,13 +230,24 @@ export class SimpleMatcher<T>
   }
 
   /** @inheritDoc */
-  isTruthy(): IFluentCore<T> {
+  public isTruthy(): IFluentCore<T> {
     return this._assertBooly(!this.actualValue, this.isTruthy.name, "truthy")
   }
 
   /** @inheritDoc */
-  isFalsy(): IFluentCore<T> {
+  public isFalsy(): IFluentCore<T> {
     return this._assertBooly(!!this.actualValue, this.isFalsy.name, "falsy")
+  }
+
+  /** @inheritDoc */
+  public converted<R>(lambda: (v: T) => R): IFluentCore<R> {
+    this.setCurrentNode(this.converted.name, `${!!this.actualValue}`);
+    if (typeof lambda !== "function") {
+      throw new TypeError(`Given value is not a function, but a ${typeof lambda}.`);
+    }
+
+    let r = lambda(this.actualValue);
+    return this.setFluentState(r, null, false);
   }
 
   private _assertBooly(val: boolean, name: string, expVal: string): IFluentCore<T> {

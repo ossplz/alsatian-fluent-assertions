@@ -128,4 +128,11 @@ export interface ISimpleMatcher<T> {
    * zero, null, undefined, false, etc.
    */
   isFalsy(): IFluentCore<T>;
+
+  /**
+   * Performs the specified transformation and returns the result in the fluent context.
+   * Shorthand for `hasProperty(o => transform(o)).that.` (obviates `that`).
+   * Included for clarity.
+   */
+  converted<R>(lambda: (v: T) => R): IFluentCore<R>;
 }
