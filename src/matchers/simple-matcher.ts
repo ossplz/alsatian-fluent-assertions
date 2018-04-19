@@ -16,7 +16,7 @@ export class SimpleMatcher<T>
   constructor(
     actualValue: any,
     nextValue: any,
-    initial: boolean = false
+    initial: boolean
   ) {
     super(actualValue, nextValue, initial);
   }
@@ -163,9 +163,13 @@ export class SimpleMatcher<T>
   }): IFluentCore<T> {
     let eActualName = (expectedType || <any>{}).name;
     this.setCurrentNode(this.is.name, eActualName);
+    if (typeof expectedType !== "function") {
+      throw new TypeError(`Expected type 'function' for instance check, but got type '${typeof expectedType}'.`);
+    }
+
     if (this.maybeInvert(!(this.actualValue instanceof expectedType))) {
       let ename = eActualName || `(Unnamed type; JS type: ${typeof expectedType})`;
-      let aname = (this.actualValue.name || <any>{}).name || `(Unnamed type; JS type: ${typeof this.actualValue})`;
+      let aname = this.actualValue.name || `(Unnamed type; JS type: ${typeof this.actualValue})`;
       this.specError(`should${this.negation}be of type`, ename, aname);
     }
 

@@ -16,7 +16,7 @@ export class PropertiesMatcher<T>
   constructor(
     actualValue: any,
     nextValue: any,
-    initial: boolean = false
+    initial: boolean
   ) {
     super(actualValue, nextValue, initial);
   }
@@ -26,16 +26,16 @@ export class PropertiesMatcher<T>
   public has(keys: string[]): IFluentCore<T>;
   public has(subsetDict: SubsetPropertyAssertsDict<T>): IFluentCore<T>;
   public has(
-    something: any
+    expected: any
   ): IFluentCore<T>
   {
-    this.setCurrentNode(this.has.name, typeof(something));
-    if (something instanceof Function) {
-      return this.hasProperty(something);
-    } else if (typeof something === "string") {
-      return this.hasProperty(o => o[something]);
+    this.setCurrentNode(this.has.name, typeof(expected));
+    if (expected instanceof Function) {
+      return this.hasProperty(expected);
+    } else if (typeof expected === "string") {
+      return this.hasProperty(o => o[expected]);
     } else {
-      this._properties(this.actualValue, <any>something, []);
+      this.hasProperties(expected);
     }
 
     return this.setFluentState(this.actualValue, null, false);

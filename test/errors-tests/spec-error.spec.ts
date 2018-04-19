@@ -31,4 +31,9 @@ export class SpecErrorTests {
         
         Assert(e.message).matches(/Assert\[object\].equals\[object\].that.has/);
     }
+
+    @Test() _filterToUserFrames_noSource_IncludeIt() {
+        let result = SpecError["_filterToUserFrames"](<StackTrace.StackFrame>{ });
+        Assert(result).equals(true);
+    }
 }

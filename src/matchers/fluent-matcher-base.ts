@@ -14,7 +14,7 @@ export class FluentMatcherBase extends RootNode {
   constructor(
     actualValue: any,
     nextValue: any,
-    initial: boolean = false
+    initial: boolean
   ) {
     // not set for non-root until a fluent method is called.
     super(undefined, undefined);

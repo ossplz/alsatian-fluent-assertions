@@ -11,7 +11,7 @@ export class Operators<T, TNext>
   constructor(
     actualValue: T,
     nextValue: TNext,
-    initial: boolean = false
+    initial: boolean
   ) {
     super(actualValue, null, initial);
   }
