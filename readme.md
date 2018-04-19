@@ -21,8 +21,8 @@ Assert(obj)
   .is(SomeType)
   .has(o => o.prop)
   .that.hasMatch(/(\d+)/) // alt 'matches' that returns match result scope
-  .that.has(matchParts => +matchParts[0])
-  .that.equals(7);
+  .that.converted(parts => +parts[0])
+  .equals(7);
 
 Assert(obj).equals(expected);
 

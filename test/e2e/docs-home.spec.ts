@@ -19,8 +19,8 @@ export class DocsHome {
             .is(SomeClass)
             .has(o => o.prop)
             .that.hasMatch(/(\d+)/) // narrow scope (that) to prop, then match
-            .that.has(matchParts => +matchParts[0])
-            .that.equals(3);
+            .that.converted(parts => +parts[0])
+            .equals(3);
     }
 
     @Test()

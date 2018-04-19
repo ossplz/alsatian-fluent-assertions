@@ -15,7 +15,7 @@ import {
 
       @Test()
       public throwsWhenNotAFunction() {
-          const lambda = () => Assert("007").converted(<any>7);
-          Assert(lambda).throws().has({ message: /Given value is not a function, but a number./});
+          const lambda = () => Assert("007").converted(<((a: string) => number)><any>7);
+          Assert(lambda).throws().that.has({ message: /Given value is not a function, but a number./});
       }
   }
