@@ -11,6 +11,7 @@ import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
 export interface IPropertiesMatcher<T> {
   /**
    * Ensures the contextual value has the given key.
+   * See https://git.io/vptx2.
    * @param key The key whose existence to check.
    */
   has<K extends keyof T>(key: K): INarrowableFluentCore<T, T[K]>;
@@ -18,24 +19,28 @@ export interface IPropertiesMatcher<T> {
   /**
    * Intended to select a property from the contextual value, but may return others, at
    * the developer's discretion.
+   * See https://git.io/vptx2.
    * @param selector A lambda that returns a property from the object.
    */
   has<K extends keyof T>(selector: (o: T) => T[K]): INarrowableFluentCore<T, T[K]>;
 
   /**
    * Checks the contextual value for the existence of the given keys.
+   * See https://git.io/vptx2.
    * @param keys An array of keys.
    */
   has(keys: string[]): IFluentCore<T>;
 
   /**
-   * Ensures the expected object contains the provided subset of property definitions. See https://git.io/vAH9p
+   * Ensures the expected object contains the provided subset of property definitions.
+   * See https://git.io/vptx2.
    * @param subsetDict A subset of the original object's properties, with assertions for values.
    */
   has(subsetDict: SubsetPropertyAssertsDict<T>): IFluentCore<T>;
 
   /**
-   * Ensures the expected object contains the provided subset of property definitions. See https://git.io/vAH9p
+   * Ensures the expected object contains the provided subset of property definitions.
+   * See https://git.io/vptxi.
    * @param subsetDict A subset of the original object's properties, with assertions for values.
    */
   hasProperties(dict: SubsetPropertyAssertsDict<T>): IFluentCore<T>;
@@ -43,7 +48,8 @@ export interface IPropertiesMatcher<T> {
   /**
    * Like properties(...) but ensures compile-time errors when properties are missing from the expected
    * value definition. This helps you remember to update your tests when adding properties to your types,
-   * in the future. See https://git.io/vAHHs
+   * in the future.
+   * See https://git.io/vptxX.
    * @param dict A dictionary with all properties of T.
    */
   hasAll(
@@ -53,6 +59,7 @@ export interface IPropertiesMatcher<T> {
   /**
    * Checks for the existence of keys on the expected object, without regard for values.
    * @param expectedKeys An array of keys to existence-check.
+   * See https://git.io/vptpU.
    */
   hasKeys<K extends keyof T>(
     expectedKeys: Array<K>
@@ -60,6 +67,7 @@ export interface IPropertiesMatcher<T> {
 
   /**
    * Checks an array for the given values.
+   * See https://git.io/vptpk.
    * @param expected The values to existence-check within the expected array.
    */
   hasElements(expected: Array<any>): IFluentCore<Array<any>>;

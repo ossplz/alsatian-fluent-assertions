@@ -93,8 +93,8 @@ export class SimpleMatcher<T>
   }
 
   /** @inheritDoc */
-  public defined(): IFluentCore<T> {
-    this.setCurrentNode(this.defined.name, null);
+  public isDefined(): IFluentCore<T> {
+    this.setCurrentNode(this.isDefined.name, null);
     if (this.maybeInvert(typeof this.actualValue === "undefined")) {
       this.specError(`should${this.negation}be defined`, undefined, undefined);
     }
@@ -195,7 +195,7 @@ export class SimpleMatcher<T>
   }
 
   /** @inheritDoc */
-  public hasSingle():  T extends any[] ? INarrowableFluentCore<T, T[0]> : IFluentCore<T> {
+  public hasSingle(): T extends any[] ? INarrowableFluentCore<T, T[0]> : void {
     this.setCurrentNode(this.hasSingle.name, null);
     if (!(this.actualValue instanceof Array || typeof this.actualValue === "string")) {
       throw new TypeError("Expected type is not an array or string.");

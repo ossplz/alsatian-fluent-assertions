@@ -4,10 +4,10 @@
 [![Windows Build status][win-build-badge]][win-build-link]
 [![dependencies Status][deps-badge]][deps-link]
 [![devDependencies Status][dev-deps-badge]][dev-deps-link]
-[![PRs Welcome][prs-badge]][prs]
 [![codecov][codecov-badge]][codecov-link]
 [![Maintainability][codeclim-badge]][codeclim-link]
 [![Known Vulnerabilities][snyk-badge]][snyk-link]
+[![PRs Welcome][prs-badge]][prs]
 [![Code of Conduct][coc-badge]][coc]
 
 # Alsatian fluent assertions plugin

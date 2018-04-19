@@ -8,7 +8,7 @@ import {
 
   export class ConvertedTests {
       @Test()
-      public returnsTransformedValue(val: any[], throws: boolean) {
+      public returnsTransformedValue() {
           const result = Assert("007").converted(a => +a).lastContextualValue;
           Assert(result).equals(7);
       }

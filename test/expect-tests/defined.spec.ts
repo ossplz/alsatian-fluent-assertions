@@ -13,7 +13,7 @@ export class DefinedTests {
   public definedPasses(instance: any) {
     const assert = Assert(instance);
 
-    Assert(() => assert.defined()).not.throws();
+    Assert(() => assert.isDefined()).not.throws();
   }
 
   @TestCase(null)
@@ -23,14 +23,14 @@ export class DefinedTests {
   public notDefinedPasses(instance: any) {
     const assert = Assert(instance);
 
-    Assert(() => assert.not.defined()).throws();
+    Assert(() => assert.not.isDefined()).throws();
   }
 
   @TestCase(undefined)
   public definedFails(instance: any) {
     const assert = Assert(instance);
 
-    Assert(() => assert.defined())
+    Assert(() => assert.isDefined())
       .throws()
       .that.has({ message: /should be defined/ });
   }

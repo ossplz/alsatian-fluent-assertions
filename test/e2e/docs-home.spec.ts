@@ -47,7 +47,7 @@ export class DocsHome {
         Assert(viewModel)
             .has({
                 someProp: {
-                    itsOwnProp: p => Assert(p).defined(),
+                    itsOwnProp: p => Assert(p).isDefined(),
                     someOther: 3,
                 }
             });
