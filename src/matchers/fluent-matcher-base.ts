@@ -87,6 +87,10 @@ export class FluentMatcherBase extends RootNode {
     return mAlias.substr(Math.max(mAlias.length, 500 /* fns can get long */));
   }
 
+  protected formatShortError(e: Error) {
+    return e ? `Error '${e.name}' with message '${e.message}'.` : "[no error]";
+  }
+
   protected specError(
     message: string,
     expected: any,

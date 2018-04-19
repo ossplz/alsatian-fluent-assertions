@@ -11,7 +11,7 @@ export class Operators<T, TNext>
   constructor(
     actualValue: T,
     nextValue: TNext,
-    initial: boolean
+    initial: boolean = false
   ) {
     super(actualValue, null, initial);
   }
@@ -23,9 +23,9 @@ export class Operators<T, TNext>
   }
 
   /** @inheritDoc */
-  public maybe(yayNay: boolean): IFluentCore<T> {
-    this.setCurrentNode(this.maybe.name, `${yayNay}`);
-    return this.setFluentState(this.actualValue, this.nextValue, !yayNay);
+  public maybe(not: boolean): IFluentCore<T> {
+    this.setCurrentNode(this.maybe.name, `${not}`);
+    return this.setFluentState(this.actualValue, this.nextValue, !not);
   }
 
   /** @inheritDoc */

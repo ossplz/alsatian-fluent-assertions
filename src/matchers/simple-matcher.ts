@@ -13,6 +13,7 @@ import { PropertiesMatcher } from "./properties-matcher";
 export class SimpleMatcher<T>
     extends Operators<T, any>
     implements ISimpleMatcher<T> {
+
   constructor(
     actualValue: any,
     nextValue: any,
@@ -136,12 +137,12 @@ export class SimpleMatcher<T>
       threw = err;
     }
     if (this.maybeInvert(!threw)) {
-      this.specError(`should${this.negation}throw`, errorType, threw);
+      this.specError(`should${this.negation}throw`, (errorType || Error).name, this.formatShortError(threw));
     } else if (
       typeof errorType !== "undefined" &&
       this.maybeInvert(!(threw instanceof errorType))
     ) {
-      this.specError(`should${this.negation}throw type ${errorType} but threw ${threw}`, errorType, threw);
+      this.specError(`should${this.negation}throw type ${errorType} but threw ${threw}`, errorType.name, this.formatShortError(threw));
     }
 
     return this.setFluentState(this.actualValue, threw, false);
@@ -191,6 +192,60 @@ export class SimpleMatcher<T>
     }
 
     return this.setFluentState(this.actualValue, selected, false);
+  }
+
+  /** @inheritDoc */
+  public hasSingle():  T extends any[] ? INarrowableFluentCore<T, T[0]> : IFluentCore<T> {
+    this.setCurrentNode(this.hasSingle.name, null);
+    if (!(this.actualValue instanceof Array || typeof this.actualValue === "string")) {
+      throw new TypeError("Expected type is not an array or string.");
+    }
+    if (this.maybeInvert(this.actualValue.length !== 1)) {
+      this.specError(`should${this.negation}have single element or character`, "single element", this.actualValue);
+    }
+
+    return <any>this.setFluentState(this.actualValue, this.actualValue[0], false);
+  }
+
+  /** @inheritDoc */
+  public isEmpty(): IFluentCore<T> {
+    this.setCurrentNode(this.isEmpty.name, null);
+    if (!(typeof this.actualValue === "object" || typeof this.actualValue === "string")) {
+      throw new TypeError("Expected type is not an array, string, or object.");
+    }
+
+    const isObject = ! (typeof this.actualValue === "string" || this.actualValue instanceof Array);
+    let length: number;
+    if (isObject) {
+      length = Object.keys(this.actualValue).length;
+    } else {
+      length = this.actualValue.length;
+    }
+
+    if (this.maybeInvert(length !== 0)) {
+      this.specError(`should${this.negation}be empty`, "[an empty array, string, or object]", this.actualValue);
+    }
+    
+    return this.setFluentState(this.actualValue, null, false);
+  }
+
+  /** @inheritDoc */
+  isTruthy(): IFluentCore<T> {
+    return this._assertBooly(!this.actualValue, this.isTruthy.name, "truthy")
+  }
+
+  /** @inheritDoc */
+  isFalsy(): IFluentCore<T> {
+    return this._assertBooly(!!this.actualValue, this.isFalsy.name, "falsy")
+  }
+
+  private _assertBooly(val: boolean, name: string, expVal: string): IFluentCore<T> {
+    this.setCurrentNode(this.isFalsy.name, `${!!this.actualValue}`);
+    if (this.maybeInvert(val)) {
+      this.specError(`should${this.negation}be ${expVal}`, `[any ${expVal} value]`, this.actualValue);
+    }
+
+    return this.setFluentState(this.actualValue, null, false);
   }
 
   private _match(matcher: RegExp): void {

@@ -106,4 +106,26 @@ export interface ISimpleMatcher<T> {
    */
   hasProperty<K extends keyof T>(key: K): INarrowableFluentCore<T, T[K]>;
   hasProperty<K extends keyof T>(selector: (o: T) => T[K]): INarrowableFluentCore<T, T[K]>;
+
+  /**
+   * Checks whether the given array, object, or string is empty.
+   */
+  isEmpty(): IFluentCore<T>;
+
+  /**
+   * Asserts that the list contains one element.
+   */
+  hasSingle(): T extends any[] ? INarrowableFluentCore<T, T[0]> : IFluentCore<T>;
+
+  /**
+   * Asserts that the value can be coerced to true. Ex: non-empty strings, numbers not equal
+   * to zero, objects, true, etc.
+   */
+  isTruthy(): IFluentCore<T>;
+
+  /**
+   * Asserts that the value can be coerced to false (e.g., !value === true). Ex: empty strings,
+   * zero, null, undefined, false, etc.
+   */
+  isFalsy(): IFluentCore<T>;
 }

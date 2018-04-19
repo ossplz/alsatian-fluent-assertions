@@ -14,5 +14,5 @@ export interface IOperators<T, TNext> {
    * See: https
    * @param yayNay Boolean representing whether the next term should remain unnegated.
    */
-  maybe(yayNay: boolean): IFluentCore<T>;
+  maybe(not: boolean): IFluentCore<T>;
 }
