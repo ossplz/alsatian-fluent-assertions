@@ -2,7 +2,6 @@ import {
     Test,
     TestCase,
     Any,
-    Expect,
     MatchError
   } from "alsatian";
   import { Assert } from "../../src/assert";

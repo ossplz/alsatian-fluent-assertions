@@ -1,8 +1,7 @@
 import {
     Test,
     TestCase,
-    Any,
-    Expect
+    Any
   } from "alsatian";
   import { Assert } from "../../src/assert";
 

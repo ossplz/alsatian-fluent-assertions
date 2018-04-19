@@ -1,4 +1,4 @@
-import { Expect, MatchError } from "alsatian";
+import { MatchError } from "alsatian";
 
 import {
   IFluentCore,
