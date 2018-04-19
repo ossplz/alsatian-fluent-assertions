@@ -148,21 +148,28 @@ export class PropertiesMatcher<T>
     path: Array<string>
   ): boolean {
     if (typeof actualObject === "undefined" || actualObject === null) {
-      if (this.maybeInvert(true) && path.length > 0) {
-        let prop = path[path.length - 1];
-        let fpath = this.formatKeyPath(path);
-        let msg = `property '${prop}' should be defined at path '${fpath}'`
-        this.specError(msg, undefined, undefined);
-      }
-
-      if (path.length === 0) {
-        this.specError("expected object should be defined", undefined, undefined);
-      }
-
+      this.throwIfUnnecessarilyUndefined(actualObject, expectedObject, path);
       return false;
     }
 
     return true;
+  }
+
+  protected throwIfUnnecessarilyUndefined(
+    actualObject: any,
+    expectedObject: any,
+    path: Array<string>
+  ): void {
+    if (this.maybeInvert(true) && path.length > 0) {
+      let prop = path[path.length - 1];
+      let fpath = this.formatKeyPath(path);
+      let msg = `property '${prop}' should be defined at path '${fpath}'`
+      this.specError(msg, undefined, undefined);
+    }
+
+    if (path.length === 0) {
+      this.specError("expected object should be defined", undefined, undefined);
+    }
   }
 
   protected assertPropertyByType(
