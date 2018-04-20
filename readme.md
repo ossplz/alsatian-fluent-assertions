@@ -36,6 +36,14 @@ Assert(obj).has({
 
 Please visit our [wiki].
 
+## Installation
+
+If you already have [Alsatian] installed, just save this with your devDependencies.
+
+```bash
+npm i -sD alsatian-fluent-assertions
+```
+
 [license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [LICENSE]: https://github.com/ossplz/alsatian-fluent-assertions/blob/master/LICENSE
 [prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
