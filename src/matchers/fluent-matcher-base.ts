@@ -3,6 +3,7 @@ import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
 import { IFluentNode } from "../types/i-fluent-node";
 import { RootNode } from "../types";
 import { Z_VERSION_ERROR } from "zlib";
+import { IFluentCore } from "./i-fluent-core";
 
 export class FluentMatcherBase extends RootNode {
   public name: string;
@@ -69,6 +70,11 @@ export class FluentMatcherBase extends RootNode {
     self.nextValue = nextValue;
     self.invert = invert;
     return <any>self;
+  }
+
+  /** Wraps a value in our asserts framework. Intended for use inside property assertions. */
+  protected wrap<TActual>(actualValue: TActual): IFluentCore<TActual> {
+    return new (<any>this.constructor)(actualValue, null);
   }
 
   /**

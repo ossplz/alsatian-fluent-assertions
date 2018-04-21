@@ -6,3 +6,7 @@ export * from './eq-types';
 export * from './root-node';
 export * from './i-fluent-node';
 export * from './match-mode';
+export * from './all-property-dict';
+export * from './subset-property-dict';
+export * from './subset-property-literals-dict';
+export * from './all-properties-literals-dict';

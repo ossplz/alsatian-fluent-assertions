@@ -2,11 +2,12 @@ import { MatchError } from "alsatian";
 
 import { IPropertiesMatcher } from "./i-properties-matcher";
 import { NestedPropertiesMatchError } from "../errors/nested-properties-match-error";
-import { SubsetPropertyAssertsDict, AllPropertyAssertsDict, PropertyLambda, LocationMode, MatchMode } from "../types";
+import { SubsetPropertyAssertsDict, AllPropertyAssertsDict, PropertyLambda, LocationMode, MatchMode, SubsetPropertyDict, SubsetPropertyLiteralsDict, AllPropertyDict, AllPropertyLiteralsDict } from "../types";
 import { SimpleMatcher } from "./simple-matcher";
 import { IFluentCore } from "./i-fluent-core";
 import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
 import { FluentMatcherBase } from "./fluent-matcher-base";
+import { PropertyAssertsLambda } from "../types/property-asserts-lambda";
 
 /** @inheritDoc */
 export class PropertiesMatcher<T>
@@ -28,7 +29,11 @@ export class PropertiesMatcher<T>
   /** @inheritDoc */
   public has<T2 extends any[]>(expected: T2, location?: LocationMode, match?: MatchMode): IFluentCore<T>;
   /** @inheritDoc */
-  public has(subsetDict: SubsetPropertyAssertsDict<T>, matchMode?: MatchMode): IFluentCore<T>;
+  public has(subsetDict: SubsetPropertyDict<T>, matchMode?: MatchMode.normal): IFluentCore<T>;
+  /** @inheritDoc */
+  public has(subsetDict: SubsetPropertyLiteralsDict<T>, matchMode: MatchMode.literal): IFluentCore<T>;
+  /** @inheritDoc */
+  public has(subsetDict: SubsetPropertyAssertsDict<T>, matchMode: MatchMode.asserts): IFluentCore<T>;
   public has(
     expected: any,
     option1?: LocationMode | MatchMode,
@@ -50,19 +55,29 @@ export class PropertiesMatcher<T>
   }
 
   /** @inheritDoc */
+  public hasProperties(expected: SubsetPropertyDict<T>, matchMode?: MatchMode.normal): IFluentCore<T>;
+  /** @inheritDoc */
+  public hasProperties(expected: SubsetPropertyLiteralsDict<T>, matchMode: MatchMode.literal): IFluentCore<T>;
+  /** @inheritDoc */
+  public hasProperties(expected: SubsetPropertyAssertsDict<T>, matchMode: MatchMode.asserts): IFluentCore<T>;
   public hasProperties(
-    dict: SubsetPropertyAssertsDict<T>,
+    expected: any,
     mode: MatchMode = MatchMode.normal
   ): IFluentCore<T> {
     this.setCurrentNode(this.hasProperties.name, null);
-    this._properties(this.actualValue, dict, [], mode);
+    this._properties(this.actualValue, expected, [], mode);
 
     return this.setFluentState(this.actualValue, null, false);
   }
 
   /** @inheritDoc */
+  public hasAll(expected: AllPropertyDict<T>, matchMode?: MatchMode.normal): IFluentCore<T>;
+  /** @inheritDoc */
+  public hasAll(expected: AllPropertyLiteralsDict<T>, matchMode: MatchMode.literal): IFluentCore<T>;
+  /** @inheritDoc */
+  public hasAll(expected: AllPropertyAssertsDict<T>, matchMode: MatchMode.asserts): IFluentCore<T>;
   public hasAll(
-    expected: AllPropertyAssertsDict<T>,
+    expected: any,
     mode: MatchMode = MatchMode.normal
   ): IFluentCore<T> {
     this.setCurrentNode(this.hasAll.name, null);
@@ -224,7 +239,8 @@ export class PropertiesMatcher<T>
         k,
         expected as PropertyLambda<T[keyof T]>,
         actual,
-        curPath
+        curPath,
+        mode
       );
     } else if (expected instanceof RegExp) {
       this.assertRegExpProperty(k, expected, actual, curPath);
@@ -251,18 +267,25 @@ export class PropertiesMatcher<T>
    */
   protected assertFnProperty<TKey extends keyof T>(
     key: TKey,
-    assertion: PropertyLambda<T[TKey]>,
+    assertion: PropertyLambda<T[TKey]> | PropertyAssertsLambda<T[TKey]>,
     actual: T[TKey],
-    path: Array<string>
+    path: Array<string>,
+    matchMode: MatchMode
   ): void {
     let check = null;
     try {
-      check = assertion(actual);
+      if (matchMode === MatchMode.asserts) {
+        check = (<PropertyAssertsLambda<T[TKey]>>assertion)(this.wrap(actual));
+        if (typeof check === "boolean") {
+          this.assertFnBoolean(check, assertion, actual, path);
+        }
+      } else {
+        check = (<PropertyLambda<T[TKey]>>assertion)(actual);
+        this.assertFnBoolean(check, assertion, actual, path);
+      }
     } catch (err) {
       this.failFnError(err, path);
     }
-
-    this.assertFnBoolean(check, assertion, actual, path);
   }
 
   protected failFnError(err: Error, path: Array<string>) {
@@ -285,7 +308,7 @@ export class PropertiesMatcher<T>
 
   protected assertFnBoolean<TKey extends keyof T>(
     check: any,
-    assertion: PropertyLambda<T[TKey]>,
+    assertion: PropertyLambda<T[TKey]> | PropertyAssertsLambda<T[TKey]>,
     actual: T[TKey],
     path: Array<string>
   ) {

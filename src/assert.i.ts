@@ -13,7 +13,7 @@ import { IFluentCore, INarrowableFluentCore } from "./matchers";
 /**
  * Enables actual vs expected comparisons
  */
-export interface IAssert {
+export interface IAssert<T> {
   /**
    * Allows checking of test outcomes
    * @param actualValue - the value or function under test
@@ -21,7 +21,7 @@ export interface IAssert {
   //<T>(actualValue: FunctionSpy | ((...args: Array<any>) => any)): FunctionMatcher;
   //<T>(actualValue: PropertySpy<T>): PropertyMatcher<T>;
   <T>(actualValue: T): IFluentCore<T>;
-  <T, TNext>(actualValue: T, nextValue?: TNext, invertResult?: boolean): INarrowableFluentCore<T, TNext>;
+  <TNext>(actualValue: T, nextValue?: TNext, invertResult?: boolean): INarrowableFluentCore<T, TNext>;
 
   /**
    * Fails the test with the given message
