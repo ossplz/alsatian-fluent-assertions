@@ -2,7 +2,8 @@ import { ElementPattern } from "./element-pattern";
 import { ElementPatternType } from "./element-pattern-type";
 import { ElementQuantity } from "./element-quantity";
 
-export namespace Element {
+// TODO: here to consider this, but its not yet exposed.
+export namespace E {
     export function zeroOrMore<T>(ctorOrSat: ElementPatternType<T> = null) {
         return new ElementPattern<T>(ElementQuantity.zeroOrMore, ctorOrSat);
     }

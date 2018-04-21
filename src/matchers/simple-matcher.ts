@@ -137,7 +137,8 @@ export class SimpleMatcher<T>
       threw = err;
     }
     if (this.maybeInvert(!threw)) {
-      this.specError(`should${this.negation}throw`, (errorType || Error).name, this.formatShortError(threw));
+      const expMsg = this.maybeInvert(false) ? "[no error thrown]" : (errorType || Error).name;
+      this.specError(`should${this.negation}throw`, expMsg, this.formatShortError(threw));
     } else if (
       typeof errorType !== "undefined" &&
       this.maybeInvert(!(threw instanceof errorType))

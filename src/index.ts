@@ -16,8 +16,8 @@ export {
     EqType,
     IFluentNode,
     LocationMode,
+    MatchMode,
     NestedPropertiesMatchError,
     SpecError,
-    SubsetPropertyAssertsDict,
-    MatchMode
+    SubsetPropertyAssertsDict
 };

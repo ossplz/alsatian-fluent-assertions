@@ -2,9 +2,13 @@ import {
   Test,
   TestCase,
   Any,
-  MatchError
+  MatchError,
+  ContainerMatcher
 } from "alsatian";
 import { Assert } from "../../src/assert";
+import { E, LocationMode, MatchMode } from "../../src/types";
+import { SSL_OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG } from "constants";
+import { SpecError } from "../../src/errors";
 
 export class HasElementsTests {
   @TestCase(undefined)
@@ -13,7 +17,7 @@ export class HasElementsTests {
     const expect = Assert(value);
 
     Assert(() => expect.hasElements(["something"]))
-      .throws(MatchError)
+      .throws(SpecError)
       .that.has({ message: /not an array type/ });
   }
 
@@ -31,33 +35,25 @@ export class HasElementsTests {
     const expect = Assert(value);
 
     Assert(() => expect.hasElements(["somethingElse"]))
-      .throws(MatchError)
+      .throws(SpecError)
       .that.has({ message: /should contain all/ });
   }
 
-  /*@TestCase([1, 2, 3], [Element.oneOrMore(e => e >= 1), 3], true)
-  @TestCase([1], [Element.oneOrMore(e => e > 1), 3], false)
-  @TestCase([1, 2, 3], [Element.zeroOrMore(e => e > 1), 3], false)
-  public matchesArrayPatterns(value: any[], pattern: any[], ok: boolean) {
+  @TestCase([1, 2, 3], [2, 3], LocationMode.startsWith, true)
+  @TestCase([1, 2, 3], [2, 3], LocationMode.endsWith, false)
+  @TestCase([1, 2, 3], [2, 3], LocationMode.contains, false)
+  @TestCase([1, [2, 3], 4], [[2, 3]], LocationMode.contains, false)
+  @TestCase([1, [2, 3], 4], [2, 3], LocationMode.contains, true)
+  @TestCase([], [], LocationMode.contains, false)
+  @TestCase([1], [], LocationMode.contains, false)
+  @TestCase([], [1], LocationMode.contains, true)
+  @TestCase([1], [1], LocationMode.contains, false)
+  @TestCase([1,2], [1,2], LocationMode.contains, false)
+  @TestCase([[1,2]], [[1,2]], LocationMode.contains, false)
+  public matchesArrayPatterns(value: any[], pattern: any[], location: LocationMode, throws: boolean) {
     const expect = Assert(value);
 
-    Assert(() => expect.hasElements(pattern))
-      .maybe(ok).throws(MatchError);
+    Assert(() => expect.hasElements(pattern, location))
+      .maybe(throws).throws(SpecError);
   }
-
-  @Test()
-  public matchesComplexPattern(mode: "fromStart" | "toEnd" | "contains" ) {
-    const expect = Assert([1, 2, 3, [4, [5, 6]]])
-    .hasElements([
-      Element.range(0, 5, a => a < 4),
-      Element.zeroOrMore,
-      Element.one(e => Assert(e).hasElements([4, [5, 6]]))
-    ], mode);
-
-    Assert().contains([
-      Element.one(el => el == ((e: number) => e < 4)),
-      Element.zeroOrMore,
-
-    ], ArrayMatchMode.contains, ElementMode.interpretive);
-  }*/
 }

@@ -8,13 +8,13 @@ export interface IOperators<T, TNext> {
   not: IFluentCore<T>;
 
   /**
-   * A conditional version of 'not' designed to facilitate test parameterization.
-   * Using 'maybe(false)' is equivalent to using 'not'.
+   * A conditional negation. If the parameter is true, the next item is considered a verbatim
+   * assertion (no negation). That is, maybe(false) === not.
    * CAUTION: As with 'not', 'maybe' negations do not propagate. Only the next term is negated.
    * See https://git.io/vptQ9
-   * @param not Boolean representing whether the next term should remain unnegated.
+   * @param verbatim Boolean representing whether consider the next item verbatim (true) or negated (false).
    */
-  maybe(not: boolean): IFluentCore<T>;
+  maybe(verbatim: boolean): IFluentCore<T>;
 
   /**
    * Gets the last contextual value in the fluent chain. This begins with

@@ -23,9 +23,10 @@ export class Operators<T, TNext>
   }
 
   /** @inheritDoc */
-  public maybe(not: boolean): IFluentCore<T> {
-    this.setCurrentNode(this.maybe.name, `${not}`);
-    return this.setFluentState(this.actualValue, this.nextValue, !not);
+  public maybe(verbatim: boolean): IFluentCore<T> {
+    this.setCurrentNode(this.maybe.name, `${verbatim}`);
+    // invert = !verbatim
+    return this.setFluentState(this.actualValue, this.nextValue, !verbatim);
   }
 
   /** @inheritDoc */

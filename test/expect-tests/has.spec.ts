@@ -10,11 +10,11 @@ import {
 
       @TestCase({ prop: 3 }, (a: any) => a.prop, false)
       @TestCase({ prop: 3 }, (a: any) => a.missing, true)
-      public Has_GivenFn_DelegatesHasProperty(obj: any, selector: Function, will: boolean) {
+      public Has_GivenFn_DelegatesHasProperty(obj: any, selector: Function, throws: boolean) {
         const expect = Assert(obj);
 
         Assert(() => expect.has(selector))
-          .maybe(will).throws();
+          .maybe(throws).throws();
       }
 
       @TestCase({ prop: 3 }, (a: any) => a.prop, 3)

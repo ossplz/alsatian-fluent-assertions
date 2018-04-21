@@ -129,19 +129,153 @@ export class PropertiesMatcher<T>
   /** @inheritDoc */
   public hasElements(
     expected: Array<any>,
-    matchMode: LocationMode = LocationMode.contains,
+    location: LocationMode = LocationMode.contains,
     elMode: MatchMode = MatchMode.normal
   ): IFluentCore<T> {
-    this.setCurrentNode(this.hasElements.name, `${matchMode}, ${elMode}`);
-    if (!(this.actualValue instanceof Array)) {
+    this.setCurrentNode(this.hasElements.name, `${location}, ${elMode}`);
+    this._assertHasElements(this.actualValue, expected, location, elMode, []);
+    return this.setFluentState(this.actualValue, null, false);
+  }
+
+  protected _assertHasElements(
+    actual: Array<any>,
+    expected: Array<any>,
+    location: LocationMode = LocationMode.contains,
+    elMode: MatchMode = MatchMode.normal,
+    path: string[]
+  ) {
+    if (!(actual instanceof Array)) {
       this.specError("not an array type", expected, this.actualValue);
     }
 
-    if (!expected.every(e => this.actualValue.indexOf(e) > -1)) {
-      this.specError(`should${this.negation}contain all`, expected, this.actualValue);
+    if (expected.length > this.actualValue.length) {
+      this.specError("expected array is longer than the actual array.", expected, this.actualValue);
     }
 
-    return this.setFluentState(this.actualValue, null, false);
+    if (location == LocationMode.contains) {
+      this._assertContainsElements(expected, location, elMode, path);
+    } else if (location === LocationMode.sequentialContains) {
+      this._assertSequentialHasElements(expected, location, elMode, path);
+    } else if (location === LocationMode.startsWith) {
+      this._assertHasStartElements(expected, location, elMode, path);
+    } else {
+      this._assertHasEndElements(expected, location, elMode, path);
+    }
+  }
+
+  protected _assertHasStartElements(
+    expected: Array<any>,
+    location: LocationMode,
+    elMode: MatchMode = MatchMode.normal,
+    path: string[]
+  ): void {
+    for (let i=0; i<expected.length; i++) {
+      this._assertElement(i, this.actualValue[i], expected[i], location, elMode, path);
+    }
+  }
+
+  protected _assertContainsElements(
+    expected: Array<any>,
+    location: LocationMode,
+    elMode: MatchMode = MatchMode.normal,
+    path: string[]
+  ): void {
+      if (this.maybeInvert(!expected.every(e => this.actualValue.indexOf(e) > -1))) {
+        this.specError(`should${this.negation}contain all`, expected, this.actualValue);
+      }
+  }
+
+  protected _assertSequentialHasElements(
+    expected: Array<any>,
+    location: LocationMode,
+    elMode: MatchMode = MatchMode.normal,
+    path: string[]
+  ): void {
+    const lenDelta = this.actualValue.length - expected.length;
+    let has: boolean;
+    for (let start=0; start<lenDelta; start++) {
+      has = true;
+      for (let i=start; i<expected.length; i++) {
+        if (! this._matchElement(i, this.actualValue[i], expected[i], location, elMode, path)) {
+          has = false;
+          break;
+        }
+      }
+      if (has) {
+        break;
+      }
+    }
+
+    if (this.maybeInvert(!has)) {
+      this.specError(`should${this.negation}find sequence in array`, expected, this.actualValue);
+    }
+  }
+
+  protected _assertHasEndElements(
+    expected: Array<any>,
+    location: LocationMode,
+    elMode: MatchMode = MatchMode.normal,
+    path: string[]
+  ): void {
+    const start = this.actualValue.length - expected.length;
+    for (let i=start; i<expected.length; i++) {
+      this._assertElement(i, this.actualValue[i], expected[i], location, elMode, path);
+    }
+  }
+
+  protected _assertElement(
+    index: number,
+    actual: any,
+    expected: any,
+    location: LocationMode,
+    elMode: MatchMode = MatchMode.normal,
+    path: string[]
+  ): void {
+    if (!this._matchElement(index, actual, expected, location, elMode, path)) {
+      this.specError(`Element ${index} should${this.negation}match`, expected, this.actualValue);
+    }
+  }
+
+  protected _matchElement(index: number, actual: any, expected: any, location: LocationMode, elMode: MatchMode, path: string[]): boolean {
+    if (elMode === MatchMode.literal) {
+      return actual === expected;
+    }
+
+    return this._heuristicMatch(index, actual, expected, location, elMode, path);
+  }
+
+  protected _heuristicMatch(
+    index: number,
+    actual: any,
+    expected: any,
+    location: LocationMode,
+    elMode: MatchMode.asserts | MatchMode.normal,
+    path: string[]
+  ): boolean {
+    if (expected instanceof RegExp) {
+      if (typeof actual === "string") {
+        return expected.test(actual);
+      } else if (actual instanceof RegExp && actual.toString() === expected.toString()) {
+        return true;
+      }
+
+      return false;
+    } else if (expected instanceof Function) {
+      try {
+        if (elMode === MatchMode.asserts) {
+          return expected(this.wrap(actual));
+        }
+        return expected(actual);
+      } catch (err) {
+        return false;
+      }
+    } else if (expected instanceof Array) {
+      let newPath = path.slice(0);
+      newPath.push(""+index);
+      this._assertHasElements(actual, expected, location, elMode, path);
+    } else {
+      return actual === expected;
+    }
   }
 
   /*  public allPairs<K extends keyof T>(

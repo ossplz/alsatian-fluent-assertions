@@ -1,5 +1,6 @@
 export const enum LocationMode {
-    fromStart = "fromStart",
-    toEnd = "toEnd",
-    contains = "contains"
+    startsWith = "startsWith",
+    endsWith = "endsWith",
+    contains = "contains",
+    sequentialContains = "sequentialContains"
 }

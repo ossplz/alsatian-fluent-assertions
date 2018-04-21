@@ -4,6 +4,7 @@ import {
   Any
 } from "alsatian";
 import { Assert } from "../../src/assert";
+import { SpecError } from "../../src/errors";
 
 // See: https://github.com/Microsoft/TypeScript/issues/13965
 class MyError extends Error {
@@ -66,5 +67,16 @@ export class ThrowsTests {
     const assert = Assert(() => {});
 
     Assert(() => assert.throws()).throws();
+  }
+
+  @Test()
+  public rightErrorOutputWhenNegation() {
+    const assert = Assert(() => { throw new Error() });
+    const lambda = () => assert.not.throws(Error);
+    Assert(lambda).throws(SpecError)
+      .that.has({
+        message: /should not throw/,
+        expected: "[no error thrown]"
+      });
   }
 }

@@ -20,7 +20,7 @@ export class FluentMatcherBase extends RootNode {
     // not set for non-root until a fluent method is called.
     super(undefined, undefined);
     if (initial) {
-      this.parent = new RootNode("Assert", typeof actualValue);
+      this.parent = new RootNode("Assert", this.id(actualValue));
     }
     this.actualValue = actualValue;
     this.nextValue = nextValue;
@@ -91,6 +91,14 @@ export class FluentMatcherBase extends RootNode {
   protected getFnString(fn: (...args: Array<any>) => any): string {
     const mAlias = fn.toString();
     return mAlias.substr(Math.max(mAlias.length, 500 /* fns can get long */));
+  }
+
+  protected id(item: any): string {
+    if (item instanceof Array) {
+      return "array";
+    }
+
+    return typeof item;
   }
 
   protected formatShortError(e: Error) {
