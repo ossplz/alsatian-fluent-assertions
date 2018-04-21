@@ -2,7 +2,7 @@ import { MatchError } from "alsatian";
 
 import { IPropertiesMatcher } from "./i-properties-matcher";
 import { NestedPropertiesMatchError } from "../errors/nested-properties-match-error";
-import { SubsetPropertyAssertsDict, AllPropertyAssertsDict, ArrayMatchMode, ElementMode, PropertyLambda } from "../types";
+import { SubsetPropertyAssertsDict, AllPropertyAssertsDict, PropertyLambda, LocationMode, MatchMode } from "../types";
 import { SimpleMatcher } from "./simple-matcher";
 import { IFluentCore } from "./i-fluent-core";
 import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
@@ -23,14 +23,22 @@ export class PropertiesMatcher<T>
 
   /** @inheritDoc */
   public has<K extends keyof T>(selector: (o: T) => T[K]): INarrowableFluentCore<T, T[K]>;
-  public has(keys: string[]): IFluentCore<T>;
-  public has(subsetDict: SubsetPropertyAssertsDict<T>): IFluentCore<T>;
+  /** @inheritDoc */
+  public has<K extends keyof T>(key: K): INarrowableFluentCore<T, T[K]>;
+  /** @inheritDoc */
+  public has<T2 extends any[]>(expected: T2, location?: LocationMode, match?: MatchMode): IFluentCore<T>;
+  /** @inheritDoc */
+  public has(subsetDict: SubsetPropertyAssertsDict<T>, matchMode?: MatchMode): IFluentCore<T>;
   public has(
-    expected: any
+    expected: any,
+    option1?: LocationMode | MatchMode,
+    option2?: MatchMode
   ): IFluentCore<T>
   {
     this.setCurrentNode(this.has.name, typeof(expected));
-    if (expected instanceof Function) {
+    if (expected instanceof Array) {
+      return this.hasElements(expected, <LocationMode> option1, option2);
+    } else if (expected instanceof Function) {
       return this.hasProperty(expected);
     } else if (typeof expected === "string") {
       return this.hasProperty(o => o[expected]);
@@ -43,22 +51,48 @@ export class PropertiesMatcher<T>
 
   /** @inheritDoc */
   public hasProperties(
-    dict: SubsetPropertyAssertsDict<T>
+    dict: SubsetPropertyAssertsDict<T>,
+    mode: MatchMode = MatchMode.normal
   ): IFluentCore<T> {
     this.setCurrentNode(this.hasProperties.name, null);
-    this._properties(this.actualValue, dict, []);
+    this._properties(this.actualValue, dict, [], mode);
 
     return this.setFluentState(this.actualValue, null, false);
   }
 
   /** @inheritDoc */
   public hasAll(
-    dict: AllPropertyAssertsDict<T>
+    expected: AllPropertyAssertsDict<T>,
+    mode: MatchMode = MatchMode.normal
   ): IFluentCore<T> {
     this.setCurrentNode(this.hasAll.name, null);
-    this._properties(this.actualValue, dict, []);
+    this._properties(this.actualValue, expected, [], mode);
 
     return this.setFluentState(this.actualValue, null, false);
+  }
+
+  /** @inheritDoc */
+  public hasAsserts<T2 extends any[]>(expected: T2, location?: LocationMode): IFluentCore<T>;
+  /** @inheritDoc */
+  public hasAsserts(expected: SubsetPropertyAssertsDict<T>): IFluentCore<T>;
+  public hasAsserts(
+    expected: any,
+    location?: LocationMode
+  ): IFluentCore<T> {
+    this.setCurrentNode(this.hasAsserts.name, typeof expected);
+    if (expected instanceof Array) {
+      return this.hasElements(expected, location, MatchMode.asserts);
+    }
+
+    this._properties(this.actualValue, expected, [], MatchMode.asserts);
+    return this.setFluentState(this.actualValue, null, false);
+  }
+
+
+  /** @inheritDoc */
+  public hasAllAsserts(expected: AllPropertyAssertsDict<T>): IFluentCore<T> {
+    this.setCurrentNode(this.hasAllAsserts.name, null);
+    return this.hasAsserts(expected);
   }
 
   /** @inheritDoc */
@@ -80,9 +114,9 @@ export class PropertiesMatcher<T>
   /** @inheritDoc */
   public hasElements(
     expected: Array<any>,
-    matchMode: ArrayMatchMode = ArrayMatchMode.contains,
-    elMode: ElementMode = ElementMode.interpretive
-  ): IFluentCore<Array<any>> {
+    matchMode: LocationMode = LocationMode.contains,
+    elMode: MatchMode = MatchMode.normal
+  ): IFluentCore<T> {
     this.setCurrentNode(this.hasElements.name, `${matchMode}, ${elMode}`);
     if (!(this.actualValue instanceof Array)) {
       this.specError("not an array type", expected, this.actualValue);
@@ -119,17 +153,21 @@ export class PropertiesMatcher<T>
     return new FluentPropertiesMatcherNext(this.actualValue, this.parent);
   } */
 
+  /** Asserts that the actual has the expected properties (recursive). */
   protected _properties(
     actualObject: any,
     expectedObject: any,
-    path: Array<string>
+    path: Array<string>,
+    mode: MatchMode
   ): void {
     let notDefined = !this.assertNestedPropertiesDefined(actualObject, expectedObject, path);
-    const keys = Object.keys(expectedObject);
     if (this.maybeInvert(false) && notDefined) {
-      return;
+      // notDefined when inverted is the same as saying, "it doesn't have these properties,"
+      // so return without error.
+      return; 
     }
 
+    const keys = Object.keys(expectedObject);
     /*tslint:disable:forin*/
     for (const i in keys) {
       /*tslint:enable:forin*/
@@ -138,7 +176,7 @@ export class PropertiesMatcher<T>
       curPath.push(k);
       const expected = expectedObject[k];
       const actual = actualObject[k];
-      this.assertPropertyByType(k, actual, expected, curPath);
+      this.assertPropertyByType(k, actual, expected, curPath, mode);
     }
   }
 
@@ -155,11 +193,13 @@ export class PropertiesMatcher<T>
     return true;
   }
 
+  /** Only throws if undefined props/obj isn't warranted. */
   protected throwIfUnnecessarilyUndefined(
     actualObject: any,
     expectedObject: any,
     path: Array<string>
   ): void {
+    // throw iff an undefined property isn't simply satisfying a prior negation (e.g., not.has()).
     if (this.maybeInvert(true) && path.length > 0) {
       let prop = path[path.length - 1];
       let fpath = this.formatKeyPath(path);
@@ -176,7 +216,8 @@ export class PropertiesMatcher<T>
     k: any,
     actual: any,
     expected: any,
-    curPath: Array<string>
+    curPath: Array<string>,
+    mode: MatchMode
   ) {
     if (typeof expected === "function") {
       this.assertFnProperty(
@@ -191,7 +232,7 @@ export class PropertiesMatcher<T>
       typeof expected === "object" &&
       Object.keys(expected as any).length > 0 // not a no-op
     ) {
-      this._properties(actual, expected, curPath);
+      this._properties(actual, expected, curPath, mode);
     } else if (this.maybeInvert(expected !== actual)) {
       let fpath = this.formatKeyPath(curPath);
       let msg = `property ${k} at path '${fpath}' should${this.negation}equal`

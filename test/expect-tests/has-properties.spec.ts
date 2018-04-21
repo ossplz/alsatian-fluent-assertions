@@ -7,6 +7,7 @@ import {
   Expect
 } from "alsatian";
 import { Assert } from "../../src/assert";
+import { MatchMode } from "../../src/types";
 
 export class HasPropertiesTests {
   @TestCase(undefined)
@@ -83,7 +84,8 @@ export class HasPropertiesTests {
       ._properties as () => any).toHaveBeenCalledWith(
       actualValue,
       thing,
-      Any(Array)
+      Any(Array),
+      MatchMode.normal
     );
   }
 

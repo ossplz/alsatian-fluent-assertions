@@ -1,6 +1,8 @@
 import {
   SubsetPropertyAssertsDict,
-  AllPropertyAssertsDict
+  AllPropertyAssertsDict,
+  LocationMode,
+  MatchMode
 } from "../types";
 import { IFluentCore } from "./i-fluent-core";
 import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
@@ -25,36 +27,58 @@ export interface IPropertiesMatcher<T> {
   has<K extends keyof T>(selector: (o: T) => T[K]): INarrowableFluentCore<T, T[K]>;
 
   /**
-   * Checks the contextual value for the existence of the given keys.
+   * Shorthand for hasElements
    * See https://git.io/vptx2.
-   * @param keys An array of keys.
+   * @param expected An array of element expectations.
+   * @param location (LocationMode) How to locate values: fromStart, toEnd, contains (default).
+   * @param mode (MatchMode) How to match values: asserts, normal (default), literal.
    */
-  has(keys: string[]): IFluentCore<T>;
+  has(expected: Array<any>, location?: LocationMode, mode?: MatchMode): IFluentCore<T>;
 
   /**
    * Ensures the expected object contains the provided subset of property definitions.
    * See https://git.io/vptx2.
    * @param subsetDict A subset of the original object's properties, with assertions for values.
+   * @param mode (MatchMode) How to match values: asserts, normal (default), literal.
    */
-  has(subsetDict: SubsetPropertyAssertsDict<T>): IFluentCore<T>;
+  has(subsetDict: SubsetPropertyAssertsDict<T>, matchMode?: MatchMode): IFluentCore<T>;
 
   /**
    * Ensures the expected object contains the provided subset of property definitions.
    * See https://git.io/vptxi.
-   * @param subsetDict A subset of the original object's properties, with assertions for values.
+   * @param expected A subset of the original object's properties, with assertions for values.
+   * @param mode (MatchMode) How to match values: asserts, normal (default), literal.
    */
-  hasProperties(dict: SubsetPropertyAssertsDict<T>): IFluentCore<T>;
+  hasProperties(expected: SubsetPropertyAssertsDict<T>, mode?: MatchMode): IFluentCore<T>;
 
   /**
    * Like properties(...) but ensures compile-time errors when properties are missing from the expected
    * value definition. This helps you remember to update your tests when adding properties to your types,
    * in the future.
    * See https://git.io/vptxX.
-   * @param dict A dictionary with all properties of T.
+   * @param expected A dictionary with all properties of T.
+   * @param mode (MatchMode) How to match values: asserts, normal (default), literal.
    */
   hasAll(
-    dict: AllPropertyAssertsDict<T>
+    expected: AllPropertyAssertsDict<T>,
+    mode?: MatchMode
   ): IFluentCore<T>;
+
+  /**
+   * An alias for has/hasElements with the mode set to MatchMode.asserts.
+   */
+  hasAsserts<T2 extends any[]>(expected: T2, location?: LocationMode): IFluentCore<T>;
+
+
+  /**
+   * An alias for has/hasProperties with the mode set to MatchMode.asserts.
+   */
+  hasAsserts(expected: SubsetPropertyAssertsDict<T>): IFluentCore<T>;
+
+  /**
+   * An alias for hasAll with the mode set to MatchMode.asserts.
+   */
+  hasAllAsserts(expected: SubsetPropertyAssertsDict<T>): IFluentCore<T>;
 
   /**
    * Checks for the existence of keys on the expected object, without regard for values.
@@ -69,6 +93,8 @@ export interface IPropertiesMatcher<T> {
    * Checks an array for the given values.
    * See https://git.io/vptpk.
    * @param expected The values to existence-check within the expected array.
+   * @param location (LocationMode) How to locate values: fromStart, toEnd, contains (default).
+   * @param mode (MatchMode) How to match values: asserts, normal (default), literal.
    */
-  hasElements(expected: Array<any>): IFluentCore<Array<any>>;
+  hasElements(expected: Array<any>, location?: LocationMode, mode?: MatchMode): IFluentCore<T>;
 }

@@ -18,8 +18,8 @@ a fluent style. By contrast, the default expectations framework in Alsatian is n
 
 ```typescript
 Assert(obj)
-  .is(SomeType)
-  .has(o => o.prop)
+  .is(UserModel)
+  .has(o => o.name)
   .that.hasMatch(/(\d+)/) // alt 'matches' that returns match result scope
   .that.converted(parts => +parts[0])
   .equals(7);
@@ -27,7 +27,7 @@ Assert(obj)
 Assert(obj).equals(expected);
 
 Assert(obj).has({
-  prop: "user 007",
+  name: "agent 007",
   other: p => Assert(p).matches(...)
 });
 ```
