@@ -8,7 +8,7 @@ import {
 
   export class HasAssertsTests {
       @Test()
-      public lambdasWrappedInAssertions() {
+      public lambdasWrappedInAssertions_CompilesAndPasses() {
         const lambda = () => Assert({ prop: 3, str: "whoa 123" })
             .hasAllAsserts({
                 prop: p => p.equals(3),
