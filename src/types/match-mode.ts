@@ -1,11 +1,11 @@
-export enum MatchMode {
+export const enum MatchMode {
     /**
      * For any lambda property assertions, wrap the actual value in an Assert
      * and pass that as the first parameter. Nevertheless, if the return value
      * of the lambda is a strict (===) true or false, then true is pass,
      * false is fail. Other property assertion types function as normal.
      */
-    asserts = "Asserts",
+    asserts = "asserts",
 
     /**
      * Default. Tries to interpret assertion properties as a person might. If the property is a:
@@ -22,12 +22,12 @@ export enum MatchMode {
      * where actualValue is the current property's value, and IFluentNode is the return
      * value of an assertion (lets the framework know you didn't intend a boolean assertion).
      */
-    normal = "Normal",
+    normal = "normal",
 
     /**
      * Forces literal interpretation of property values, even if they are lambdas or
      * regular expressions. Similar to deepEquals, but will only check defined properties,
      * rather than failing when one is missing.
      */
-    literal = "Literal"
+    literal = "literal"
 }
