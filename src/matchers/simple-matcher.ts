@@ -252,7 +252,7 @@ export class SimpleMatcher<T>
   protected _deeplyEquals(
     actual: T,
     expected: T,
-    eqType: EqType.strictly | EqType.loosely = EqType.strictly
+    eqType: EqType.strictly | EqType.loosely
   ): boolean {
     return deepEqual(expected, actual, {
       strict: eqType === EqType.strictly

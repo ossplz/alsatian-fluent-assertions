@@ -10,4 +10,8 @@ export interface IElementsMatcher<T> {
    * @param mode (MatchMode) How to match values: asserts, normal (default), literal.
    */
   hasElements(expected: Array<any>, location?: LocationMode, mode?: MatchMode): IFluentCore<T>;
+
+  anySatisfy(predicate: (t: T, i?: number) => boolean): T extends any[] ? IFluentCore<T> : void;
+
+  allSatisfy(predicate: (t: T, i?: number) => boolean): T extends any[] ? IFluentCore<T> : void;
 }

@@ -31,8 +31,8 @@ export class ElementsMatcher<T>
       protected _assertHasElements(
         actual: Array<any>,
         expected: Array<any>,
-        location: LocationMode = LocationMode.contains,
-        elMode: MatchMode = MatchMode.normal,
+        location: LocationMode,
+        elMode: MatchMode,
         path: string[]
       ) {
         if (!(actual instanceof Array)) {
@@ -59,7 +59,7 @@ export class ElementsMatcher<T>
         expected: Array<any>,
         start: number,
         location: LocationMode,
-        elMode: MatchMode = MatchMode.normal,
+        elMode: MatchMode,
         path: string[]
       ): void {
         for (let i=start; i<expected.length; i++) {
@@ -70,7 +70,7 @@ export class ElementsMatcher<T>
       protected _assertContainsElements(
         expected: Array<any>,
         location: LocationMode,
-        elMode: MatchMode = MatchMode.normal,
+        elMode: MatchMode,
         path: string[]
       ): void {
           for (let i=0; i<expected.length; i++) {
@@ -82,7 +82,7 @@ export class ElementsMatcher<T>
                 }
             }
 
-            if (!found) {
+            if (this.maybeInvert(!found)) {
                 this.specError(`should${this.negation}contain expected elements (index: ${i}, value: ${expected[i]})`, expected, this.actualValue);
             }
         }            
@@ -91,26 +91,28 @@ export class ElementsMatcher<T>
       protected _assertSequentialHasElements(
         expected: Array<any>,
         location: LocationMode,
-        elMode: MatchMode = MatchMode.normal,
+        elMode: MatchMode,
         path: string[]
       ): void {
         const lenDelta = this.actualValue.length - expected.length;
-        let has: boolean;
+        let hasSeq: boolean;
+        let anyHas: boolean = false;
         for (let start=0; start<lenDelta; start++) {
-          has = true;
-          for (let i=start; i<expected.length; i++) {
-            if (! this._matchElement(this.actualValue[i], expected[i], location, elMode)) {
-              has = false;
-              break;
+          hasSeq = true;
+          for (let i=start; i<start + lenDelta; i++) {
+            if (! this._matchElement(this.actualValue[i], expected[i - start], location, elMode)) {
+                hasSeq = false;
+                break;
             }
           }
-          if (has) {
+          anyHas = anyHas || hasSeq;
+          if (anyHas && this.maybeInvert(true)) { // if we're inverted, check all
             break;
           }
         }
-    
-        if (this.maybeInvert(!has)) {
-          this.specError(`should${this.negation}find sequence in array`, expected, this.actualValue);
+
+        if (this.maybeInvert(! anyHas)) {
+            this.specError(`should${this.negation}find sequence in array`, expected, this.actualValue);
         }
       }
     
@@ -119,7 +121,7 @@ export class ElementsMatcher<T>
         actual: any,
         expected: any,
         location: LocationMode,
-        elMode: MatchMode = MatchMode.normal
+        elMode: MatchMode
       ): void {
         if (!this._matchElement(actual, expected, location, elMode)) {
           this.specError(`index: ${index} should${this.negation}match`, expected, this.actualValue);
@@ -172,17 +174,25 @@ export class ElementsMatcher<T>
         }
       }
       
-      public allSatisfy<T2 extends Array<any>>(
-        predicate: (el: T2, i?: number) => boolean
-      ): IFluentCore<T> {
+      public allSatisfy(
+        predicate: (el: T, i?: number) => boolean
+      ): T extends any[] ? IFluentCore<T> : void {
         this.setCurrentNode(this.allSatisfy.name);
-        return this.setFluentState(this.actualValue, null, false);
+        const result = this.actualValue.every(predicate);
+        if (this.maybeInvert(!result)) {
+            this.specError(`should all${this.negation}satisfy predicate`, predicate, this.actualValue);
+        }
+        return <any>this.setFluentState(this.actualValue, null, false);
       }
     
       public anySatisfy(
         predicate: (t: T) => boolean
-      ): IFluentCore<T> {
+      ): T extends any[] ? IFluentCore<T> : void {
         this.setCurrentNode(this.anySatisfy.name);
-        return this.setFluentState(this.actualValue, null, false);
+        const result = this.actualValue.some(predicate);
+        if (this.maybeInvert(!result)) {
+            this.specError(`some should${this.negation}satisfy predicate`, predicate, this.actualValue);
+        }
+        return <any>this.setFluentState(this.actualValue, null, false);
       }
 }
