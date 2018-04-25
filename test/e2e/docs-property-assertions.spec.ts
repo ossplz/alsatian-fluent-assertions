@@ -13,51 +13,35 @@ class Bob {
 export class DocsPropertyAssertions {
     @Test()
     public has_aliasing() {
-        try {
-            Assert([1,2,3]).has([1,2]);               // same as .hasKeys([1,2])
-            Assert({ myProp: 3 }).has("myProp");      // same as .hasProperty(o => o.myProp)
-            Assert({ myProp: 3 }).has(o => o.myProp); // same as .hasProperty(o => o.myProp)
-            Assert({ myProp: 3 }).has({ myProp: 3 }); // same as .hasProperties({ myProp: 3 })
-        } catch(err) {
-            Assert.fail(err);
-        }
+        Assert([1,2,3]).has([1,2]);               // same as .hasKeys([1,2])
+        Assert({ myProp: 3 }).has("myProp");      // same as .hasProperty(o => o.myProp)
+        Assert({ myProp: 3 }).has(o => o.myProp); // same as .hasProperty(o => o.myProp)
+        Assert({ myProp: 3 }).has({ myProp: 3 }); // same as .hasProperties({ myProp: 3 })
     }
 
     @Test()
     public hasProperties_differentWays() {
-        try {
-            let viewModel = new ViewModel();
-            Assert(viewModel).has({
-              username: /exampleuser\d+/,
-              email: e => Assert(e).matches(/\w+\@example.com/),
-              academicInfo: {
-                gpa: g => g > 3.5,
-                type: "Graduate Student"
-              }
-            });
-        } catch(err) {
-            Assert.fail(err);
-        }
+        let viewModel = new ViewModel();
+        Assert(viewModel).has({
+            username: /exampleuser\d+/,
+            email: e => Assert(e).matches(/\w+\@example.com/),
+            academicInfo: {
+            gpa: g => g > 3.5,
+            type: "Graduate Student"
+            }
+        });
     }
 
     @Test()
     public hasKeys_example() {
-        try {
-            let viewModel = { one: 1, two: 2, three: 3 };
-            Assert(viewModel).hasKeys(["one", "two", "three"]);
-        } catch(err) {
-            Assert.fail(err);
-        }
+        let viewModel = { one: 1, two: 2, three: 3 };
+        Assert(viewModel).hasKeys(["one", "two", "three"]);
     }
 
     @Test()
     public hasElements_example() {
-        try {
-            let results = [1,2,3,4,5,6,7,8,9];
-            Assert(results).hasElements([4,5,6]);
-        } catch(err) {
-            Assert.fail(err);
-        }
+        let results = [1,2,3,4,5,6,7,8,9];
+        Assert(results).hasElements([4,5,6]);
     }
 }
 

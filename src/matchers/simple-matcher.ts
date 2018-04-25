@@ -70,9 +70,7 @@ export class SimpleMatcher<T>
     eqType: EqType.strictly | EqType.loosely = EqType.strictly
   ): IFluentCore<T> {
     this.setCurrentNode(this.deeplyEquals.name, typeof(expected) + ", " + eqType);
-    const equal = deepEqual(expected, this.actualValue, {
-      strict: eqType === EqType.strictly
-    });
+    const equal = this._deeplyEquals(this.actualValue, expected, eqType);
     if (this.maybeInvert(!equal)) {
       this.specError(`should${this.negation}deeply equal (${eqType})`, expected, this.actualValue);
     }
@@ -249,6 +247,16 @@ export class SimpleMatcher<T>
 
     let r = lambda(this.actualValue);
     return this.setFluentState(r, null, false);
+  }
+
+  protected _deeplyEquals(
+    actual: T,
+    expected: T,
+    eqType: EqType.strictly | EqType.loosely = EqType.strictly
+  ): boolean {
+    return deepEqual(expected, actual, {
+      strict: eqType === EqType.strictly
+    });
   }
 
   private _assertBooly(val: boolean, name: string, expVal: string): IFluentCore<T> {

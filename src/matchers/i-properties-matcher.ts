@@ -144,13 +144,4 @@ export interface IPropertiesMatcher<T> {
   hasKeys<K extends keyof T>(
     expectedKeys: Array<K>
   ): IFluentCore<T>;
-
-  /**
-   * Checks an array for the given values.
-   * See https://git.io/vptpk.
-   * @param expected The values to existence-check within the expected array.
-   * @param location (LocationMode) How to locate values: fromStart, toEnd, contains (default).
-   * @param mode (MatchMode) How to match values: asserts, normal (default), literal.
-   */
-  hasElements(expected: Array<any>, location?: LocationMode, mode?: MatchMode): IFluentCore<T>;
 }

@@ -36,7 +36,7 @@ export class HasElementsTests {
 
     Assert(() => expect.hasElements(["somethingElse"]))
       .throws(SpecError)
-      .that.has({ message: /should contain all/ });
+      .that.has({ message: /should contain expected elements/ });
   }
 
   @TestCase([1, 2, 3], [2, 3], LocationMode.startsWith, true)
