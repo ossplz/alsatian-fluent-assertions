@@ -16,4 +16,30 @@ import { SpecError } from "../../src/errors";
         Assert(() => expect.allSatisfy(predicate))
           .maybe(throws).throws(SpecError);
       }
+
+      @TestCase(123)
+      @TestCase(false)
+      @TestCase(undefined)
+      @TestCase(null)
+      @TestCase({})
+      @TestCase("asdf")
+      public allSatisfy_notArrayType_throws(input: any) {
+        const expect = Assert(input);
+        Assert(() => expect.allSatisfy(() => true))
+            .throws(SpecError)
+            .that.has({ message: /should be an array type/});
+      }
+
+      @TestCase(123)
+      @TestCase(false)
+      @TestCase(undefined)
+      @TestCase(null)
+      @TestCase({})
+      @TestCase("asdf")
+      public allSatisfy__throws(input: any) {
+        const expect = Assert([]);
+        Assert(() => expect.allSatisfy(input))
+            .throws(SpecError)
+            .that.has({ message: /expectation should be a function/});
+      }
   }
