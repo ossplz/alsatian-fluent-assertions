@@ -3,6 +3,7 @@ import { IPropertiesMatcher } from "./i-properties-matcher";
 import { MatchMode, LocationMode, EqType } from "../types";
 import { IFluentCore } from "./i-fluent-core";
 import { IElementsMatcher } from "./i-elements-matcher";
+import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
 
 /** @inheritDoc */
 export class ElementsMatcher<T>
@@ -27,6 +28,70 @@ export class ElementsMatcher<T>
         this._assertHasElements(this.actualValue, expected, location, elMode, []);
         return this.setFluentState(this.actualValue, null, false);
     }
+
+    /** @inheritDoc */
+    public allSatisfy(
+        predicate: (el: T, i?: number) => boolean
+    ): T extends any[] ? IFluentCore<T> : void {
+        this.setCurrentNode(this.allSatisfy.name);
+        this._assertActualArray();
+        this._assertExpectationIsFunction(predicate);
+        const result = this.actualValue.every(predicate);
+        if (this.maybeInvert(!result)) {
+            this.specError(`should all${this.negation}satisfy predicate`, predicate, this.actualValue);
+        }
+        return <any>this.setFluentState(this.actualValue, null, false);
+    }
+
+    /** @inheritDoc */
+    public anySatisfy(
+        predicate: (t: T) => boolean
+    ): T extends any[] ? IFluentCore<T> : void {
+        this.setCurrentNode(this.anySatisfy.name);
+        this._assertActualArray();
+        this._assertExpectationIsFunction(predicate);
+        const result = this.actualValue.some(predicate);
+        if (this.maybeInvert(!result)) {
+            this.specError(`some should${this.negation}satisfy predicate`, predicate, this.actualValue);
+        }
+        return <any>this.setFluentState(this.actualValue, null, false);
+    }
+
+    hasFirst(): T extends any[] | string ? INarrowableFluentCore<T, T[0]> : void {
+        this.setCurrentNode(this.hasFirst.name);
+        let failMsg = `should${this.negation}have one or more elements`;
+        this._assertHasNth(0, this.actualValue, `[an array of length >= 1]`, failMsg);
+        return <any>this.setFluentState(this.actualValue, this.actualValue[0], false);
+    }
+
+    hasLast(): T extends any[] | string ? INarrowableFluentCore<T, T[0]> : void {
+        this.setCurrentNode(this.hasLast.name);
+        let failMsg = `should${this.negation}have one or more elements`;
+        this._assertHasNth(0, this.actualValue, `[an array of length >= 1]`, failMsg);
+        return <any>this.setFluentState(this.actualValue, this.actualValue[this.actualValue.length - 1], false);
+    }
+
+    hasNth<N extends (T extends any[] | string ? number : void)>(n: N):
+        T extends any[] | string ? (N extends number ? INarrowableFluentCore<T, T[N]> : void) : void
+    {
+        this.setCurrentNode(this.hasNth.name, `${n}`);
+        if (typeof n !== "number") {
+            this.specError("parameter should be a number", "[a number]", this.id(n));
+        }
+        let index: number = +n;
+        let failMsg = `should${this.negation}have ${index+1} or more elements`;
+        this._assertHasNth(index, this.actualValue, `[an array of length > ${index}]`, failMsg);
+        return <any>this.setFluentState(this.actualValue, this.actualValue[index], false);
+    }
+
+    _assertHasNth(n: number, actual: any, expected: string, failMsg: string): void {
+        this.setCurrentNode(this.hasFirst.name);
+        this._assertActualArrayOrString();
+        if (this.maybeInvert(this.actualValue.length <= n)) {
+            this.specError(failMsg, expected, this.actualValue);
+        }
+        return <any>this.setFluentState(this.actualValue, this.actualValue[n], false);
+    }    
 
     protected _assertHasElements(
         actual: Array<any>,
@@ -174,35 +239,15 @@ export class ElementsMatcher<T>
         }
     }
 
-    public allSatisfy(
-        predicate: (el: T, i?: number) => boolean
-    ): T extends any[] ? IFluentCore<T> : void {
-        this.setCurrentNode(this.allSatisfy.name);
-        this._assertActualArray();
-        this._assertExpectationIsFunction(predicate);
-        const result = this.actualValue.every(predicate);
-        if (this.maybeInvert(!result)) {
-            this.specError(`should all${this.negation}satisfy predicate`, predicate, this.actualValue);
-        }
-        return <any>this.setFluentState(this.actualValue, null, false);
-    }
-
-    public anySatisfy(
-        predicate: (t: T) => boolean
-    ): T extends any[] ? IFluentCore<T> : void {
-        this.setCurrentNode(this.anySatisfy.name);
-        this._assertActualArray();
-        this._assertExpectationIsFunction(predicate);
-        const result = this.actualValue.some(predicate);
-        if (this.maybeInvert(!result)) {
-            this.specError(`some should${this.negation}satisfy predicate`, predicate, this.actualValue);
-        }
-        return <any>this.setFluentState(this.actualValue, null, false);
-    }
-
     protected _assertActualArray(): void {
         if (!(this.actualValue instanceof Array)) {
             this.specError("should be an array type", "an array type", this.id(this.actualValue));
+        }
+    }
+
+    protected _assertActualArrayOrString(): void {
+        if (!(this.actualValue instanceof Array || typeof this.actualValue === "string")) {
+            this.specError("should be an array or string type", "an array type", this.id(this.actualValue));
         }
     }
 

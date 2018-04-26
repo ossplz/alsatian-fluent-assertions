@@ -138,7 +138,9 @@ export class SimpleMatcher<T>
     return this.setFluentState(this.actualValue, threw, false);
   }
 
+  /** @inheritDoc */
   public async throwsAsync(): Promise<INarrowableFluentCore<T, Error>>;
+  /** @inheritDoc */
   public async throwsAsync<TError extends Error>(errorType?: {
     new(...args: Array<any>): TError;
   }): Promise<INarrowableFluentCore<T, TError>> {

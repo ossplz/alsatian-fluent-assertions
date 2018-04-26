@@ -291,14 +291,14 @@ export class PropertiesMatcher<T>
     if (actual instanceof RegExp) {
       if (this.maybeInvert(actual.toString() !== regexp.toString())) {
         let msg = `regular expressions at path '${kpath}' should${this.negation}be equal`;
-        this.specError(msg, regexp, actual);
+        this.specError(msg, this.id(regexp), this.id(actual));
       }
     } else if (typeof actual !== "string") {
       let msg = `expected type 'string' for regexp match at path '${kpath}'`;
       this.specError(msg, "string", typeof actual);
     } else if (this.maybeInvert(!regexp.test(actual))) {
       let msg = `regular expression at path '${kpath}' should${this.negation}match`;
-      this.specError(msg, regexp, actual);
+      this.specError(msg, this.id(regexp), actual);
     }
   }
 }

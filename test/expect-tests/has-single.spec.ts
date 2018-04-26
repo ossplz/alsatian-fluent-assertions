@@ -19,9 +19,9 @@ import {
           Assert(lambda).maybe(throws).throws();
       }
 
-      @TestCase([1, 2], true, /should have single element or character/)
-      @TestCase([1], false, /should not have single element or character/)
-      @TestCase(123, false, /Expected type is not an array or string./)
+      @TestCase([1, 2], true, /should have single element/)
+      @TestCase([1], false, /should not have single element/)
+      @TestCase(123, false, /Expected type is not an array./)
       public messageAccurate(array: any[], not: boolean, msgPattern: RegExp) {
         const lambda = () => Assert(array).maybe(not).hasSingle();
         Assert(lambda).throws().that.has({ message: msgPattern });

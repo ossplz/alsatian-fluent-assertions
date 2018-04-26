@@ -96,6 +96,8 @@ export class FluentMatcherBase extends RootNode {
   protected id(item: any): string {
     if (item instanceof Array) {
       return "array";
+    } else if (item instanceof RegExp) {
+      return item.toString();
     }
 
     return typeof item;
