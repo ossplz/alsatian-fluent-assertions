@@ -96,6 +96,14 @@ export interface ISimpleMatcher<T> {
     new (...args: Array<any>): TError;
   }): INarrowableFluentCore<T, TError>;
 
+  /** Same as throws, but for asynchronous methods. */
+  throwsAsync(): Promise<INarrowableFluentCore<T, Error>>;
+
+  /** Same as throws, but for asynchronous methods. */
+  throwsAsync<TError extends Error>(errorType?: {
+    new(...args: Array<any>): TError;
+  }): Promise<INarrowableFluentCore<T, TError>>;
+
   /**
    * Checks whether the contextual value satisfies the given predicate function.
    * See https://git.io/vptxf.
