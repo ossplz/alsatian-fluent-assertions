@@ -71,8 +71,8 @@ export class ElementsMatcher<T>
         return <any>this.setFluentState(this.actualValue, this.actualValue[this.actualValue.length - 1], false);
     }
 
-    hasNth<N extends (T extends any[] | string ? number : void)>(n: N):
-        T extends any[] | string ? (N extends number ? INarrowableFluentCore<T, T[N]> : void) : void
+    hasNth<N extends number>(n: N):
+        T extends any[] | string ? INarrowableFluentCore<T, T[N]> : void
     {
         this.setCurrentNode(this.hasNth.name, `${n}`);
         if (typeof n !== "number") {

@@ -37,9 +37,9 @@ export interface IElementsMatcher<T> {
   hasLast(): T extends any[] | string ? INarrowableFluentCore<T, T[0]> : void;
 
   /**
-   * Checks whether the contextual array has an element at the given index. If so, you can
-   * narrow the assertion scope to that element with the 'that' operator.
+   * Checks whether the contextual array has an element at the given, zero-based index.
+   * If so, you can narrow the assertion scope to that element with the 'that' operator.
    */
-  hasNth<N extends (T extends any[] | string ? number : void)>(n: N):
-    T extends any[] | string ? (N extends number ? INarrowableFluentCore<T, T[N]> : void) : void;
+  hasNth<N extends number>(n: N):
+    T extends any[] | string ? INarrowableFluentCore<T, T[N]> : void;
 }
