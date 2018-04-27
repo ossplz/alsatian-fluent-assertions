@@ -1,0 +1,12 @@
+{
+  "extends": "./tslint.json",
+  "rules": {
+    "member-ordering": false,     
+    "no-construct": false,
+    "no-empty": false
+  },
+  "jsRules": {
+  },
+  "rulesDirectory": [
+  ]
+}

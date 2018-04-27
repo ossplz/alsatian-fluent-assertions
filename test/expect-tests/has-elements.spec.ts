@@ -1,10 +1,4 @@
-import {
-  Test,
-  TestCase,
-  Any,
-  MatchError,
-  ContainerMatcher
-} from "alsatian";
+import { Test, TestCase, Any, MatchError, ContainerMatcher } from "alsatian";
 import { Assert } from "../../src/assert";
 import { LocationMode, MatchMode } from "../../src/types";
 import { SSL_OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG } from "constants";
@@ -49,24 +43,67 @@ export class HasElementsTests {
   @TestCase([1], [], LocationMode.contains, false)
   @TestCase([], [1], LocationMode.contains, true)
   @TestCase([1], [1], LocationMode.contains, false)
-  @TestCase([1,2], [1,2], LocationMode.contains, false)
-  @TestCase([[1,2]], [[1,2]], LocationMode.contains, false)
-  @TestCase(["one", "two", 3, "four", "five", 6], [3, "four", "five"], LocationMode.sequentialContains, false)
-  @TestCase(["one", "two", 3, "four", "five", 6], [3, "five"], LocationMode.sequentialContains, true)
+  @TestCase([1, 2], [1, 2], LocationMode.contains, false)
+  @TestCase([[1, 2]], [[1, 2]], LocationMode.contains, false)
+  @TestCase(
+    ["one", "two", 3, "four", "five", 6],
+    [3, "four", "five"],
+    LocationMode.sequentialContains,
+    false
+  )
+  @TestCase(
+    ["one", "two", 3, "four", "five", 6],
+    [3, "five"],
+    LocationMode.sequentialContains,
+    true
+  )
   @TestCase(["one", "two"], [/two/], LocationMode.contains, false)
   @TestCase(["one", "two"], [/owt/], LocationMode.contains, true)
   @TestCase(["one", /owt/], [/owt/], LocationMode.contains, false)
   @TestCase(["one", 123], [/owt/], LocationMode.contains, true)
-  @TestCase(["one", /owt/], [(v: any) => v.toString() == "/owt/"], LocationMode.contains, false)
-  @TestCase(["one"], [(v: any) => { throw new Error(); }], LocationMode.contains, true)
-  @TestCase(["one"], [(v: IFluentCore<any>) => v.equals("one")], LocationMode.contains, false, MatchMode.asserts)
-  @TestCase(["one"], [(v: IFluentCore<any>) => v.equals("two")], LocationMode.contains, true, MatchMode.asserts)
+  @TestCase(
+    ["one", /owt/],
+    [(v: any) => v.toString() === "/owt/"],
+    LocationMode.contains,
+    false
+  )
+  @TestCase(
+    ["one"],
+    [
+      (v: any) => {
+        throw new Error();
+      }
+    ],
+    LocationMode.contains,
+    true
+  )
+  @TestCase(
+    ["one"],
+    [(v: IFluentCore<any>) => v.equals("one")],
+    LocationMode.contains,
+    false,
+    MatchMode.asserts
+  )
+  @TestCase(
+    ["one"],
+    [(v: IFluentCore<any>) => v.equals("two")],
+    LocationMode.contains,
+    true,
+    MatchMode.asserts
+  )
   @TestCase(["one"], [/one/], LocationMode.contains, false, MatchMode.normal)
   @TestCase(["one"], [/one/], LocationMode.contains, true, MatchMode.literal)
-  public matchesArrayPatterns(value: any[], pattern: any[], location: LocationMode, throws: boolean, mmode: MatchMode = MatchMode.normal) {
+  public matchesArrayPatterns(
+    value: Array<any>,
+    pattern: Array<any>,
+    location: LocationMode,
+    throws: boolean,
+    mmode: MatchMode = MatchMode.normal
+  ) {
     const expect = Assert(value);
 
     Assert(() => expect.hasElements(pattern, location, mmode))
-      .maybe(throws).throws(SpecError);
+      .maybe(throws)
+      .throws(SpecError);
   }
 }

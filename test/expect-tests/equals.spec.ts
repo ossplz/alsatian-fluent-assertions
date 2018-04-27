@@ -1,8 +1,4 @@
-import {
-  Test,
-  TestCase,
-  Any
-} from "alsatian";
+import { Test, TestCase, Any } from "alsatian";
 import { Assert } from "../../src/assert";
 import { EqType } from "../../src/types";
 

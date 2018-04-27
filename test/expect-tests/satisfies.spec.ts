@@ -1,8 +1,4 @@
-import {
-  Test,
-  TestCase,
-  Any
-} from "alsatian";
+import { Test, TestCase, Any } from "alsatian";
 import { Assert } from "../../src/assert";
 
 export class SatifiesTests {
@@ -25,7 +21,7 @@ export class SatifiesTests {
     const fn = () => Assert("123").satisfies(v);
     Assert(fn)
       .throws()
-      .that.has({ message: /should be a function/});
+      .that.has({ message: /should be a function/ });
   }
 
   @TestCase((t: any) => false)

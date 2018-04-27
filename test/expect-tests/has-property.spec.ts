@@ -1,9 +1,4 @@
-import {
-  Test,
-  TestCase,
-  Any,
-  MatchError
-} from "alsatian";
+import { Test, TestCase, Any, MatchError } from "alsatian";
 import { Assert } from "../../src/assert";
 
 export class HasPropertyTests {

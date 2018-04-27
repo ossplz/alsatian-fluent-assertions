@@ -1,8 +1,4 @@
-import {
-  Test,
-  TestCase,
-  Any
-} from "alsatian";
+import { Test, TestCase, Any } from "alsatian";
 import { Assert } from "../../src/assert";
 import { SpecError } from "../../src/errors";
 
@@ -30,17 +26,23 @@ export class IsTests {
 
   @Test()
   public mustTakeFnOrThrow() {
-    const lambda = () => Assert("").is(<any>"");
+    const lambda = () => Assert("").is("" as any);
     Assert(lambda)
       .throws<TypeError>()
-      .that.has({ message: /Expected type 'function' for instance check, but got type 'string'./ });
+      .that.has({
+        message: /Expected type 'function' for instance check, but got type 'string'./
+      });
   }
 
   @Test()
   public nullName_usesDefault() {
-    class Test { }
-    Object.defineProperty(Test, "name", { get: function() { return undefined; } });
-    const lambda = () => Assert("").is(Test);
+    class MyTestClass {}
+    Object.defineProperty(MyTestClass, "name", {
+      get() {
+        return undefined;
+      }
+    });
+    const lambda = () => Assert("").is(MyTestClass);
     Assert(lambda)
       .throws<SpecError>()
       .that.has({ expected: /\(Unnamed type; JS type: function/ });

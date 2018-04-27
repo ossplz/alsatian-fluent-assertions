@@ -1,11 +1,4 @@
-import {
-  Test,
-  TestCase,
-  Any,
-  MatchError,
-  SpyOn,
-  Expect
-} from "alsatian";
+import { Test, TestCase, Any, MatchError, SpyOn, Expect } from "alsatian";
 import { Assert } from "../../src/assert";
 import { MatchMode as MM } from "../../src/types";
 
@@ -80,8 +73,7 @@ export class HasPropertiesTests {
     SpyOn(expect, "_properties");
     expect.hasAll(thing);
     // FIXME gross:
-    Expect((expect as any)
-      ._properties as () => any).toHaveBeenCalledWith(
+    Expect((expect as any)._properties as () => any).toHaveBeenCalledWith(
       actualValue,
       thing,
       Any(Array),
@@ -102,9 +94,7 @@ export class HasPropertiesTests {
   @Test()
   public succeedsWhenRegexpsMatch() {
     const expect = Assert({ one: /123/ });
-    Assert(() => expect.has({ one: /123/ })).not.throws(
-      MatchError
-    );
+    Assert(() => expect.has({ one: /123/ })).not.throws(MatchError);
   }
 
   @Test()
@@ -118,12 +108,11 @@ export class HasPropertiesTests {
   @Test()
   public notProperties_nestedUndefinedPasses() {
     const props = {
-        first: {
-            a: "b"
-        }
+      first: {
+        a: "b"
+      }
     };
-    Assert(() => Assert({}).not.has(props))
-      .not.throws();
+    Assert(() => Assert({}).not.has(props)).not.throws();
   }
 
   @TestCase(
@@ -182,8 +171,7 @@ export class HasPropertiesTests {
   @Test()
   public nestedAssertFailsCaughtAndWrapped() {
     const expect = Assert({ one: "two" });
-    const lambda = () =>
-      expect.has({ one: o => Assert(o).equals("three") });
+    const lambda = () => expect.has({ one: o => Assert(o).equals("three") });
     Assert(lambda)
       .throws(MatchError)
       .that.has({
@@ -210,8 +198,7 @@ export class HasPropertiesTests {
   @Test()
   public nestedAssertPassNoError() {
     const expect = Assert({ one: "two" });
-    const lambda = () =>
-      expect.has({ one: o => Assert(o).equals("two") });
+    const lambda = () => expect.has({ one: o => Assert(o).equals("two") });
     Assert(lambda).not.throws(MatchError);
   }
 
@@ -224,8 +211,7 @@ export class HasPropertiesTests {
   @TestCase({ one: (o: any) => true })
   public negatedNestedAssertNoErrorFails() {
     const expect = Assert({ one: "two" });
-    const lambda = () =>
-      expect.not.has({ one: o => Assert(o).equals("two") });
+    const lambda = () => expect.not.has({ one: o => Assert(o).equals("two") });
     Assert(lambda)
       .throws(MatchError)
       .that.has({

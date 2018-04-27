@@ -1,8 +1,4 @@
-import {
-  Test,
-  TestCase,
-  Any
-} from "alsatian";
+import { Test, TestCase, Any } from "alsatian";
 import { Assert } from "../../src/assert";
 import { SpecError } from "../../src/errors";
 
@@ -48,7 +44,7 @@ export class ThrowsTests {
     const fn = () => Assert(v).throws();
     Assert(fn)
       .throws()
-      .that.has({ message: /should be a function/});
+      .that.has({ message: /should be a function/ });
   }
 
   @TestCase((t: any) => {
@@ -85,9 +81,12 @@ export class ThrowsTests {
 
   @Test()
   public rightErrorOutputWhenNegation() {
-    const assert = Assert(() => { throw new Error() });
+    const assert = Assert(() => {
+      throw new Error();
+    });
     const lambda = () => assert.not.throws(Error);
-    Assert(lambda).throws(SpecError)
+    Assert(lambda)
+      .throws(SpecError)
       .that.has({
         message: /should not throw/,
         expected: "[no error thrown]"
