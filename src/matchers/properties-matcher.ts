@@ -119,6 +119,10 @@ export class PropertiesMatcher<T>
       this.specError(`should be defined`, undefined, undefined);
     }
 
+    if (!(expectedKeys instanceof Array)) {
+      this.specError(`param expectedKeys should be an array type`, "[an array type]", this.id(expectedKeys));
+    }
+
     if (!expectedKeys.every(k => typeof this.actualValue[k] !== "undefined")) {
       this.specError(`should${this.negation}contain all`, expectedKeys, this.actualValue);
     }
@@ -133,7 +137,7 @@ export class PropertiesMatcher<T>
     path: Array<string>,
     mode: MatchMode
   ): void {
-    let notDefined = !this.assertNestedPropertiesDefined(actualObject, expectedObject, path);
+    let notDefined = !this._assertNestedPropertiesDefined(actualObject, expectedObject, path);
     if (this.maybeInvert(false) && notDefined) {
       // notDefined when inverted is the same as saying, "it doesn't have these properties,"
       // so return without error.
@@ -149,17 +153,17 @@ export class PropertiesMatcher<T>
       curPath.push(k);
       const expected = expectedObject[k];
       const actual = actualObject[k];
-      this.assertPropertyByType(k, actual, expected, curPath, mode);
+      this._assertPropertyByType(k, actual, expected, curPath, mode);
     }
   }
 
-  protected assertNestedPropertiesDefined(
+  protected _assertNestedPropertiesDefined(
     actualObject: any,
     expectedObject: any,
     path: Array<string>
   ): boolean {
     if (typeof actualObject === "undefined" || actualObject === null) {
-      this.throwIfUnnecessarilyUndefined(actualObject, expectedObject, path);
+      this._throwIfUnnecessarilyUndefined(actualObject, expectedObject, path);
       return false;
     }
 
@@ -167,7 +171,7 @@ export class PropertiesMatcher<T>
   }
 
   /** Only throws if undefined props/obj isn't warranted. */
-  protected throwIfUnnecessarilyUndefined(
+  protected _throwIfUnnecessarilyUndefined(
     actualObject: any,
     expectedObject: any,
     path: Array<string>
@@ -185,7 +189,7 @@ export class PropertiesMatcher<T>
     }
   }
 
-  protected assertPropertyByType(
+  protected _assertPropertyByType(
     k: any,
     actual: any,
     expected: any,
@@ -193,7 +197,7 @@ export class PropertiesMatcher<T>
     mode: MatchMode
   ) {
     if (typeof expected === "function") {
-      this.assertFnProperty(
+      this._assertFnProperty(
         k,
         expected as PropertyLambda<T[keyof T]>,
         actual,
@@ -201,7 +205,7 @@ export class PropertiesMatcher<T>
         mode
       );
     } else if (expected instanceof RegExp) {
-      this.assertRegExpProperty(k, expected, actual, curPath);
+      this._assertRegExpProperty(k, expected, actual, curPath);
     } else if (
       typeof expected === "object" &&
       Object.keys(expected as any).length > 0 // not a no-op
@@ -223,7 +227,7 @@ export class PropertiesMatcher<T>
    * A properties assertion function can fail by falsy return value, or by
    * throwing an error (perhaps from nested assertions).
    */
-  protected assertFnProperty<TKey extends keyof T>(
+  protected _assertFnProperty<TKey extends keyof T>(
     key: TKey,
     assertion: PropertyLambda<T[TKey]> | PropertyAssertsLambda<T[TKey]>,
     actual: T[TKey],
@@ -235,18 +239,18 @@ export class PropertiesMatcher<T>
       if (matchMode === MatchMode.asserts) {
         check = (<PropertyAssertsLambda<T[TKey]>>assertion)(this.wrap(actual));
         if (typeof check === "boolean") {
-          this.assertFnBoolean(check, assertion, actual, path);
+          this._assertFnBoolean(check, assertion, actual, path);
         }
       } else {
         check = (<PropertyLambda<T[TKey]>>assertion)(actual);
-        this.assertFnBoolean(check, assertion, actual, path);
+        this._assertFnBoolean(check, assertion, actual, path);
       }
     } catch (err) {
-      this.failFnError(err, path);
+      this._failFnError(err, path);
     }
   }
 
-  protected failFnError(err: Error, path: Array<string>) {
+  protected _failFnError(err: Error, path: Array<string>) {
     if (err instanceof MatchError) {
       throw new NestedPropertiesMatchError(
         this,
@@ -264,7 +268,7 @@ export class PropertiesMatcher<T>
     }
   }
 
-  protected assertFnBoolean<TKey extends keyof T>(
+  protected _assertFnBoolean<TKey extends keyof T>(
     check: any,
     assertion: PropertyLambda<T[TKey]> | PropertyAssertsLambda<T[TKey]>,
     actual: T[TKey],
@@ -281,7 +285,7 @@ export class PropertiesMatcher<T>
     }
   }
 
-  protected assertRegExpProperty<TProp>(
+  protected _assertRegExpProperty<TProp>(
     key: keyof T,
     regexp: RegExp,
     actual: TProp,

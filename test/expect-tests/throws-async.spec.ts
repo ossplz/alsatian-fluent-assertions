@@ -42,6 +42,21 @@ export class ThrowsAsyncTests {
             .maybe(!throws).throwsAsync();
     }
 
+    @TestCase(123)
+    @TestCase("123")
+    @TestCase(/423/)
+    @TestCase(false)
+    @TestCase(true)
+    @TestCase(undefined)
+    @TestCase(null)
+    @AsyncTest()
+    public async throws_nonLambdaShouldThrow(v: any) {
+      const fn = async () => Assert(v).throwsAsync();
+      (await Assert(fn)
+        .throwsAsync())
+        .that.has({ message: /should be a function/});
+    }
+
     @TestCase(0, true)
     @TestCase(0, false)
     @TestCase(100, true)

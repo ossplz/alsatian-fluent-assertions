@@ -14,6 +14,20 @@ export class SatifiesTests {
     Assert(() => expect.satisfies(predicate)).not.throws();
   }
 
+  @TestCase(123)
+  @TestCase("123")
+  @TestCase(/423/)
+  @TestCase(false)
+  @TestCase(true)
+  @TestCase(undefined)
+  @TestCase(null)
+  public satisfies_nonLambdaShouldThrow(v: any) {
+    const fn = () => Assert("123").satisfies(v);
+    Assert(fn)
+      .throws()
+      .that.has({ message: /should be a function/});
+  }
+
   @TestCase((t: any) => false)
   @TestCase((t: any) => "" /* falsy */)
   public shouldNotMatchPredicate(predicate: (t: any) => boolean) {

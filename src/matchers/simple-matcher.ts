@@ -103,7 +103,7 @@ export class SimpleMatcher<T>
 
   /** @inheritDoc */
   public matches(matcher: RegExp): IFluentCore<string> {
-    this.setCurrentNode(this.matches.name, matcher.toString());
+    this.setCurrentNode(this.matches.name, `${matcher}`);
     this._match(matcher);
 
     return this.setFluentState(this.actualValue, null, false);
@@ -114,8 +114,8 @@ export class SimpleMatcher<T>
   public hasMatch(
     matcher: RegExp
   ): INarrowableFluentCore<T, Array<string>> {
+    this.setCurrentNode(this.hasMatch.name, `${matcher}`);
     this._match(matcher);
-    this.setCurrentNode(this.hasMatch.name, matcher.toString());
     const matches = this.actualValue.match(matcher);
     return this.setFluentState(this.actualValue, matches, false);
 
@@ -129,6 +129,7 @@ export class SimpleMatcher<T>
   }): INarrowableFluentCore<T, TError> {
     this.setCurrentNode(this.throws.name, errorType ? typeof errorType : null);
     let threw: TError = null;
+    this._assertActualFunction();
     try {
       this.actualValue();
     } catch (err) {
@@ -145,6 +146,7 @@ export class SimpleMatcher<T>
     new(...args: Array<any>): TError;
   }): Promise<INarrowableFluentCore<T, TError>> {
     this.setCurrentNode(this.throwsAsync.name, errorType ? typeof errorType : null);
+    this._assertActualFunction();
     let threw: TError = null;
     try {
       // make sure its a promise and wait.
@@ -159,6 +161,10 @@ export class SimpleMatcher<T>
   /** @inheritDoc */
   public satisfies(predicate: (t: T) => boolean): IFluentCore<T> {
     this.setCurrentNode(this.satisfies.name, null);
+    if (!(predicate instanceof Function)) {
+      this.specError("predicate in satisfies(predicate) should be a function", "[a function]", this.id(predicate));
+    }
+
     if (this.maybeInvert(!predicate(this.actualValue))) {
       this.specError(`should${this.negation}match lambda`, this.getFnString(predicate), this.actualValue);
     }
@@ -258,6 +264,12 @@ export class SimpleMatcher<T>
     return this.setFluentState(r, null, false);
   }
 
+  private _assertActualFunction(): void {
+    if (!(this.actualValue instanceof Function)) {
+      this.specError(`should be a function`, "[a function]", this.id(this.actualValue));
+    }
+  }
+
   private _assertBooly(val: boolean, name: string, expVal: string): IFluentCore<T> {
     this.setCurrentNode(this.isFalsy.name, `${!!this.actualValue}`);
     if (this.maybeInvert(val)) {
@@ -297,6 +309,10 @@ export class SimpleMatcher<T>
   private _match(matcher: RegExp): void {
     if (typeof this.actualValue !== "string") {
       throw new MatchError("actual value type was not a string");
+    }
+
+    if (!(matcher instanceof RegExp)) {
+      this.specError(`matcher should be a regular expression`, "[a RegExp]", this.id(matcher));
     }
 
     if (this.maybeInvert(!matcher.test(this.actualValue))) {

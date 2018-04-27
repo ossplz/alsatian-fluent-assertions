@@ -84,7 +84,7 @@ export class ElementsMatcher<T>
         return <any>this.setFluentState(this.actualValue, this.actualValue[index], false);
     }
 
-    _assertHasNth(n: number, actual: any, expected: string, failMsg: string): void {
+    protected _assertHasNth(n: number, actual: any, expected: string, failMsg: string): void {
         this.setCurrentNode(this.hasFirst.name);
         this._assertActualArrayOrString();
         if (this.maybeInvert(this.actualValue.length <= n)) {

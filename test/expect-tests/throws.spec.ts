@@ -37,6 +37,20 @@ export class ThrowsTests {
     Assert(() => assert.throws(type)).not.throws();
   }
 
+  @TestCase(123)
+  @TestCase("123")
+  @TestCase(/423/)
+  @TestCase(false)
+  @TestCase(true)
+  @TestCase(undefined)
+  @TestCase(null)
+  public throws_nonLambdaShouldThrow(v: any) {
+    const fn = () => Assert(v).throws();
+    Assert(fn)
+      .throws()
+      .that.has({ message: /should be a function/});
+  }
+
   @TestCase((t: any) => {
     throw new Error();
   }, MyError)
@@ -47,7 +61,7 @@ export class ThrowsTests {
     lambda: (t: any) => void,
     type: { new (): TError }
   ) {
-    const assert = Assert(123);
+    const assert = Assert(lambda);
 
     Assert(() => assert.throws(type))
       .throws()

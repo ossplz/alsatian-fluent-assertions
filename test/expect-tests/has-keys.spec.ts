@@ -5,6 +5,7 @@ import {
   MatchError
 } from "alsatian";
 import { Assert } from "../../src/assert";
+import { SpecError } from "../../src/errors";
 
 export class HasKeysTests {
   @TestCase(undefined)
@@ -15,6 +16,16 @@ export class HasKeysTests {
     Assert(() => expect.hasKeys(["something"]))
       .throws(MatchError)
       .that.has({ message: /should be defined/ });
+  }
+
+  @TestCase({})
+  @TestCase(123)
+  @TestCase("asdfa")
+  public hasKeys_expectedNotArray_throws(v: any) {
+    const fn = () => Assert({}).hasKeys(v);
+    Assert(fn)
+      .throws(SpecError)
+      .that.has({ message: /should be an array type/ });
   }
 
   @TestCase({ something: 123 })

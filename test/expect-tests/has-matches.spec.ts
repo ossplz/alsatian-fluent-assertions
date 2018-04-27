@@ -4,6 +4,7 @@ import {
   Any
 } from "alsatian";
 import { Assert } from "../../src/assert";
+import { SpecError } from "../../src/errors";
 
 export class HasMatchesTests {
   @TestCase("123-321", /(\d+)-(\d+)/)
@@ -15,5 +16,14 @@ export class HasMatchesTests {
         .that.equals(321);
 
     Assert(lambda).not.throws();
+  }
+
+  @TestCase(undefined)
+  @TestCase(null)
+  public hasMatch__handlesFalsyParams(v: any) {
+    const fn = () => Assert("aaa").hasMatch(v);
+    Assert(fn)
+      .throws(SpecError)
+      .that.has({ message: /should be a regular expression/ });
   }
 }

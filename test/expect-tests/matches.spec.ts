@@ -5,6 +5,7 @@ import {
   MatchError
 } from "alsatian";
 import { Assert } from "../../src/assert";
+import { SpecError } from "../../src/errors";
 
 export class MatchesTests {
   @TestCase("asdfasdf", /asdf/)
@@ -23,6 +24,15 @@ export class MatchesTests {
       .that.has({
         message: /should match/
       });
+  }
+
+  @TestCase(undefined)
+  @TestCase(null)
+  public matches_handlesFalsyParams(v: any) {
+    const fn = () => Assert("aaa").matches(v);
+    Assert(fn)
+      .throws(SpecError)
+      .that.has({ message: /should be a regular expression/ });
   }
 
   @TestCase({ 123: 456 }, /asdf/)
