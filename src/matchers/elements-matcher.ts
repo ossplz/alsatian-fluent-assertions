@@ -1,13 +1,13 @@
-import { SimpleMatcher } from "./simple-matcher";
 import { IPropertiesMatcher } from "./i-properties-matcher";
 import { MatchMode, LocationMode, EqType } from "../types";
 import { IFluentCore } from "./i-fluent-core";
 import { IElementsMatcher } from "./i-elements-matcher";
 import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
+import { SimpleMatcherWithHelpers } from "./simple-matcher-with-helpers";
 
 /** @inheritDoc */
 export class ElementsMatcher<T>
-    extends SimpleMatcher<T>
+    extends SimpleMatcherWithHelpers<T>
     implements IElementsMatcher<T>
 {
     constructor(
@@ -57,21 +57,24 @@ export class ElementsMatcher<T>
         return <any>this.setFluentState(this.actualValue, null, false);
     }
 
-    hasFirst(): T extends any[] | string ? INarrowableFluentCore<T, T[0]> : void {
+    /** @inheritDoc */
+    public hasFirst(): T extends any[] | string ? INarrowableFluentCore<T, T[0]> : void {
         this.setCurrentNode(this.hasFirst.name);
         let failMsg = `should${this.negation}have one or more elements`;
         this._assertHasNth(0, this.actualValue, `[an array of length >= 1]`, failMsg);
         return <any>this.setFluentState(this.actualValue, this.actualValue[0], false);
     }
 
-    hasLast(): T extends any[] | string ? INarrowableFluentCore<T, T[0]> : void {
+    /** @inheritDoc */
+    public hasLast(): T extends any[] | string ? INarrowableFluentCore<T, T[0]> : void {
         this.setCurrentNode(this.hasLast.name);
         let failMsg = `should${this.negation}have one or more elements`;
         this._assertHasNth(0, this.actualValue, `[an array of length >= 1]`, failMsg);
         return <any>this.setFluentState(this.actualValue, this.actualValue[this.actualValue.length - 1], false);
     }
 
-    hasNth<N extends number>(n: N):
+    /** @inheritDoc */
+    public hasNth<N extends number>(n: N):
         T extends any[] | string ? INarrowableFluentCore<T, T[N]> : void
     {
         this.setCurrentNode(this.hasNth.name, `${n}`);

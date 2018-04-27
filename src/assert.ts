@@ -3,12 +3,12 @@ import { MatchError } from "alsatian";
 import {
   IFluentCore,
   INarrowableFluentCore,
-  PropertiesMatcher
+  PropertiesMatcherWithHelpers
 } from "./matchers";
 import { IAssert } from "./assert.i";
 
 function Assert<T, TNext>(value?: T): IFluentCore<T> {
-  return new PropertiesMatcher<T>(value, undefined, true);
+  return new PropertiesMatcherWithHelpers<T>(value, undefined, true);
 }
 /* istanbul ignore next */
 namespace Assert {

@@ -23,26 +23,6 @@ export class SimpleMatcher<T>
   }
 
   /** @inheritDoc */
-  public equals(
-    expected: T,
-    eqType: EqType = EqType.strictly
-  ): IFluentCore<T> {
-    this.setCurrentNode(this.equals.name, typeof (expected) + ", " + eqType);
-    switch (eqType) {
-      case EqType.strictly:
-        return this.strictlyEquals(expected);
-      case EqType.loosely:
-        return this.looselyEquals(expected);
-      case EqType.deepLoosely:
-        return this.deepLooselyEquals(expected);
-      case EqType.deepStrictly:
-        return this.deepStrictlyEquals(expected);
-      default:
-        this.specError(`Unrecognized EqType: ${eqType}.`, undefined, undefined);
-    }
-  }
-
-  /** @inheritDoc */
   public strictlyEquals(expected: T): IFluentCore<T> {
     this.setCurrentNode(this.strictlyEquals.name, typeof (expected));
     if (this.maybeInvert(this.actualValue !== expected)) {

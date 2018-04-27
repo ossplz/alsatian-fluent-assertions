@@ -6,17 +6,6 @@ import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
 /** Fluent API for simple (as opposed to property) assertions. */
 export interface ISimpleMatcher<T> {
   /**
-   * Compares the contextual value with expected value.
-   * See https://git.io/vptAT.
-   * @param expected The expected value.
-   * @param eqType The comparison type (default: EqType.strictly, ===).
-   */
-  equals(
-    expected: T,
-    eqType?: EqType
-  ): IFluentCore<T>;
-
-  /**
    * Strictly (===) compares the contextual value with the expected value.
    * Helper method for equal(...). See https://git.io/vptAT.
    * @param expected The expected value.
