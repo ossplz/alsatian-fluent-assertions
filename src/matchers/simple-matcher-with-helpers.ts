@@ -1,11 +1,11 @@
 import { SimpleMatcher } from "./simple-matcher";
-import { ISimpleMatcher } from "./i-simple-matcher";
 import { IFluentCore } from "./i-fluent-core";
 import { EqType } from "../types";
+import { ISimpleMatcherWithHelpers } from "./i-simple-matcher-with-helpers";
 
 export class SimpleMatcherWithHelpers<T>
   extends SimpleMatcher<T>
-  implements ISimpleMatcher<T> {
+  implements ISimpleMatcherWithHelpers<T> {
 
   constructor(
     actualValue: any,
