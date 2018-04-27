@@ -2,7 +2,6 @@ import { EqType } from "../types";
 import { IFluentCore } from "./i-fluent-core";
 import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
 
-
 /** Fluent API for simple (as opposed to property) assertions. */
 export interface ISimpleMatcher<T> {
   /**
@@ -62,9 +61,7 @@ export interface ISimpleMatcher<T> {
    * See https://git.io/vptxm.
    * @param matcher The regular expression to match the contextual value.
    */
-  hasMatch(
-    matcher: RegExp
-  ): INarrowableFluentCore<T, Array<string>>;
+  hasMatch(matcher: RegExp): INarrowableFluentCore<T, Array<string>>;
 
   /**
    * Validates whether the contextual value (a lambda function) throws an Error.
@@ -77,7 +74,7 @@ export interface ISimpleMatcher<T> {
    * Validates whether the contextual value (a lambda function) throws an Error of the given type.
    * Narrows the fluent context to the error object.
    * See https://git.io/vptxL.
-   * 
+   *
    * @param errorType The type of the Error.
    * @returns A fluent context for the error object.
    */
@@ -90,7 +87,7 @@ export interface ISimpleMatcher<T> {
 
   /** Same as throws, but for asynchronous methods. */
   throwsAsync<TError extends Error>(errorType?: {
-    new(...args: Array<any>): TError;
+    new (...args: Array<any>): TError;
   }): Promise<INarrowableFluentCore<T, TError>>;
 
   /**
@@ -98,18 +95,14 @@ export interface ISimpleMatcher<T> {
    * See https://git.io/vptxf.
    * @param predicate A function returning a boolean value.
    */
-  satisfies(
-    predicate: (t: T) => boolean
-  ): IFluentCore<T>;
+  satisfies(predicate: (t: T) => boolean): IFluentCore<T>;
 
   /**
    * Checks whether the contextual value is an instance of the given type.
    * See https://git.io/vptAr.
    * @param expectedType The expected type.
    */
-  is(expectedType: {
-    new (...args: any[]): any;
-  }): IFluentCore<T>;
+  is(expectedType: { new (...args: Array<any>): any }): IFluentCore<T>;
 
   /**
    * Ensures the expected object contains the given property.
@@ -118,18 +111,20 @@ export interface ISimpleMatcher<T> {
    */
   hasProperty<K extends keyof T>(key: K): INarrowableFluentCore<T, T[K]>;
 
- /**
+  /**
    * Ensures the expected object contains the given property.
    * See https://git.io/vptAY.
    * @param selector A selector method that returns a property value.
    */
-  hasProperty<K extends keyof T>(selector: (o: T) => T[K]): INarrowableFluentCore<T, T[K]>;
+  hasProperty<K extends keyof T>(
+    selector: (o: T) => T[K]
+  ): INarrowableFluentCore<T, T[K]>;
 
   /**
    * Asserts that the list contains one element. Throws if not a list.
    * See https://git.io/vptAR.
    */
-  hasSingle(): T extends any[] ? INarrowableFluentCore<T, T[0]> : void;
+  hasSingle(): T extends Array<any> ? INarrowableFluentCore<T, T[0]> : void;
 
   /**
    * Checks whether the given array, object, or string is empty.

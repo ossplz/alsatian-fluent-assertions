@@ -9,8 +9,5 @@ export interface ISimpleMatcherWithHelpers<T> extends ISimpleMatcher<T> {
    * @param expected The expected value.
    * @param eqType The comparison type (default: EqType.strictly, ===).
    */
-  equals(
-    expected: T,
-    eqType?: EqType
-  ): IFluentCore<T>;
+  equals(expected: T, eqType?: EqType): IFluentCore<T>;
 }

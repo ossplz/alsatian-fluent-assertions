@@ -10,7 +10,7 @@
     "ordered-imports": false,
     "object-literal-sort-keys": false,
     "prettier": true,
-    "valid-jsdoc": true
+    "valid-jsdoc": { "prefer": { "return": "returns" } }
   },
   "jsRules": {
   },

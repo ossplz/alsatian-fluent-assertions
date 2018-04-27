@@ -10,7 +10,10 @@ import { IAssert } from "./assert.i";
 function Assert<T, TNext>(value?: T): IFluentCore<T> {
   return new PropertiesMatcherWithHelpers<T>(value, undefined, true);
 }
-/* istanbul ignore next */
+
+// human: lol, this is to ensure fail exists statically on Assert ^^^.
+// istanbul ignore next
+// tslint:disable-next-line
 namespace Assert {
   export function fail(message: string) {
     throw new MatchError(message);

@@ -21,7 +21,10 @@ export interface IPropertiesMatcher<T> {
    * @param expected A subset of the original object's properties, with assertions for values.
    * @param mode (MatchMode) How to match values: asserts, normal (default), literal.
    */
-  hasProperties(expected: SubsetPropertyAssertsDict<T>, mode?: MatchMode): IFluentCore<T>;
+  hasProperties(
+    expected: SubsetPropertyAssertsDict<T>,
+    mode?: MatchMode
+  ): IFluentCore<T>;
 
   /**
    * Ensures the expected object contains the provided subset of property definitions.
@@ -29,7 +32,10 @@ export interface IPropertiesMatcher<T> {
    * @param expected A subset of the original object's properties, with assertions for values.
    * @param mode (MatchMode) How to match values: asserts, normal (default), literal.
    */
-  hasProperties(expected: SubsetPropertyDict<T>, matchMode?: MatchMode.normal): IFluentCore<T>;
+  hasProperties(
+    expected: SubsetPropertyDict<T>,
+    matchMode?: MatchMode.normal
+  ): IFluentCore<T>;
 
   /**
    * Ensures the expected object contains the provided subset of property definitions.
@@ -37,7 +43,20 @@ export interface IPropertiesMatcher<T> {
    * @param expected A subset of the original object's properties, with assertions for values.
    * @param mode (MatchMode) How to match values: asserts, normal (default), literal.
    */
-  hasProperties(expected: SubsetPropertyLiteralsDict<T>, matchMode: MatchMode.literal): IFluentCore<T>;
+  hasProperties(
+    expected: SubsetPropertyLiteralsDict<T>,
+    matchMode: MatchMode.literal
+  ): IFluentCore<T>;
+
+  /**
+   * Like properties(...) but ensures compile-time errors when properties are missing from the expected
+   * value definition. This helps you remember to update your tests when adding properties to your types,
+   * in the future.
+   * See https://git.io/vptxX.
+   * @param expected A dictionary with all properties of T.
+   * @param mode (MatchMode) How to match values: asserts, normal (default), literal.
+   */
+  hasAll(expected: AllPropertyAssertsDict<T>, mode?: MatchMode): IFluentCore<T>;
 
   /**
    * Like properties(...) but ensures compile-time errors when properties are missing from the expected
@@ -48,8 +67,8 @@ export interface IPropertiesMatcher<T> {
    * @param mode (MatchMode) How to match values: asserts, normal (default), literal.
    */
   hasAll(
-    expected: AllPropertyAssertsDict<T>,
-    mode?: MatchMode
+    expected: AllPropertyDict<T>,
+    matchMode?: MatchMode.normal
   ): IFluentCore<T>;
 
   /**
@@ -60,24 +79,15 @@ export interface IPropertiesMatcher<T> {
    * @param expected A dictionary with all properties of T.
    * @param mode (MatchMode) How to match values: asserts, normal (default), literal.
    */
-  hasAll(expected: AllPropertyDict<T>, matchMode?: MatchMode.normal): IFluentCore<T>;
-
-  /**
-   * Like properties(...) but ensures compile-time errors when properties are missing from the expected
-   * value definition. This helps you remember to update your tests when adding properties to your types,
-   * in the future.
-   * See https://git.io/vptxX.
-   * @param expected A dictionary with all properties of T.
-   * @param mode (MatchMode) How to match values: asserts, normal (default), literal.
-   */
-  hasAll(expected: AllPropertyLiteralsDict<T>, matchMode: MatchMode.literal): IFluentCore<T>;
+  hasAll(
+    expected: AllPropertyLiteralsDict<T>,
+    matchMode: MatchMode.literal
+  ): IFluentCore<T>;
 
   /**
    * Checks for the existence of keys on the expected object, without regard for values.
    * @param expectedKeys An array of keys to existence-check.
    * See https://git.io/vptpU.
    */
-  hasKeys<K extends keyof T>(
-    expectedKeys: Array<K>
-  ): IFluentCore<T>;
+  hasKeys<K extends keyof T>(expectedKeys: Array<K>): IFluentCore<T>;
 }

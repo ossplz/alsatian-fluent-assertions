@@ -18,10 +18,14 @@ export interface IAssert<T> {
    * Allows checking of test outcomes
    * @param actualValue - the value or function under test
    */
-  //<T>(actualValue: FunctionSpy | ((...args: Array<any>) => any)): FunctionMatcher;
-  //<T>(actualValue: PropertySpy<T>): PropertyMatcher<T>;
-  <T>(actualValue: T): IFluentCore<T>;
-  <TNext>(actualValue: T, nextValue?: TNext, invertResult?: boolean): INarrowableFluentCore<T, TNext>;
+  // <T>(actualValue: FunctionSpy | ((...args: Array<any>) => any)): FunctionMatcher;
+  // <T>(actualValue: PropertySpy<T>): PropertyMatcher<T>;
+  (actualValue: T): IFluentCore<T>;
+  <TNext>(
+    actualValue: T,
+    nextValue?: TNext,
+    invertResult?: boolean
+  ): INarrowableFluentCore<T, TNext>;
 
   /**
    * Fails the test with the given message
