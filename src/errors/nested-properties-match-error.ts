@@ -11,13 +11,12 @@ export class NestedPropertiesMatchError extends SpecError {
     /* istanbul ignore next */
     super(
       node,
-      `Property at path '${path}': ${message}.` +
+      `Property at path '${path}' ${message}:` +
         "\n" +
-        error.message +
-        "\n" +
-        error.stack,
-      undefined,
-      undefined
+        error.message,
+      error["expected"],
+      error["actual"],
+      true
     );
   }
 }

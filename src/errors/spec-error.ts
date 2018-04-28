@@ -23,7 +23,12 @@ export class SpecError extends BaseError {
     );
   }
 
-  constructor(node: IFluentNode, _message: string, expected: any, actual: any) {
+  constructor(node: IFluentNode, _message: string, expected: any, actual: any, nested: boolean = false) {
+    if (nested) {
+      super(_message, expected, actual);
+      return;
+    }
+    
     let frames = StackTrace.getSync();
     frames = frames.filter(SpecError._filterToUserFrames);
     const line = (frames[1] || ({} as any)).lineNumber;

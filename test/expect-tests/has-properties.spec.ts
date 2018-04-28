@@ -175,7 +175,7 @@ export class HasPropertiesTests {
     Assert(lambda)
       .throws(MatchError)
       .that.has({
-        message: /Property at path '\$.one': failed nested expectation./
+        message: /Property at path '\$.one' failed nested expectation./
       });
   }
 
@@ -191,7 +191,7 @@ export class HasPropertiesTests {
     Assert(lambda)
       .throws(MatchError)
       .that.has({
-        message: /Property at path '\$.one': threw unexpected error./
+        message: /Property at path '\$.one' threw unexpected error./
       });
   }
 
@@ -233,7 +233,7 @@ export class HasPropertiesTests {
     Assert(lambda)
       .throws(MatchError)
       .that.has({
-        message: /Property at path '\$.three.four.1': failed nested expectation./
+        message: /Property at path '\$.three.four.1' failed nested expectation./
       });
   }
 
