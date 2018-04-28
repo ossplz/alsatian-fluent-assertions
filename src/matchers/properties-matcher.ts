@@ -87,7 +87,7 @@ export class PropertiesMatcher<T> extends ElementsMatcher<T>
       );
     }
 
-    if (!expectedKeys.every(k => typeof this.actualValue[k] !== "undefined")) {
+    if (this.maybeInvert(!expectedKeys.every(k => typeof this.actualValue[k] !== "undefined"))) {
       this.specError(
         `should${this.negation}contain all`,
         expectedKeys,

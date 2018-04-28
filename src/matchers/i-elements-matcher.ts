@@ -21,7 +21,7 @@ export interface IElementsMatcher<T> {
    * @param predicate A boolean lambda expression that returns true when the test should pass.
    */
   anySatisfy(
-    predicate: (t: T, i?: number) => boolean
+    predicate: (e: any, i?: number) => boolean
   ): T extends Array<any> ? IFluentCore<T> : void;
 
   /**
@@ -29,7 +29,7 @@ export interface IElementsMatcher<T> {
    * @param predicate A boolean lambda expression that returns true when the test should pass.
    */
   allSatisfy(
-    predicate: (t: T, i?: number) => boolean
+    predicate: (e: any, i?: number) => boolean
   ): T extends Array<any> ? IFluentCore<T> : void;
 
   /**

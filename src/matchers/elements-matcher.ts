@@ -22,7 +22,7 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
   }
 
   public allSatisfy(
-    predicate: (el: T, i?: number) => boolean
+    predicate: (el: any, i?: number) => boolean
   ): T extends Array<any> ? IFluentCore<T> : void {
     this.setCurrentNode(this.allSatisfy.name);
     this._assertActualArray();
@@ -39,7 +39,7 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
   }
 
   public anySatisfy(
-    predicate: (t: T) => boolean
+    predicate: (e: any) => boolean
   ): T extends Array<any> ? IFluentCore<T> : void {
     this.setCurrentNode(this.anySatisfy.name);
     this._assertActualArray();
@@ -156,10 +156,13 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
       this._assertSequentialHasElements(expected, location, elMode, path);
     } else if (location === LocationMode.startsWith) {
       this._assertHasElementsFrom(expected, 0, location, elMode, path);
-    } else {
+    } else if (location === LocationMode.endsWith) {
       const start = this.actualValue.length - expected.length;
       this._assertHasElementsFrom(expected, start, location, elMode, path);
+    } else {
+      this.specError(`Unknown LocationMode: ${location}.`, "[A known LocationMode]", `${location}`);
     }
+
   }
 
   protected _assertHasElementsFrom(
@@ -254,7 +257,7 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
     location: LocationMode,
     elMode: MatchMode
   ): void {
-    if (!this._matchElement(actual, expected, location, elMode)) {
+    if (this.maybeInvert(!this._matchElement(actual, expected, location, elMode))) {
       this.specError(
         `index: ${index} should${this.negation}match`,
         expected,

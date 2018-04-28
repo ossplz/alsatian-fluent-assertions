@@ -106,4 +106,12 @@ export class HasElementsTests {
       .maybe(throws)
       .throws(SpecError);
   }
+
+  @Test()
+  public hasElements_InvalidLocationModeThrows() {
+    const fn = () => Assert([]).hasElements([], <LocationMode>"bogus");
+    Assert(fn)
+      .throws(SpecError)
+      .that.has({ message: /Unknown LocationMode: bogus/});
+  }
 }
