@@ -107,18 +107,11 @@ export interface ISimpleMatcher<T> {
   /**
    * Ensures the expected object contains the given property.
    * See https://git.io/vptAY.
-   * @param key The key whose existence to check.
+   * @param expected Either a key or a property selector method.
    */
-  hasProperty<K extends keyof T>(key: K): INarrowableFluentCore<T, T[K]>;
-
-  /**
-   * Ensures the expected object contains the given property.
-   * See https://git.io/vptAY.
-   * @param selector A selector method that returns a property value.
-   */
-  hasProperty<K extends keyof T>(
-    selector: (o: T) => T[K]
-  ): INarrowableFluentCore<T, T[K]>;
+  hasProperty<R>(
+    expected: ((o: T) => R) | keyof T
+  ): INarrowableFluentCore<T, R>;
 
   /**
    * Asserts that the list contains one element. Throws if not a list.

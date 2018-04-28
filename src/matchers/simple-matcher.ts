@@ -168,22 +168,30 @@ export class SimpleMatcher<T> extends Operators<T, any>
     return this.generateFluentState(this.actualValue, null, false);
   }
 
-  public hasProperty<R>(selector: (t: T) => R): INarrowableFluentCore<T, R> {
+  public hasProperty<R>(
+    expected: ((o: T) => R) | keyof T
+  ): INarrowableFluentCore<T, R>
+  {
     this.setCurrentNode(this.hasProperty.name, null);
-    if (!(selector instanceof Function)) {
+    let selected: any;
+    let expDescrip: string;
+    if (typeof expected === "string") {
+      selected = this.actualValue[expected];
+      expDescrip = expected;
+    } else if (expected instanceof Function) {
+      selected = expected(this.actualValue);
+      expDescrip = this.getFnString(expected);
+    } else {
       this.specError(
-        "Provided selector was not a function.",
+        "Provided selector was not a function or key type.",
         undefined,
         undefined
       );
     }
 
-    const selected = selector(this.actualValue);
-
     if (this.maybeInvert(typeof selected === "undefined")) {
-      const fn = this.getFnString(selector);
-      this.specError(`should${this.negation}be defined`, fn, this.actualValue);
-    }
+      this.specError(`should${this.negation}be defined`, expDescrip, this.actualValue);
+    }  
 
     return this.generateFluentState(this.actualValue, selected, false);
   }
