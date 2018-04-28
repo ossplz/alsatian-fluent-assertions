@@ -1,6 +1,6 @@
 {
   "name": "alsatian-fluent-assertions",
-  "version": "1.0.0-alpha005",
+  "version": "1.0.0-alpha006",
   "description": "Fluent assertions extension to Alsatian xUnit framework.",
   "author": "Chris Dibbern <=> (=)",
   "contributors": [
@@ -65,13 +65,15 @@
     "prettier": "^1.12.1",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
-    "stacktrace-js": "^2.0.0",
     "tap-bark": "^1.0.0",
     "ts-node": "^6.0.0",
     "tslint": "^5.9.1",
     "tslint-eslint-rules": "^5.1.0",
     "tslint-plugin-prettier": "^1.3.0",
     "typescript": "^2.8.1"
+  },
+  "dependencies": {
+    "stacktrace-js": "^2.0.0"
   },
   "nyc": {
     "include": [
