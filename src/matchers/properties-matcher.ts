@@ -158,7 +158,7 @@ export class PropertiesMatcher<T> extends ElementsMatcher<T>
       this.specError(msg, undefined, undefined);
     }
 
-    if (path.length === 0) {
+    if (this.maybeInvert(true) && path.length === 0) {
       this.specError("expected object should be defined", undefined, undefined);
     }
   }
