@@ -18,10 +18,14 @@ export class IsTests {
   @TestCase(3, Number)
   @TestCase("asdf", String)
   @TestCase(new Error(), String)
+  @TestCase(null, String)
+  @TestCase(undefined, String)
   public instancesOfFails(instance: any, type: { new (): any }) {
     const assert = Assert(instance);
 
-    Assert(() => assert.is(type)).throws();
+    Assert(() => assert.is(type))
+      .throws(SpecError)
+      .that.has({ message: /should be of type/});
   }
 
   @Test()

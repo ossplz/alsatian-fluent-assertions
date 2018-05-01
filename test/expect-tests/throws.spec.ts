@@ -92,4 +92,16 @@ export class ThrowsTests {
         expected: "[no error thrown]"
       });
   }
+
+  @Test()
+  public namelessErrorThrowsHaveSensibleMessages() {
+    const fn = () => { throw { message: "look, ma, no name property!" }; }
+    const testFn = () => Assert(fn).throws(Error);
+    Assert(testFn)
+      .throws(SpecError)
+      .that.has({
+        message: /\[Unnamed error\]/,
+        actual: /look, ma, no name property!/
+      });
+  }
 }

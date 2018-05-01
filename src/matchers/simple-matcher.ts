@@ -160,7 +160,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
       const ename =
         eActualName || `(Unnamed type; JS type: ${typeof expectedType})`;
       const aname =
-        this.actualValue.name ||
+        (this.actualValue || {}).name ||
         `(Unnamed type; JS type: ${typeof this.actualValue})`;
       this.specError(`should${this.negation}be of type`, ename, aname);
     }
@@ -304,7 +304,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
 
   protected _assertThrew<TError extends Error>(
     threw: Error,
-    errorType?: {
+    errorType: {
       new (...args: Array<any>): TError;
     }
   ) {
@@ -318,12 +318,14 @@ export class SimpleMatcher<T> extends Operators<T, any>
         this.formatShortError(threw)
       );
     } else if (
-      typeof errorType !== "undefined" &&
+      errorType &&
       this.maybeInvert(!(threw instanceof errorType))
     ) {
+      const tname = errorType.name;
+      const taname = threw.name || "[Unnamed error]";
       this.specError(
-        `should${this.negation}throw type ${errorType} but threw ${threw}`,
-        errorType.name,
+        `should${this.negation}throw type ${tname} but threw ${taname}`,
+        tname,
         this.formatShortError(threw)
       );
     }
