@@ -12,7 +12,8 @@ export interface IOperators<T, TNext> {
 
   /**
    * Negates the next item in the fluent chain. E.g., Assert(val).not.equals(3).
-   * Note: does not negate the entire chain. See https://git.io/vptQP
+   * Note: does not negate the entire chain. See https://git.io/vptQP.
+   * See also the 'maybe' conditional negation operator (https://git.io/vptQ9).
    */
   not: IFluentCore<T>;
 
@@ -20,7 +21,7 @@ export interface IOperators<T, TNext> {
    * A conditional negation. If the parameter is true, the next item is considered a verbatim
    * assertion (no negation). That is, maybe(false) === not.
    * CAUTION: As with 'not', 'maybe' negations do not propagate. Only the next term is negated.
-   * See https://git.io/vptQ9
+   * See https://git.io/vptQ9. See also the parameterless 'not' operator.
    * @param verbatim Boolean representing whether consider the next item verbatim (true) or negated (false).
    */
   maybe(verbatim: boolean): IFluentCore<T>;
