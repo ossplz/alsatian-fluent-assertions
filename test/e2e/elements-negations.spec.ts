@@ -33,7 +33,7 @@ export class PropertyNegationsIntegrationTests {
   @TestCase(null, [], LocationMode.sequentialContains)
   @TestCase(undefined, [1, 2], LocationMode.sequentialContains)
   @TestCase(null, [1,2], LocationMode.sequentialContains)
-  public notHasElements_fails(a: any[], b: any[], mode: LocationMode, ptrn?: RegExp) {
+  public notHasElements_canFail(a: any[], b: any[], mode: LocationMode, ptrn?: RegExp) {
     const fn = () => Assert(a).not.hasElements(b, mode);
     Assert(fn)
         .throws(SpecError)
@@ -47,9 +47,29 @@ export class PropertyNegationsIntegrationTests {
       Assert(a).not.allSatisfy(b);
   }
 
+  @TestCase([1,2,3], (x: any) => x > 0)
   @Test()
-  public notAnySatisfy() {
-      Assert([1,2,3]).not.anySatisfy(x => x > 5);
+  public notAllSatisfy_canFail(a: any, b: (e: any) => boolean) {
+      const fn = () => Assert(a).not.allSatisfy(b);
+      Assert(fn)
+        .throws(SpecError)
+        .that.has({ message: /should all not satisfy/})
+  }
+
+  @TestCase([1,2,3], (x: any) => x >= 4)
+  @TestCase([], (x: any) => x >= 4)
+  @Test()
+  public notAnySatisfy(a: any, b: (e: any) => boolean) {
+      Assert(a).not.anySatisfy(b);
+  }
+
+  @TestCase([1,2,3], (x: any) => x >= 2)
+  @Test()
+  public notAnySatisfy_canFail(a: any, b: (e: any) => boolean) {
+      const fn = () => Assert(a).not.anySatisfy(b);
+      Assert(fn)
+        .throws(SpecError)
+        .that.has({ message: /some should not satisfy/ });
   }
 
   @Test()
@@ -59,7 +79,35 @@ export class PropertyNegationsIntegrationTests {
   }
 
   @Test()
-  public notHasNth() {
-      Assert([]).not.hasNth(5);
+  public notHasFirst_canFail() {
+      const fn = () => Assert([1]).not.hasFirst();
+      Assert(fn)
+        .throws(SpecError)
+        .that.has({ message: /should not have one or more elements/ });
   }
+
+  @Test()
+  public notHasLast_canFail() {
+      const fn = () => Assert([1]).not.hasLast();
+      Assert(fn)
+        .throws(SpecError)
+        .that.has({ message: /should not have one or more elements/ });
+  }
+
+  @TestCase([], 5)
+  @TestCase([1,2,3,4], 4)
+  @Test()
+  public notHasNth(arr: any[], n: number) {
+      Assert(arr).not.hasNth(n);
+  }
+
+  @TestCase([], -1)
+  @TestCase([1,2,3,4,5], 4)
+  @Test()
+  public notHasNth_canFail(arr: any[], n: number) {
+      const fn = () => Assert(arr).not.hasNth(n);
+      Assert(fn)
+        .throws(SpecError)
+        .that.has({ message: RegExp(`should not have ${n+1} or more elements`)});
+  }  
 }

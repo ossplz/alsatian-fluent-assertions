@@ -2,7 +2,7 @@ import { Test, TestCase, Any, Expect } from "alsatian";
 import { Assert } from "../../src/assert";
 
 class SomeClass {
-  public prop: string = "   3   ";
+  public prop: string = "   7   ";
 }
 
 export class DocsHome {
@@ -14,7 +14,18 @@ export class DocsHome {
       .has(o => o.prop)
       .that.hasMatch(/(\d+)/) // narrow scope (that) to prop, then match
       .that.converted(parts => +parts[0])
-      .equals(3);
+      .equals(7);
+  }
+
+  @Test()
+  public secondFluentExample_CanPass() {
+    const viewModel = new SomeClass();
+    Assert(viewModel)
+      .is(SomeClass)
+      .has({
+        prop: p => Assert(p).hasMatch(/\d+/)
+          .that.converted(Number).equals(7)
+      });
   }
 
   @Test()
@@ -24,7 +35,7 @@ export class DocsHome {
     Expect(viewModel.prop).toBeDefined();
     const regex = /(\d+)/;
     Expect(viewModel.prop).toMatch(regex);
-    Expect(viewModel.prop.match(regex)[0]).toEqual(3);
+    Expect(viewModel.prop.match(regex)[0]).toEqual(7);
   }
 
   @Test()
