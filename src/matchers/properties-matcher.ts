@@ -75,8 +75,12 @@ export class PropertiesMatcher<T> extends ElementsMatcher<T>
 
   public hasKeys<K extends keyof T>(expectedKeys: Array<K>): IFluentCore<T> {
     this.setCurrentNode(this.hasKeys.name, null);
-    if (!this.actualValue) {
-      this.specError(`should be defined`, undefined, undefined);
+    if (this.actualValue === null || typeof(this.actualValue) === "undefined") {
+      if (this.maybeInvert(true)) {
+        this.specError(`should be defined`, undefined, undefined);
+      }
+
+      return; // .not.hasKeys always passes when target not defined.
     }
 
     if (!(expectedKeys instanceof Array)) {

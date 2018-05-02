@@ -142,7 +142,7 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
       this.specError("not an array type", expected, this.actualValue);
     }
 
-    if (expected.length > this.actualValue.length) {
+    if (this.maybeInvert(true) && expected.length > this.actualValue.length) {
       this.specError(
         "expected array is longer than the actual array.",
         expected,
@@ -219,7 +219,7 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
     const lenDelta = this.actualValue.length - expected.length;
     let hasSeq: boolean;
     let anyHas: boolean = false;
-    for (let start = 0; start < lenDelta; start++) {
+    for (let start = 0; start <= lenDelta; start++) {
       hasSeq = true;
       for (let i = start; i < start + lenDelta; i++) {
         if (
@@ -259,7 +259,7 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
   ): void {
     if (this.maybeInvert(!this._matchElement(actual, expected, location, elMode))) {
       this.specError(
-        `index: ${index} should${this.negation}match`,
+        `element at index ${index} should${this.negation}match asserted element`,
         expected,
         this.actualValue
       );

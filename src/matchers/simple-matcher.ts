@@ -175,6 +175,14 @@ export class SimpleMatcher<T> extends Operators<T, any>
     this.setCurrentNode(this.hasProperty.name, null);
     let selected: any;
     let expDescrip: string;
+    if (this.actualValue === null || typeof(this.actualValue) === "undefined") {
+      if (this.maybeInvert(true)) {
+        this.specError(`should be defined`, undefined, undefined);
+      }
+
+      return; // .not.hasKeys always passes when target not defined.
+    }
+
     if (typeof expected === "string") {
       selected = this.actualValue[expected];
       expDescrip = expected;

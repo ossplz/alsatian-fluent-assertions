@@ -50,9 +50,14 @@ export class SimpleNegationsIntegrationTests {
       Assert(new Date()).not.is(MyTestClass);
   }
 
+  @TestCase({})
+  @TestCase({ two: 321 })
+  @TestCase(undefined)
+  @TestCase(null)
+  @TestCase(3)
   @Test()
-  public notHasProperty() {
-      Assert({}).not.hasProperty(o => (<any>o).prop);
+  public notHasProperty(obj: any) {
+      Assert(obj).not.hasProperty(o => (<any>o).prop);
   }
 
   @Test()
