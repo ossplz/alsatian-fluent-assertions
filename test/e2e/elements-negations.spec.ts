@@ -40,9 +40,11 @@ export class PropertyNegationsIntegrationTests {
         .that.has({ message: ptrn || /not an array type/ });
   }
 
+  @TestCase([1,2,3], (x: any) => x >= 2)
+  @TestCase([], (x: any) => x >= 2)
   @Test()
-  public notAllSatisfy() {
-      Assert([1,2,3]).not.allSatisfy(x => x >= 2);
+  public notAllSatisfy(a: any, b: (e: any) => boolean) {
+      Assert(a).not.allSatisfy(b);
   }
 
   @Test()

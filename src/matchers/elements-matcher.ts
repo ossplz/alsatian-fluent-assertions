@@ -28,6 +28,9 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
     this._assertActualArray();
     this._assertExpectationIsFunction(predicate);
     const result = this.actualValue.every(predicate);
+    if (this.maybeInvert(false) && this.actualValue.length === 0) {
+      return; // .not.allSatisfy for empty array is always true.
+    }
     if (this.maybeInvert(!result)) {
       this.specError(
         `should all${this.negation}satisfy predicate`,
