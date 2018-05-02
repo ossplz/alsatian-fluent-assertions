@@ -1,5 +1,6 @@
 import { Test, TestCase, Any, MatchError, AsyncTest } from "alsatian";
 import { Assert } from "../../src/assert";
+import { SpecError } from "../../src/errors";
 
 export class SimpleNegationsIntegrationTests {
   @Test()

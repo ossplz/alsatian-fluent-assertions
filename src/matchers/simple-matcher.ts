@@ -177,10 +177,10 @@ export class SimpleMatcher<T> extends Operators<T, any>
     let expDescrip: string;
     if (this.actualValue === null || typeof(this.actualValue) === "undefined") {
       if (this.maybeInvert(true)) {
-        this.specError(`should be defined`, undefined, undefined);
+        this.specError(`should be defined`, "[an object]", "undefined");
       }
 
-      return; // .not.hasKeys always passes when target not defined.
+      return; // .not.hasProperty always passes when target not defined.
     }
 
     if (typeof expected === "string") {
@@ -198,7 +198,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
     }
 
     if (this.maybeInvert(typeof selected === "undefined")) {
-      this.specError(`should${this.negation}be defined`, expDescrip, this.actualValue);
+      this.specError(`property should${this.negation}be defined`, expDescrip, this.actualValue);
     }  
 
     return this.generateFluentState(this.actualValue, selected, false);

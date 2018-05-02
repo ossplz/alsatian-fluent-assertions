@@ -1,5 +1,6 @@
 import { Test, TestCase, Any, MatchError } from "alsatian";
 import { Assert } from "../../src/assert";
+import { SpecError } from "../../src/errors";
 
 export class HasPropertyTests {
   @Test()
@@ -26,7 +27,7 @@ export class HasPropertyTests {
     const fn = () => Assert(dict).hasProperty(key);
     Assert(fn)
       .throws()
-      .that.has({ message: /should be defined/ });
+      .that.has({ message: /property should be defined/ });
   }
 
   @Test()
@@ -36,7 +37,17 @@ export class HasPropertyTests {
     Assert(lambda)
       .throws<MatchError>()
       .that.hasProperty(p => p.message)
-      .that.matches(/should be defined/);
+      .that.matches(/property should be defined/);
+  }
+
+  @TestCase(undefined)
+  @TestCase(null)
+  @Test()
+  public hasProperty_failsWhenActualNullUndefined(obj: any) {
+      const fn = () => Assert(obj).hasProperty(o => (<any>o).prop);
+      Assert(fn)
+        .throws(SpecError)
+        .that.has({ message: /should be defined/ });
   }
 
   @Test()
