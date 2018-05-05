@@ -20,16 +20,19 @@ a fluent style. By contrast, the default expectations framework in Alsatian is n
 Assert(obj)
   .is(UserModel)
   .has(o => o.name)
-  .that.hasMatch(/(\d+)/) // alt 'matches' that returns match result scope
+  .that.hasMatch(/\d+/) // alt 'matches' that returns match result scope
   .that.converted(parts => +parts[0])
   .equals(7);
 
 Assert(obj).equals(expected);
 
-Assert(obj).has({
-  name: "agent 007",
-  other: p => Assert(p).matches(...)
-});
+Assert(obj)
+  .hasAsserts({ // same as .has/.hasProperties with MatchMode.Asserts
+    name: "agent 007",
+    address: a => a.is(Redacted),
+    phone: /\+44\d{10}/,
+    deploy: a => a.is(Function).not.throws()
+  });
 ```
 
 ## Basic Usage & Documentation
