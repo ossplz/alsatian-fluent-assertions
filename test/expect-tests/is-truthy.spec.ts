@@ -30,4 +30,10 @@ export class IsTruthyTests {
       .throws()
       .that.has({ message: msgPattern });
   }
+
+  @Test()
+  public providesRightAssertName() {
+    const fn = () => Assert(false).isTruthy();
+    Assert(fn).throws().that.has({ message: /Assert(.*)\.isTruthy/ })
+  }
 }

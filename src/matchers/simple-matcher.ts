@@ -298,7 +298,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
     name: string,
     expVal: string
   ): IFluentCore<T> {
-    this.setCurrentNode(this.isFalsy.name, `${!!this.actualValue}`);
+    this.setCurrentNode(name, `${!!this.actualValue}`);
     if (this.maybeInvert(val)) {
       this.specError(
         `should${this.negation}be ${expVal}`,

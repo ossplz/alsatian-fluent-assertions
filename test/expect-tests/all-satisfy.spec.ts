@@ -10,9 +10,9 @@ export class AllSatisfyTests {
     predicate: (a: any) => boolean,
     throws: boolean
   ) {
-    const expect = Assert(array);
+    const fn = () => Assert(array).allSatisfy(predicate);
 
-    Assert(() => expect.allSatisfy(predicate))
+    Assert(fn)
       .maybe(throws)
       .throws(SpecError);
   }
