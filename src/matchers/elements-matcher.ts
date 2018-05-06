@@ -28,7 +28,7 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
     this._assertActualArray();
     this._assertExpectationIsFunction(predicate);
     const result = this.actualValue.every(predicate);
-    if (this.maybeInvert(false) && this.actualValue.length === 0) {
+    if (this.invertedContext && this.actualValue.length === 0) {
       return; // .not.allSatisfy for empty array is always true.
     }
     if (this.maybeInvert(!result)) {
@@ -145,7 +145,7 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
       this.specError("not an array type", expected, this.actualValue);
     }
 
-    if (this.maybeInvert(true) && expected.length > this.actualValue.length) {
+    if (!this.invertedContext && expected.length > this.actualValue.length) {
       this.specError(
         "expected array is longer than the actual array.",
         expected,
@@ -238,8 +238,8 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
         }
       }
       anyHas = anyHas || hasSeq;
-      if (anyHas && this.maybeInvert(true)) {
-        // if we're inverted, check all
+      if (anyHas && !this.invertedContext) {
+        // if we're inverted, check all, else break.
         break;
       }
     }

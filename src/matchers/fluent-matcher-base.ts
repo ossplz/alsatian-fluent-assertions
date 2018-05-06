@@ -36,6 +36,13 @@ export class FluentMatcherBase extends RootNode {
     return original;
   }
 
+  /** Whether the current fluent scope is inverted, e.g., .not.something. */
+  protected get invertedContext(): boolean { return this.invert; }
+
+  protected nullOrUndefined(val: any): boolean {
+    return val === null || typeof val === "undefined";
+  }
+
   protected setCurrentNode(name: string, details?: string): void {
     if (this.name) {
       return;

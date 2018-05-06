@@ -175,9 +175,9 @@ export class SimpleMatcher<T> extends Operators<T, any>
     this.setCurrentNode(this.hasProperty.name, null);
     let selected: any;
     let expDescrip: string;
-    if (this.actualValue === null || typeof(this.actualValue) === "undefined") {
-      if (this.maybeInvert(true)) {
-        this.specError(`should be defined`, "[an object]", "undefined");
+    if (this.nullOrUndefined(this.actualValue)) {
+      if ( !this.invertedContext ) {
+        this.specError(`contextual value should be defined`, "[an object]", "undefined");
       }
 
       return; // .not.hasProperty always passes when target not defined.
@@ -317,7 +317,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
     }
   ) {
     if (this.maybeInvert(!threw)) {
-      const expMsg = this.maybeInvert(false)
+      const expMsg = this.invertedContext
         ? "[no error thrown]"
         : (errorType || Error).name;
       this.specError(

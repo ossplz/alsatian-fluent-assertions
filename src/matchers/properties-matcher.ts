@@ -75,8 +75,8 @@ export class PropertiesMatcher<T> extends ElementsMatcher<T>
 
   public hasKeys<K extends keyof T>(expectedKeys: Array<K>): IFluentCore<T> {
     this.setCurrentNode(this.hasKeys.name, null);
-    if (this.actualValue === null || typeof(this.actualValue) === "undefined") {
-      if (this.maybeInvert(true)) {
+    if (this.nullOrUndefined(this.actualValue)) {
+      if ( !this.invertedContext ) {
         this.specError(`should be defined`, undefined, undefined);
       }
 
@@ -115,7 +115,7 @@ export class PropertiesMatcher<T> extends ElementsMatcher<T>
       expectedObject,
       path
     );
-    if (this.maybeInvert(false) && notDefined) {
+    if (this.invertedContext && notDefined) {
       // notDefined when inverted is the same as saying, "it doesn't have these properties,"
       // so return without error.
       return;
@@ -139,7 +139,7 @@ export class PropertiesMatcher<T> extends ElementsMatcher<T>
     expectedObject: any,
     path: Array<string>
   ): boolean {
-    if (typeof actualObject === "undefined" || actualObject === null) {
+    if (this.nullOrUndefined(actualObject)) {
       this._throwIfUnnecessarilyUndefined(actualObject, expectedObject, path);
       return false;
     }
@@ -155,15 +155,15 @@ export class PropertiesMatcher<T> extends ElementsMatcher<T>
     path: Array<string>
   ): void {
     // throw iff an undefined property isn't simply satisfying a prior negation (e.g., not.has()).
-    if (this.maybeInvert(true) && path.length > 0) {
-      const prop = path[path.length - 1];
-      const fpath = this.formatKeyPath(path);
-      const msg = `property '${prop}' should be defined at path '${fpath}'`;
-      this.specError(msg, undefined, undefined);
-    }
-
-    if (this.maybeInvert(true) && path.length === 0) {
-      this.specError("expected object should be defined", undefined, undefined);
+    if (!this.invertedContext) {
+      if (path.length > 0) {
+        const prop = path[path.length - 1];
+        const fpath = this.formatKeyPath(path);
+        const msg = `property '${prop}' should be defined at path '${fpath}'`;
+        this.specError(msg, undefined, undefined);
+      } else {
+        this.specError("expected object should be defined", undefined, undefined);        
+      }
     }
   }
 
