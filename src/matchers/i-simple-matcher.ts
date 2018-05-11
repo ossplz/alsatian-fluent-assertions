@@ -50,6 +50,12 @@ export interface ISimpleMatcher<T> {
   isDefined(): IFluentCore<T>;
 
   /**
+   * Checks whether the value is null.
+   * See
+   */
+  isNull(): IFluentCore<T>;
+
+  /**
    * Validates the contextual, string value with a regular expression. Preserves context.
    * See https://git.io/vptxm.
    * @param matcher The regular expression to validate the contextual value.

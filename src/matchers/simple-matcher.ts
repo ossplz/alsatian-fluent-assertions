@@ -68,7 +68,16 @@ export class SimpleMatcher<T> extends Operators<T, any>
   public isDefined(): IFluentCore<T> {
     this.setCurrentNode(this.isDefined.name, null);
     if (this.maybeInvert(typeof this.actualValue === "undefined")) {
-      this.specError(`should${this.negation}be defined`, undefined, undefined);
+      this.specError(`should${this.negation}be defined`, `${this.negation}defined`, `${this.actualValue}`);
+    }
+
+    return this.generateFluentState(this.actualValue, null, false);
+  }
+
+  public isNull(): IFluentCore<T> {
+    this.setCurrentNode(this.isNull.name, null);
+    if (this.maybeInvert(this.actualValue !== null)) {
+      this.specError(`should${this.negation}be null`, `${this.negation}null`, `${this.actualValue}`);
     }
 
     return this.generateFluentState(this.actualValue, null, false);
