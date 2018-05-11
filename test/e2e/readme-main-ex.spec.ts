@@ -1,26 +1,40 @@
 import { Test, TestCase, Any } from "alsatian";
 import { Assert } from "../../src/assert";
 
-class SomeType {
-  public prop: string = "user 007";
+class UserModel {
+  public name: string = "agent 007";
   public other: string = "...";
+  public address: Redacted = new Redacted();
+  public phone: string = "+441234567890";
+  public deploy(): void {
+
+  }
+}
+
+class Redacted {
+
 }
 
 export class ReadmeMainExample {
   @Test()
   public MainExample_CanPass() {
-    const obj = new SomeType();
+    const obj = new UserModel();
     const expected = obj;
     Assert(obj)
-      .is(SomeType)
-      .has(o => o.prop)
-      .that.hasMatch(/(\d+)/) // alt 'matches' that returns match result scope
-      .that.has(matchParts => +matchParts[0])
-      .that.equals(7);
-    Assert(obj).equals(expected);
-    Assert(obj).has({
-      prop: "user 007",
-      other: p => Assert(p).matches(/.../)
+      .is(UserModel)
+      .has(o => o.name)
+      .that.hasMatch(/\d+/) // alt 'matches' that returns match result scope
+      .that.converted(parts => +parts[0])
+      .equals(7);
+  
+  Assert(obj).equals(expected);
+  
+  Assert(obj)
+    .hasAsserts({ // same as .has/.hasProperties with MatchMode.Asserts
+      name: "agent 007",
+      address: a => a.is(Redacted),
+      phone: /\+44\d{10}/,
+      deploy: a => a.is(Function).not.throws()
     });
   }
 }

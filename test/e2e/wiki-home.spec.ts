@@ -5,15 +5,15 @@ class SomeClass {
   public prop: string = "   7   ";
 }
 
-export class DocsHome {
+export class WikiHome {
   @Test()
-  public firstFluentExample_CanPass() {
+  public firstFluentExample_canPass() {
     const viewModel = new SomeClass();
     Assert(viewModel)
       .is(SomeClass)
       .has(o => o.prop)
-      .that.hasMatch(/(\d+)/) // narrow scope (that) to prop, then match
-      .that.converted(parts => +parts[0])
+      .that.hasMatch(/\d+/) // narrow scope (that) to prop, then match
+      .that.converted(Number)
       .equals(7);
   }
 
@@ -49,11 +49,12 @@ export class DocsHome {
   @Test()
   public forkingScopes_Num2_CanPass() {
     const viewModel = { someProp: { itsOwnProp: 123, someOther: 3 } };
-    Assert(viewModel).has({
-      someProp: {
-        itsOwnProp: p => Assert(p).isDefined(),
-        someOther: 3
-      }
-    });
+    Assert(viewModel)
+      .hasAsserts({
+        someProp: {
+          itsOwnProp: a => a.isDefined(),
+          someOther: 3
+        }
+      });
   }
 }

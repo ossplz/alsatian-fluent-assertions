@@ -281,7 +281,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
   }
 
   public converted<R>(lambda: (v: T) => R): IFluentCore<R> {
-    this.setCurrentNode(this.converted.name, `${!!this.actualValue}`);
+    this.setCurrentNode(this.converted.name);
     if (typeof lambda !== "function") {
       throw new TypeError(
         `Given value is not a function, but a ${typeof lambda}.`

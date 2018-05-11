@@ -6,7 +6,7 @@ class Bob {
 }
 
 // Helps ensure our docs stay accurate.
-export class DocsPropertyAssertions {
+export class WikiPropertyAssertions {
   @Test()
   public has_aliasing() {
     Assert([1, 2, 3]).has([1, 2]); // same as .hasKeys([1,2])
