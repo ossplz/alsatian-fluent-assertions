@@ -37,7 +37,7 @@ export class AnySatisfyTests {
   @TestCase(null)
   @TestCase({})
   @TestCase("asdf")
-  public anySatisfy__throws(input: any) {
+  public anySatisfy_predicateNotAFunc_throws(input: any) {
     const expect = Assert([]);
     Assert(() => expect.anySatisfy(input))
       .throws(SpecError)
