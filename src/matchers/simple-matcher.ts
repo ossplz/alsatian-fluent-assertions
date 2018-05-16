@@ -8,11 +8,36 @@ import { IFluentCore } from "./i-fluent-core";
 import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
 import { Operators } from "./operators";
 import { PropertiesMatcher } from "./properties-matcher";
+import { At } from "../types";
 
 export class SimpleMatcher<T> extends Operators<T, any>
   implements ISimpleMatcher<T> {
   constructor(actualValue: any, nextValue: any, initial: boolean) {
     super(actualValue, nextValue, initial);
+  }
+
+  public contains(expected: T, location: At = At.anywhere): IFluentCore<T> {
+    this.setCurrentNode(this.contains.name, location);
+    if (typeof expected !== "string") {
+      throw new TypeError(`Parameter 'expected' should be a string, but was a ${typeof expected}.`);
+    }
+    if (typeof this.actualValue !== "string") {
+      throw new TypeError(`Actual value should be a string, but was a ${typeof this.actualValue}.`);
+    }
+    if ([At.anywhere, At.end, At.start].indexOf(location) < 0) {
+      throw new TypeError(`Location parameter should be one of: start, end, anywhere. Was: ${location}.`);
+    }
+
+    const ops: any = {
+      "start": (pos: number) => pos !== 0,
+      "end": (pos: number) => pos !== this.actualValue.length - expected.length,
+      "anywhere": (pos: number) => pos < 0
+    };
+    const pos = this.actualValue.indexOf(expected);
+    if (this.maybeInvert(ops[location](pos))) {
+      this.specError(`should${this.negation}contain string (position: ${location})`, expected, this.actualValue);
+    }
+    return this.generateFluentState(this.actualValue, null, false);    
   }
 
   public strictlyEquals(expected: T): IFluentCore<T> {

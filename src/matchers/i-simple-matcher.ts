@@ -1,9 +1,17 @@
-import { EqType } from "../types";
+import { EqType, At } from "../types";
 import { IFluentCore } from "./i-fluent-core";
 import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
 
 /** Fluent API for simple (as opposed to property) assertions. */
 export interface ISimpleMatcher<T> {
+  /**
+   * Looks for the expected substring within the string.
+   * For array contains, see hasElements.
+   * @param expected substring to match
+   * @param location where to look for the substring (default: At.anywhere)
+   */
+  contains(expected: T, location?: At): IFluentCore<T>;
+
   /**
    * Strictly (===) compares the contextual value with the expected value.
    * Helper method for equal(...). See https://git.io/vptAT.
