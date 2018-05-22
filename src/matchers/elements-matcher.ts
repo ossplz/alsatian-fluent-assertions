@@ -72,7 +72,8 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
     return this.generateFluentState(
       this.actualValue,
       this.actualValue[0],
-      false
+      false,
+      true
     ) as any;
   }
 
@@ -90,7 +91,8 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
     return this.generateFluentState(
       this.actualValue,
       this.actualValue[this.actualValue.length - 1],
-      false
+      false,
+      true
     ) as any;
   }
 
@@ -112,7 +114,8 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
     return this.generateFluentState(
       this.actualValue,
       this.actualValue[index],
-      false
+      false,
+      true
     ) as any;
   }
 

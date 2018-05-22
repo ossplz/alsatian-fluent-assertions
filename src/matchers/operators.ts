@@ -15,7 +15,8 @@ export class Operators<T, TNext> extends FluentMatcherBase
     return this.generateFluentState(
       this.actualValue,
       this.nextValue,
-      !this.invert
+      !this.invert,
+      this.hasNext
     );
   }
 
@@ -25,7 +26,8 @@ export class Operators<T, TNext> extends FluentMatcherBase
     return this.generateFluentState(
       this.actualValue,
       this.nextValue,
-      !verbatim
+      !verbatim,
+      this.hasNext
     );
   }
 
@@ -35,6 +37,10 @@ export class Operators<T, TNext> extends FluentMatcherBase
 
   public get that(): IFluentCore<TNext> {
     this.setCurrentNode("that", null);
+    if (!this.hasNext) {
+      throw new Error("Fluent scope cannot narrow when narrowable value not defined by previous assertions.");
+    }
+
     return this.generateFluentState(this.nextValue, null, false);
   }
 }

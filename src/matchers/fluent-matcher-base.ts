@@ -10,6 +10,7 @@ export class FluentMatcherBase extends RootNode {
   public details: string;
   public actualValue: any;
   public nextValue: any;
+  public hasNext: boolean;
   public parent: IFluentNode;
   protected invert: boolean = false;
 
@@ -19,6 +20,7 @@ export class FluentMatcherBase extends RootNode {
     if (initial) {
       this.parent = new RootNode("Assert", this.id(actualValue));
     }
+    this.hasNext = false;
     this.actualValue = actualValue;
     this.nextValue = nextValue;
   }
@@ -57,12 +59,14 @@ export class FluentMatcherBase extends RootNode {
    * @param {any} actualValue The value over which future assertions will be performed.
    * @param {any} nextValue The next contextual value (from prior operations) the user could choose with 'that'.
    * @param {boolean} invert Inverts the next term.
+   * @param {boolean} hasNext Whether a narrowable value is available, per the current assertion.
    * @returns {INarrowableFluentCore<TActual, TNext>} The fluent context for upcoming assertions.
    */
   protected generateFluentState<TActual, TNext>(
     actualValue: any,
     nextValue: any,
-    invert: boolean
+    invert: boolean,
+    hasNext?: boolean
   ): INarrowableFluentCore<TActual, TNext> {
     /**
      * Shh... Typescript made me do it. :) You can't return a new PropertiesMatcherWithHelpers()
@@ -74,6 +78,7 @@ export class FluentMatcherBase extends RootNode {
     self.actualValue = actualValue;
     self.nextValue = nextValue;
     self.invert = invert;
+    self.hasNext = !!hasNext;
     return self as any;
   }
 

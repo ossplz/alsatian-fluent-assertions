@@ -119,7 +119,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
     this.setCurrentNode(this.hasMatch.name, `${matcher}`);
     this._match(matcher);
     const matches = this.actualValue.match(matcher);
-    return this.generateFluentState(this.actualValue, matches, false);
+    return this.generateFluentState(this.actualValue, matches, false, true);
   }
 
   public throws(): INarrowableFluentCore<T, Error>;
@@ -136,7 +136,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
       threw = err;
     }
     this._assertThrew(threw, errorType);
-    return this.generateFluentState(this.actualValue, threw, false);
+    return this.generateFluentState(this.actualValue, threw, false, true);
   }
 
   public async throwsAsync(): Promise<INarrowableFluentCore<T, Error>>;
@@ -157,7 +157,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
       threw = err;
     }
     this._assertThrew(threw, errorType);
-    return this.generateFluentState(this.actualValue, threw, false);
+    return this.generateFluentState(this.actualValue, threw, false, true);
   }
 
   public satisfies(predicate: (t: T) => boolean): IFluentCore<T> {
@@ -235,7 +235,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
       this.specError(`property should${this.negation}be defined`, expDescrip, this.actualValue);
     }  
 
-    return this.generateFluentState(this.actualValue, selected, false);
+    return this.generateFluentState(this.actualValue, selected, false, true);
   }
 
   public hasSingle(): T extends Array<any>
@@ -261,7 +261,8 @@ export class SimpleMatcher<T> extends Operators<T, any>
     return this.generateFluentState(
       this.actualValue,
       this.actualValue[0],
-      false
+      false,
+      true
     ) as any;
   }
 
