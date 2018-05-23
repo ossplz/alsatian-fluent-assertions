@@ -174,7 +174,7 @@ export class PropertiesMatcher<T> extends ElementsMatcher<T>
     curPath: Array<string>,
     mode: MatchMode
   ) {
-    if (typeof expected === "function") {
+    if (mode !== MatchMode.literal && typeof expected === "function") {
       this._assertFnProperty(
         k,
         expected as PropertyLambda<T[keyof T]>,
@@ -182,7 +182,7 @@ export class PropertiesMatcher<T> extends ElementsMatcher<T>
         curPath,
         mode
       );
-    } else if (expected instanceof RegExp) {
+    } else if (mode !== MatchMode.literal && expected instanceof RegExp) {
       this._assertRegExpProperty(k, expected, actual, curPath);
     } else if (
       typeof expected === "object" &&

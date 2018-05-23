@@ -1,6 +1,6 @@
-import { Test, TestCase, Any, MatchError, SpyOn, Expect } from "alsatian";
+import { Test, TestCase, Any, MatchError, SpyOn, Expect, createFunctionSpy } from "alsatian";
 import { Assert } from "../../src/assert";
-import { MatchMode as MM } from "../../src/types";
+import { MatchMode as MM, MatchMode } from "../../src/types";
 
 export class HasPropertiesTests {
   @TestCase(undefined)
@@ -249,5 +249,17 @@ export class HasPropertiesTests {
         three: { four: [5, (n: any) => Assert(n).equals(6) /* fail */] }
       });
     Assert(lambda).throws(MatchError);
+  }
+
+  @Test()
+  public hasProperties_literal_fnPropDirectlyCompared() {
+    const mockFn = createFunctionSpy();
+    const lambda = () => {
+      Assert({ one: mockFn })
+        .hasProperties({ one: <any>mockFn }, MatchMode.literal);
+    };
+
+    Assert(lambda).not.throws();
+    Expect(mockFn).not.toHaveBeenCalled();
   }
 }
