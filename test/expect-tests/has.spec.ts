@@ -1,5 +1,6 @@
-import { Test, TestCase, Any, MatchError } from "alsatian";
+import { Test, TestCase, Any, MatchError, SpyOn, Expect } from "alsatian";
 import { Assert } from "../../src/assert";
+import { MatchMode } from "../../src/types";
 
 export class HasTests {
   @TestCase({ prop: 3 }, (a: any) => a.prop, false)
@@ -26,5 +27,20 @@ export class HasTests {
     Assert(obj)
       .has(selector)
       .that.equals(final);
+  }
+
+  @TestCase(MatchMode.asserts)
+  @TestCase(MatchMode.literal)
+  public has_GivenDict_shouldPassOptions(m: MatchMode) {
+    const dict = { prop: "someval"};
+    const a = Assert(dict);
+    const spy = SpyOn(a, "hasProperties");
+    const lambda = () => {
+      a.has(dict, <any>m);
+    };
+    
+    Assert(lambda).not.throws();
+
+    Expect(spy).toHaveBeenCalledWith(dict, m);
   }
 }

@@ -57,7 +57,7 @@ export class PropertiesMatcherWithHelpers<T> extends PropertiesMatcher<T>
     } else if (typeof expected === "string") {
       return this.hasProperty(o => o[expected]);
     } else {
-      this.hasProperties(expected);
+      this.hasProperties(expected, <any>option1);
     }
 
     return this.generateFluentState(this.actualValue, null, false);
