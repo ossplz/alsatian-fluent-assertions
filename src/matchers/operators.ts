@@ -26,9 +26,16 @@ export class Operators<T, TNext> extends FluentMatcherBase
     return this.generateFluentState(
       this.actualValue,
       this.nextValue,
-      !verbatim,
+      this.invert === verbatim,
       this.hasNext
     );
+    /**
+     * invert | verbatim | result (invert)
+     * false  | false    | true
+     * false  | true     | false
+     * true   | false    | false
+     * true   | true     | true
+     */
   }
 
   public get lastContextualValue(): T {
