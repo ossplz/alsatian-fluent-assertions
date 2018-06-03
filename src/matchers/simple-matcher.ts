@@ -10,13 +10,13 @@ import { Operators } from "./operators";
 import { PropertiesMatcher } from "./properties-matcher";
 import { At } from "../types";
 
-export class SimpleMatcher<T> extends Operators<T, any>
-  implements ISimpleMatcher<T> {
+export class SimpleMatcher<T, TNext, TPrev> extends Operators<T, TNext, TPrev>
+  implements ISimpleMatcher<T, TNext, TPrev> {
   constructor(actualValue: any, nextValue: any, initial: boolean) {
     super(actualValue, nextValue, initial);
   }
 
-  public contains(expected: T, location: At = At.anywhere): IFluentCore<T> {
+  public contains(expected: T, location: At = At.anywhere): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.contains.name, location);
     if (typeof expected !== "string") {
       throw new TypeError(`Parameter 'expected' should be a string, but was a ${typeof expected}.`);
@@ -40,7 +40,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
     return this.generateFluentState(this.actualValue, null, false);    
   }
 
-  public strictlyEquals(expected: T): IFluentCore<T> {
+  public strictlyEquals(expected: T): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.strictlyEquals.name, typeof expected);
     if (this.maybeInvert(this.actualValue !== expected)) {
       this.specError("should strictly (===) equal", expected, this.actualValue);
@@ -49,7 +49,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
     return this.generateFluentState(this.actualValue, null, false);
   }
 
-  public looselyEquals(expected: T): IFluentCore<T> {
+  public looselyEquals(expected: T): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.looselyEquals.name, typeof expected);
     /*tslint:disable:triple-equals*/
     if (this.maybeInvert(this.actualValue != expected)) {
@@ -63,7 +63,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
   public deeplyEquals(
     expected: T,
     eqType: EqType.strictly | EqType.loosely = EqType.strictly
-  ): IFluentCore<T> {
+  ): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(
       this.deeplyEquals.name,
       typeof expected + ", " + eqType
@@ -80,17 +80,17 @@ export class SimpleMatcher<T> extends Operators<T, any>
     return this.generateFluentState(this.actualValue, null, false);
   }
 
-  public deepStrictlyEquals(expected: T): IFluentCore<T> {
+  public deepStrictlyEquals(expected: T): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.deepStrictlyEquals.name, typeof expected);
     return this.deeplyEquals(expected, EqType.strictly);
   }
 
-  public deepLooselyEquals(expected: T): IFluentCore<T> {
+  public deepLooselyEquals(expected: T): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.deepLooselyEquals.name, typeof expected);
     return this.deeplyEquals(expected, EqType.loosely);
   }
 
-  public isDefined(): IFluentCore<T> {
+  public isDefined(): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.isDefined.name, null);
     if (this.maybeInvert(typeof this.actualValue === "undefined")) {
       this.specError(`should${this.negation}be defined`, `${this.negation}defined`, `${this.actualValue}`);
@@ -99,7 +99,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
     return this.generateFluentState(this.actualValue, null, false);
   }
 
-  public isNull(): IFluentCore<T> {
+  public isNull(): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.isNull.name, null);
     if (this.maybeInvert(this.actualValue !== null)) {
       this.specError(`should${this.negation}be null`, `${this.negation}null`, `${this.actualValue}`);
@@ -108,25 +108,25 @@ export class SimpleMatcher<T> extends Operators<T, any>
     return this.generateFluentState(this.actualValue, null, false);
   }
 
-  public matches(matcher: RegExp): IFluentCore<string> {
+  public matches(matcher: RegExp): IFluentCore<string, TNext, TPrev> {
     this.setCurrentNode(this.matches.name, `${matcher}`);
     this._match(matcher);
 
     return this.generateFluentState(this.actualValue, null, false);
   }
 
-  public hasMatch(matcher: RegExp): INarrowableFluentCore<T, Array<string>> {
+  public hasMatch(matcher: RegExp): INarrowableFluentCore<T, Array<string>, TPrev> {
     this.setCurrentNode(this.hasMatch.name, `${matcher}`);
     this._match(matcher);
     const matches = this.actualValue.match(matcher);
     return this.generateFluentState(this.actualValue, matches, false, true);
   }
 
-  public throws(): INarrowableFluentCore<T, Error>;
+  public throws(): INarrowableFluentCore<T, Error, TPrev>;
 
   public throws<TError extends Error>(errorType?: {
     new (...args: Array<any>): TError;
-  }): INarrowableFluentCore<T, TError> {
+  }): INarrowableFluentCore<T, TError, TPrev> {
     this.setCurrentNode(this.throws.name, errorType ? typeof errorType : null);
     let threw: TError = null;
     this._assertActualFunction();
@@ -139,11 +139,11 @@ export class SimpleMatcher<T> extends Operators<T, any>
     return this.generateFluentState(this.actualValue, threw, false, true);
   }
 
-  public async throwsAsync(): Promise<INarrowableFluentCore<T, Error>>;
+  public async throwsAsync(): Promise<INarrowableFluentCore<T, Error, TPrev>>;
 
   public async throwsAsync<TError extends Error>(errorType?: {
     new (...args: Array<any>): TError;
-  }): Promise<INarrowableFluentCore<T, TError>> {
+  }): Promise<INarrowableFluentCore<T, TError, TPrev>> {
     this.setCurrentNode(
       this.throwsAsync.name,
       errorType ? typeof errorType : null
@@ -160,7 +160,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
     return this.generateFluentState(this.actualValue, threw, false, true);
   }
 
-  public satisfies(predicate: (t: T) => boolean): IFluentCore<T> {
+  public satisfies(predicate: (t: T) => boolean): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.satisfies.name, null);
     if (!(predicate instanceof Function)) {
       this.specError(
@@ -181,7 +181,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
     return this.generateFluentState(this.actualValue, null, false);
   }
 
-  public is(expectedType: { new (...args: Array<any>): any }): IFluentCore<T> {
+  public is(expectedType: { new (...args: Array<any>): any }): IFluentCore<T, TNext, TPrev> {
     const eActualName = (expectedType || ({} as any)).name;
     this.setCurrentNode(this.is.name, eActualName);
     if (typeof expectedType !== "function") {
@@ -204,7 +204,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
 
   public hasProperty<R>(
     expected: ((o: T) => R) | keyof T
-  ): INarrowableFluentCore<T, R>
+  ): INarrowableFluentCore<T, R, TPrev>
   {
     this.setCurrentNode(this.hasProperty.name, null);
     let selected: any;
@@ -239,7 +239,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
   }
 
   public hasSingle(): T extends Array<any>
-    ? INarrowableFluentCore<T, T[0]>
+    ? INarrowableFluentCore<T, T[0], TPrev>
     : void {
     this.setCurrentNode(this.hasSingle.name, null);
     if (
@@ -266,7 +266,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
     ) as any;
   }
 
-  public isEmpty(): IFluentCore<T> {
+  public isEmpty(): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.isEmpty.name, null);
     if (
       !(
@@ -298,15 +298,15 @@ export class SimpleMatcher<T> extends Operators<T, any>
     return this.generateFluentState(this.actualValue, null, false);
   }
 
-  public isTruthy(): IFluentCore<T> {
+  public isTruthy(): IFluentCore<T, TNext, TPrev> {
     return this._assertBooly(!this.actualValue, this.isTruthy.name, "truthy");
   }
 
-  public isFalsy(): IFluentCore<T> {
+  public isFalsy(): IFluentCore<T, TNext, TPrev> {
     return this._assertBooly(!!this.actualValue, this.isFalsy.name, "falsy");
   }
 
-  public converted<R>(lambda: (v: T) => R): IFluentCore<R> {
+  public converted<R>(lambda: (v: T) => R): IFluentCore<R, TNext, TPrev> {
     this.setCurrentNode(this.converted.name);
     if (typeof lambda !== "function") {
       throw new TypeError(
@@ -332,7 +332,7 @@ export class SimpleMatcher<T> extends Operators<T, any>
     val: boolean,
     name: string,
     expVal: string
-  ): IFluentCore<T> {
+  ): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(name, `${!!this.actualValue}`);
     if (this.maybeInvert(val)) {
       this.specError(

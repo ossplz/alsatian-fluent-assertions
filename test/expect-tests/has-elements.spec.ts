@@ -79,14 +79,14 @@ export class HasElementsTests {
   )
   @TestCase(
     ["one"],
-    [(v: IFluentCore<any>) => v.equals("one")],
+    [(v: IFluentCore<string, void, void>) => v.equals("one")],
     LocationMode.contains,
     false,
     MatchMode.asserts
   )
   @TestCase(
     ["one"],
-    [(v: IFluentCore<any>) => v.equals("two")],
+    [(v: IFluentCore<string, void, void>) => v.equals("two")],
     LocationMode.contains,
     true,
     MatchMode.asserts

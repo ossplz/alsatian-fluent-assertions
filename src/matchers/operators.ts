@@ -4,13 +4,13 @@ import { IFluentCore } from "./i-fluent-core";
 import { INarrowableFluentCore, PropertiesMatcher } from ".";
 import { INarrowableOperators } from "./i-narrowable-operators";
 
-export class Operators<T, TNext> extends FluentMatcherBase
-  implements IOperators<T, TNext>, INarrowableOperators<TNext> {
-  constructor(actualValue: T, nextValue: TNext, initial: boolean = false) {
-    super(actualValue, null, initial);
+export class Operators<T, TNext, TPrev> extends FluentMatcherBase
+  implements IOperators<T, TNext, TPrev>, INarrowableOperators<TNext, T, TPrev> {
+  constructor(actualValue: T, nextValue: TNext, initial: boolean = false, prevCore: IFluentCore<TPrev, T, void> = null) {
+    super(actualValue, null, initial, prevCore);
   }
 
-  public get not(): IFluentCore<T> {
+  public get not(): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode("not", null);
     return this.generateFluentState(
       this.actualValue,
@@ -20,7 +20,7 @@ export class Operators<T, TNext> extends FluentMatcherBase
     );
   }
 
-  public maybe(verbatim: boolean): IFluentCore<T> {
+  public maybe(verbatim: boolean): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.maybe.name, `${verbatim}`);
     // invert = !verbatim
     return this.generateFluentState(
@@ -42,12 +42,16 @@ export class Operators<T, TNext> extends FluentMatcherBase
     return this.actualValue;
   }
 
-  public get that(): IFluentCore<TNext> {
+  public get kThx(): IFluentCore<TPrev, T, void> {
+    return this.prevCore;
+  }
+
+  public get that(): IFluentCore<TNext, void, T> {
     this.setCurrentNode("that", null);
     if (!this.hasNext) {
       throw new Error("Fluent scope cannot narrow when narrowable value not defined by previous assertions.");
     }
 
-    return this.generateFluentState(this.nextValue, null, false);
+    return this.generateFluentState<TNext, void, T>(this.nextValue, null, false, false, <any>this.parent);
   }
 }

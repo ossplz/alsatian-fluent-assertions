@@ -6,8 +6,8 @@ import { ISimpleMatcherWithHelpers } from "./i-simple-matcher-with-helpers";
 /**
  * The members of this interface are only accessible within a fluent context.
  */
-export interface IFluentCore<T>
-  extends IPropertiesMatcherWithHelpers<T>,
-    IElementsMatcher<T>,
-    ISimpleMatcherWithHelpers<T>,
-    IOperators<T, any> {}
+export interface IFluentCore<T, TNext, TPrev>
+  extends IPropertiesMatcherWithHelpers<T, TNext, TPrev>,
+    IElementsMatcher<T, TNext, TPrev>,
+    ISimpleMatcherWithHelpers<T, TNext, TPrev>,
+    IOperators<T, TNext, TPrev> {}

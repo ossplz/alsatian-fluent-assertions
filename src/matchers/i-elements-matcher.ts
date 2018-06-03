@@ -2,7 +2,7 @@ import { LocationMode, MatchMode } from "../types";
 import { IFluentCore } from "./i-fluent-core";
 import { INarrowableFluentCore } from ".";
 
-export interface IElementsMatcher<T> {
+export interface IElementsMatcher<T, TNext, TPrev> {
   /**
    * Checks an array for the given values.
    * See https://git.io/vptpk.
@@ -14,7 +14,7 @@ export interface IElementsMatcher<T> {
     expected: Array<any>,
     location?: LocationMode,
     mode?: MatchMode
-  ): IFluentCore<T>;
+  ): IFluentCore<T, TNext, TPrev>;
 
   /**
    * Checks whether any of the contextual array's elements satisfy the given expression.
@@ -22,7 +22,7 @@ export interface IElementsMatcher<T> {
    */
   anySatisfy(
     predicate: (e: any, i?: number) => boolean
-  ): T extends Array<any> ? IFluentCore<T> : void;
+  ): T extends Array<any> ? IFluentCore<T, TNext, TPrev> : void;
 
   /**
    * Checks whether all of the contextual array's elements satisfy the given expression.
@@ -30,14 +30,14 @@ export interface IElementsMatcher<T> {
    */
   allSatisfy(
     predicate: (e: any, i?: number) => boolean
-  ): T extends Array<any> ? IFluentCore<T> : void;
+  ): T extends Array<any> ? IFluentCore<T, TNext, TPrev> : void;
 
   /**
    * Checks whether the contextual array contains at least one element. If so, you can
    * narrow the assertion scope to that first element with the 'that' operator.
    */
   hasFirst(): T extends Array<any> | string
-    ? INarrowableFluentCore<T, T[0]>
+    ? INarrowableFluentCore<T, T[0], TPrev>
     : void;
 
   /**
@@ -45,7 +45,7 @@ export interface IElementsMatcher<T> {
    * narrow the assertion scope to the last element with the 'that' operator.
    */
   hasLast(): T extends Array<any> | string
-    ? INarrowableFluentCore<T, T[0]>
+    ? INarrowableFluentCore<T, T[0], TPrev>
     : void;
 
   /**
@@ -54,5 +54,5 @@ export interface IElementsMatcher<T> {
    */
   hasNth<N extends number>(
     n: N
-  ): T extends Array<any> | string ? INarrowableFluentCore<T, T[N]> : void;
+  ): T extends Array<any> | string ? INarrowableFluentCore<T, T[N], TPrev> : void;
 }

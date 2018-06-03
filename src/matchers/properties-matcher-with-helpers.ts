@@ -12,43 +12,43 @@ import {
 import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
 import { IFluentCore } from "./i-fluent-core";
 
-export class PropertiesMatcherWithHelpers<T> extends PropertiesMatcher<T>
-  implements IPropertiesMatcherWithHelpers<T> {
+export class PropertiesMatcherWithHelpers<T, TNext, TPrev> extends PropertiesMatcher<T, TNext, TPrev>
+  implements IPropertiesMatcherWithHelpers<T, TNext, TPrev> {
   constructor(actualValue: any, nextValue: any, initial: boolean) {
     super(actualValue, nextValue, initial);
   }
 
   public has<K extends keyof T>(
     selector: (o: T) => T[K]
-  ): INarrowableFluentCore<T, T[K]>;
+  ): INarrowableFluentCore<T, T[K], TPrev>;
 
-  public has<K extends keyof T>(key: K): INarrowableFluentCore<T, T[K]>;
+  public has<K extends keyof T>(key: K): INarrowableFluentCore<T, T[K], TPrev>;
 
   public has<T2 extends Array<any>>(
     expected: T2,
     location?: LocationMode,
     match?: MatchMode
-  ): IFluentCore<T>;
+  ): IFluentCore<T, TNext, TPrev>;
 
   public has(
     subsetDict: SubsetPropertyDict<T>,
     matchMode?: MatchMode.normal
-  ): IFluentCore<T>;
+  ): IFluentCore<T, TNext, TPrev>;
 
   public has(
     subsetDict: SubsetPropertyLiteralsDict<T>,
     matchMode: MatchMode.literal
-  ): IFluentCore<T>;
+  ): IFluentCore<T, TNext, TPrev>;
 
   public has(
     subsetDict: SubsetPropertyAssertsDict<T>,
     matchMode: MatchMode.asserts
-  ): IFluentCore<T>;
+  ): IFluentCore<T, TNext, TPrev>;
   public has(
     expected: any,
     option1?: LocationMode | MatchMode,
     option2?: MatchMode
-  ): IFluentCore<T> {
+  ): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.has.name, typeof expected);
     if (expected instanceof Array) {
       return this.hasElements(expected, option1 as LocationMode, option2);
@@ -66,10 +66,10 @@ export class PropertiesMatcherWithHelpers<T> extends PropertiesMatcher<T>
   public hasAsserts<T2 extends Array<any>>(
     expected: T2,
     location?: LocationMode
-  ): IFluentCore<T>;
+  ): IFluentCore<T, TNext, TPrev>;
 
-  public hasAsserts(expected: SubsetPropertyAssertsDict<T>): IFluentCore<T>;
-  public hasAsserts(expected: any, location?: LocationMode): IFluentCore<T> {
+  public hasAsserts(expected: SubsetPropertyAssertsDict<T>): IFluentCore<T, TNext, TPrev>;
+  public hasAsserts(expected: any, location?: LocationMode): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.hasAsserts.name, typeof expected);
     if (expected instanceof Array) {
       return this.hasElements(expected, location, MatchMode.asserts);
@@ -79,7 +79,7 @@ export class PropertiesMatcherWithHelpers<T> extends PropertiesMatcher<T>
     return this.generateFluentState(this.actualValue, null, false);
   }
 
-  public hasAllAsserts(expected: AllPropertyAssertsDict<T>): IFluentCore<T> {
+  public hasAllAsserts(expected: AllPropertyAssertsDict<T>): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.hasAllAsserts.name, null);
     return this.hasAsserts(expected);
   }

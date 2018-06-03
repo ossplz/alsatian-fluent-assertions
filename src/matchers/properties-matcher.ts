@@ -19,8 +19,8 @@ import { FluentMatcherBase } from "./fluent-matcher-base";
 import { PropertyAssertsLambda } from "../types/property-asserts-lambda";
 import { ElementsMatcher } from "./elements-matcher";
 
-export class PropertiesMatcher<T> extends ElementsMatcher<T>
-  implements IPropertiesMatcher<T> {
+export class PropertiesMatcher<T, TNext, TPrev> extends ElementsMatcher<T, TNext, TPrev>
+  implements IPropertiesMatcher<T, TNext, TPrev> {
   constructor(actualValue: any, nextValue: any, initial: boolean) {
     super(actualValue, nextValue, initial);
   }
@@ -28,21 +28,21 @@ export class PropertiesMatcher<T> extends ElementsMatcher<T>
   public hasProperties(
     expected: SubsetPropertyDict<T>,
     matchMode?: MatchMode.normal
-  ): IFluentCore<T>;
+  ): IFluentCore<T, TNext, TPrev>;
 
   public hasProperties(
     expected: SubsetPropertyLiteralsDict<T>,
     matchMode: MatchMode.literal
-  ): IFluentCore<T>;
+  ): IFluentCore<T, TNext, TPrev>;
 
   public hasProperties(
     expected: SubsetPropertyAssertsDict<T>,
     matchMode: MatchMode.asserts
-  ): IFluentCore<T>;
+  ): IFluentCore<T, TNext, TPrev>;
   public hasProperties(
     expected: any,
     mode: MatchMode = MatchMode.normal
-  ): IFluentCore<T> {
+  ): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.hasProperties.name, null);
     this._properties(this.actualValue, expected, [], mode);
 
@@ -52,28 +52,28 @@ export class PropertiesMatcher<T> extends ElementsMatcher<T>
   public hasAll(
     expected: AllPropertyDict<T>,
     matchMode?: MatchMode.normal
-  ): IFluentCore<T>;
+  ): IFluentCore<T, TNext, TPrev>;
 
   public hasAll(
     expected: AllPropertyLiteralsDict<T>,
     matchMode: MatchMode.literal
-  ): IFluentCore<T>;
+  ): IFluentCore<T, TNext, TPrev>;
 
   public hasAll(
     expected: AllPropertyAssertsDict<T>,
     matchMode: MatchMode.asserts
-  ): IFluentCore<T>;
+  ): IFluentCore<T, TNext, TPrev>;
   public hasAll(
     expected: any,
     mode: MatchMode = MatchMode.normal
-  ): IFluentCore<T> {
+  ): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.hasAll.name, null);
     this._properties(this.actualValue, expected, [], mode);
 
     return this.generateFluentState(this.actualValue, null, false);
   }
 
-  public hasKeys<K extends keyof T>(expectedKeys: Array<K>): IFluentCore<T> {
+  public hasKeys<K extends keyof T>(expectedKeys: Array<K>): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.hasKeys.name, null);
     if (this.nullOrUndefined(this.actualValue)) {
       if ( !this.invertedContext ) {

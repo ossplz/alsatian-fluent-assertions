@@ -12,9 +12,10 @@ export class FluentMatcherBase extends RootNode {
   public nextValue: any;
   public hasNext: boolean;
   public parent: IFluentNode;
+  protected prevCore: IFluentCore<any, any, any>;
   protected invert: boolean = false;
 
-  constructor(actualValue: any, nextValue: any, initial: boolean) {
+  constructor(actualValue: any, nextValue: any, initial: boolean, prevCore: IFluentCore<any, any, any>) {
     // not set for non-root until a fluent method is called.
     super(undefined, undefined);
     if (initial) {
@@ -23,6 +24,7 @@ export class FluentMatcherBase extends RootNode {
     this.hasNext = false;
     this.actualValue = actualValue;
     this.nextValue = nextValue;
+    this.prevCore = prevCore;
   }
 
   /**
@@ -62,12 +64,13 @@ export class FluentMatcherBase extends RootNode {
    * @param {boolean} hasNext Whether a narrowable value is available, per the current assertion.
    * @returns {INarrowableFluentCore<TActual, TNext>} The fluent context for upcoming assertions.
    */
-  protected generateFluentState<TActual, TNext>(
+  protected generateFluentState<TActual, TNext, TPrev>(
     actualValue: any,
     nextValue: any,
     invert: boolean,
-    hasNext?: boolean
-  ): INarrowableFluentCore<TActual, TNext> {
+    hasNext: boolean = false,
+    prevCore: IFluentCore<TPrev, TActual, TPrev> = null
+  ): INarrowableFluentCore<TActual, TNext, TPrev> {
     /**
      * Shh... Typescript made me do it. :) You can't return a new PropertiesMatcherWithHelpers()
      * from base classes of the PropertiesMatcherWithHelpers class.
@@ -79,6 +82,7 @@ export class FluentMatcherBase extends RootNode {
     self.nextValue = nextValue;
     self.invert = invert;
     self.hasNext = !!hasNext;
+    self.prevCore = prevCore || this.prevCore;
     return self as any;
   }
 
@@ -87,7 +91,7 @@ export class FluentMatcherBase extends RootNode {
    * @param {TActual} actualValue The value to wrap in an Assert.
    * @returns {IFluentCore<TActual>} The fluent context to provide inside, e.g., a property assertion.
    */
-  protected wrap<TActual>(actualValue: TActual): IFluentCore<TActual> {
+  protected wrap<TActual>(actualValue: TActual): IFluentCore<TActual, void, void> {
     return new (this.constructor as any)(actualValue, null);
   }
 

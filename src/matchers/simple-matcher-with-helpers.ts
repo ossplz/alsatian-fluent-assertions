@@ -3,13 +3,13 @@ import { IFluentCore } from "./i-fluent-core";
 import { EqType } from "../types";
 import { ISimpleMatcherWithHelpers } from "./i-simple-matcher-with-helpers";
 
-export class SimpleMatcherWithHelpers<T> extends SimpleMatcher<T>
-  implements ISimpleMatcherWithHelpers<T> {
+export class SimpleMatcherWithHelpers<T, TNext, TPrev> extends SimpleMatcher<T, TNext, TPrev>
+  implements ISimpleMatcherWithHelpers<T, TNext, TPrev> {
   constructor(actualValue: any, nextValue: any, initial: boolean) {
     super(actualValue, nextValue, initial);
   }
 
-  public equals(expected: T, eqType: EqType = EqType.strictly): IFluentCore<T> {
+  public equals(expected: T, eqType: EqType = EqType.strictly): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.equals.name, typeof expected + ", " + eqType);
     switch (eqType) {
       case EqType.strictly:

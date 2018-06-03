@@ -7,8 +7,8 @@ import {
 } from "./matchers";
 import { IAssert } from "./assert.i";
 
-function Assert<T, TNext>(value?: T): IFluentCore<T> {
-  return new PropertiesMatcherWithHelpers<T>(value, undefined, true);
+function Assert<T, TNext>(value?: T): IFluentCore<T, TNext, void> {
+  return new PropertiesMatcherWithHelpers<T, TNext, void>(value, undefined, true);
 }
 
 // human: lol, this is to ensure fail exists statically on Assert ^^^.

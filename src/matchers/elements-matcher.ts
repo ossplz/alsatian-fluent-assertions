@@ -5,8 +5,8 @@ import { IElementsMatcher } from "./i-elements-matcher";
 import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
 import { SimpleMatcherWithHelpers } from "./simple-matcher-with-helpers";
 
-export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
-  implements IElementsMatcher<T> {
+export class ElementsMatcher<T, TNext, TPrev> extends SimpleMatcherWithHelpers<T, TNext, TPrev>
+  implements IElementsMatcher<T, TNext, TPrev> {
   constructor(actualValue: any, nextValue: any, initial: boolean) {
     super(actualValue, nextValue, initial);
   }
@@ -15,7 +15,7 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
     expected: Array<any>,
     location: LocationMode = LocationMode.contains,
     elMode: MatchMode = MatchMode.normal
-  ): IFluentCore<T> {
+  ): IFluentCore<T, void, TPrev> {
     this.setCurrentNode(this.hasElements.name, `${location}, ${elMode}`);
     this._assertHasElements(this.actualValue, expected, location, elMode, []);
     return this.generateFluentState(this.actualValue, null, false);
@@ -23,7 +23,7 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
 
   public allSatisfy(
     predicate: (el: any, i?: number) => boolean
-  ): T extends Array<any> ? IFluentCore<T> : void {
+  ): T extends Array<any> ? IFluentCore<T, void, TPrev> : void {
     this.setCurrentNode(this.allSatisfy.name);
     this._assertActualArray();
     this._assertExpectationIsFunction(predicate);
@@ -43,7 +43,7 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
 
   public anySatisfy(
     predicate: (e: any) => boolean
-  ): T extends Array<any> ? IFluentCore<T> : void {
+  ): T extends Array<any> ? IFluentCore<T, void, TPrev> : void {
     this.setCurrentNode(this.anySatisfy.name);
     this._assertActualArray();
     this._assertExpectationIsFunction(predicate);
@@ -59,7 +59,7 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
   }
 
   public hasFirst(): T extends Array<any> | string
-    ? INarrowableFluentCore<T, T[0]>
+    ? INarrowableFluentCore<T, T[0], TPrev>
     : void {
     this.setCurrentNode(this.hasFirst.name);
     const failMsg = `should${this.negation}have one or more elements`;
@@ -78,7 +78,7 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
   }
 
   public hasLast(): T extends Array<any> | string
-    ? INarrowableFluentCore<T, T[0]>
+    ? INarrowableFluentCore<T, T[0], TPrev>
     : void {
     this.setCurrentNode(this.hasLast.name);
     const failMsg = `should${this.negation}have one or more elements`;
@@ -98,7 +98,7 @@ export class ElementsMatcher<T> extends SimpleMatcherWithHelpers<T>
 
   public hasNth<N extends number>(
     n: N
-  ): T extends Array<any> | string ? INarrowableFluentCore<T, T[N]> : void {
+  ): T extends Array<any> | string ? INarrowableFluentCore<T, T[N], TPrev> : void {
     this.setCurrentNode(this.hasNth.name, `${n}`);
     if (typeof n !== "number") {
       this.specError("parameter should be a number", "[a number]", this.id(n));
