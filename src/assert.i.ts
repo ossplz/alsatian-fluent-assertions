@@ -20,12 +20,12 @@ export interface IAssert<T> {
    */
   // <T>(actualValue: FunctionSpy | ((...args: Array<any>) => any)): FunctionMatcher;
   // <T>(actualValue: PropertySpy<T>): PropertyMatcher<T>;
-  (actualValue: T): IFluentCore<T>;
-  <TNext>(
+  (actualValue: T): IFluentCore<T, void, void>;
+  <TNext, TPrev>(
     actualValue: T,
     nextValue?: TNext,
     invertResult?: boolean
-  ): INarrowableFluentCore<T, TNext>;
+  ): INarrowableFluentCore<T, TNext, TPrev>;
 
   /**
    * Fails the test with the given message
