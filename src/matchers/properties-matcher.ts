@@ -26,20 +26,6 @@ export class PropertiesMatcher<T, TNext, TPrev> extends ElementsMatcher<T, TNext
   }
 
   public hasProperties(
-    expected: SubsetPropertyDict<T>,
-    matchMode?: MatchMode.normal
-  ): IFluentCore<T, TNext, TPrev>;
-
-  public hasProperties(
-    expected: SubsetPropertyLiteralsDict<T>,
-    matchMode: MatchMode.literal
-  ): IFluentCore<T, TNext, TPrev>;
-
-  public hasProperties(
-    expected: SubsetPropertyAssertsDict<T>,
-    matchMode: MatchMode.asserts
-  ): IFluentCore<T, TNext, TPrev>;
-  public hasProperties(
     expected: any,
     mode: MatchMode = MatchMode.normal
   ): IFluentCore<T, TNext, TPrev> {
@@ -49,20 +35,6 @@ export class PropertiesMatcher<T, TNext, TPrev> extends ElementsMatcher<T, TNext
     return this.generateFluentState(this.actualValue, null, false);
   }
 
-  public hasAll(
-    expected: AllPropertyDict<T>,
-    matchMode?: MatchMode.normal
-  ): IFluentCore<T, TNext, TPrev>;
-
-  public hasAll(
-    expected: AllPropertyLiteralsDict<T>,
-    matchMode: MatchMode.literal
-  ): IFluentCore<T, TNext, TPrev>;
-
-  public hasAll(
-    expected: AllPropertyAssertsDict<T>,
-    matchMode: MatchMode.asserts
-  ): IFluentCore<T, TNext, TPrev>;
   public hasAll(
     expected: any,
     mode: MatchMode = MatchMode.normal
