@@ -26,7 +26,7 @@ export class PropertiesMatcher<T, TNext, TPrev> extends ElementsMatcher<T, TNext
   }
 
   public hasProperties(
-    expected: any,
+    expected: SubsetPropertyAssertsDict<T> | SubsetPropertyDict<T> | SubsetPropertyLiteralsDict<T>,
     mode: MatchMode = MatchMode.normal
   ): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.hasProperties.name, null);
@@ -36,7 +36,7 @@ export class PropertiesMatcher<T, TNext, TPrev> extends ElementsMatcher<T, TNext
   }
 
   public hasAll(
-    expected: any,
+    expected: AllPropertyDict<T> | AllPropertyAssertsDict<T>,
     mode: MatchMode = MatchMode.normal
   ): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.hasAll.name, null);
