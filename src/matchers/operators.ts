@@ -54,4 +54,15 @@ export class Operators<T, TNext, TPrev> extends FluentMatcherBase
 
     return this.generateFluentState<TNext, void, T>(this.nextValue, null, false, false, <any>this.parent);
   }
+
+  public forReason(reason: string): IFluentCore<T, TNext, TPrev> {
+    return this.generateFluentState(
+      this.actualValue,
+      this.nextValue,
+      this.invert,
+      this.hasNext,
+      null,
+      reason
+    );
+  }
 }

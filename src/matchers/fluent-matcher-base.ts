@@ -14,6 +14,7 @@ export class FluentMatcherBase extends RootNode {
   public parent: IFluentNode;
   protected prevCore: IFluentCore<any, any, any>;
   protected invert: boolean = false;
+  protected reason: string;
 
   constructor(actualValue: any, nextValue: any, initial: boolean, prevCore: IFluentCore<any, any, any>) {
     // not set for non-root until a fluent method is called.
@@ -69,7 +70,8 @@ export class FluentMatcherBase extends RootNode {
     nextValue: any,
     invert: boolean,
     hasNext: boolean = false,
-    prevCore: IFluentCore<TPrev, TActual, TPrev> = null
+    prevCore: IFluentCore<TPrev, TActual, TPrev> = null,
+    reason: string = null
   ): INarrowableFluentCore<TActual, TNext, TPrev> {
     /**
      * Shh... Typescript made me do it. :) You can't return a new PropertiesMatcherWithHelpers()
@@ -83,6 +85,7 @@ export class FluentMatcherBase extends RootNode {
     self.invert = invert;
     self.hasNext = !!hasNext;
     self.prevCore = prevCore || this.prevCore;
+    self.reason = reason;
     return self as any;
   }
 

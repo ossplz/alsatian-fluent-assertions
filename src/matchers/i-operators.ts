@@ -32,4 +32,10 @@ export interface IOperators<T, TNext, TPrev> {
    * @param verbatim Boolean representing whether consider the next item verbatim (true) or negated (false).
    */
   maybe(verbatim: boolean): IFluentCore<T, TNext, TPrev>;
+
+  /**
+   * Adds a clarification to help future debuggers understand the reason for a particular assertion.
+   * @param reason Justification for the upcoming set of fluent assertions.
+   */
+  forReason(reason: string): IFluentCore<T, TNext, TPrev>
 }
