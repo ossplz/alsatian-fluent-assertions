@@ -1,9 +1,8 @@
 import { SpecError } from "../errors";
-import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
-import { IFluentNode } from "../types/i-fluent-node";
 import { RootNode } from "../types";
-import { Z_VERSION_ERROR } from "zlib";
+import { IFluentNode } from "../types/i-fluent-node";
 import { IFluentCore } from "./i-fluent-core";
+import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
 
 export class FluentMatcherBase extends RootNode {
   public name: string;
@@ -15,6 +14,7 @@ export class FluentMatcherBase extends RootNode {
   protected prevCore: IFluentCore<any, any, any>;
   protected invert: boolean = false;
   protected reason: string;
+  protected reasonData: any;
 
   constructor(actualValue: any, nextValue: any, initial: boolean, prevCore: IFluentCore<any, any, any>) {
     // not set for non-root until a fluent method is called.
@@ -63,6 +63,9 @@ export class FluentMatcherBase extends RootNode {
    * @param {any} nextValue The next contextual value (from prior operations) the user could choose with 'that'.
    * @param {boolean} invert Inverts the next term.
    * @param {boolean} hasNext Whether a narrowable value is available, per the current assertion.
+   * @param {IFluentCore} prevCore Previous, unnarrowed fluent scope, if scope has narrowed.
+   * @param {string} reason The reason for the current set of assertions. Helps with maintenance.
+   * @param {any} reasonData Data to help with future testing metrics.
    * @returns {INarrowableFluentCore<TActual, TNext>} The fluent context for upcoming assertions.
    */
   protected generateFluentState<TActual, TNext, TPrev>(
@@ -71,7 +74,8 @@ export class FluentMatcherBase extends RootNode {
     invert: boolean,
     hasNext: boolean = false,
     prevCore: IFluentCore<TPrev, TActual, TPrev> = null,
-    reason: string = null
+    reason: string = null,
+    reasonData: any = null
   ): INarrowableFluentCore<TActual, TNext, TPrev> {
     /**
      * Shh... Typescript made me do it. :) You can't return a new PropertiesMatcherWithHelpers()
@@ -86,6 +90,7 @@ export class FluentMatcherBase extends RootNode {
     self.hasNext = !!hasNext;
     self.prevCore = prevCore || this.prevCore;
     self.reason = reason;
+    self.reasonData = reasonData;
     return self as any;
   }
 

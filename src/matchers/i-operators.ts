@@ -34,8 +34,10 @@ export interface IOperators<T, TNext, TPrev> {
   maybe(verbatim: boolean): IFluentCore<T, TNext, TPrev>;
 
   /**
-   * Adds a clarification to help future debuggers understand the reason for a particular assertion.
+   * Adds a clarification to help future maintainers understand the reason for a
+   * particular assertion. Optional data parameter could help facilitate future
+   * metrics.
    * @param reason Justification for the upcoming set of fluent assertions.
    */
-  forReason(reason: string): IFluentCore<T, TNext, TPrev>
+  forReason(reason: string, data?: any): IFluentCore<T, TNext, TPrev>
 }
