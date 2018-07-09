@@ -27,15 +27,15 @@ export class ElementsMatcher<T, TNext, TPrev> extends SimpleMatcherWithHelpers<T
     this.setCurrentNode(this.allSatisfy.name);
     this._assertActualArray();
     this._assertExpectationIsFunction(predicate);
-    const result = this.actualValue.every(predicate);
+    const counterExamples: any[] = this.actualValue.filter((e: any) => ! predicate(e));
     if (this.invertedContext && this.actualValue.length === 0) {
       return; // .not.allSatisfy for empty array is always true.
     }
-    if (this.maybeInvert(!result)) {
+    if (this.maybeInvert(!!counterExamples.length)) {
       this.specError(
         `should all${this.negation}satisfy predicate`,
         predicate,
-        this.actualValue
+        counterExamples
       );
     }
     return this.generateFluentState(this.actualValue, null, false) as any;

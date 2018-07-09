@@ -42,4 +42,13 @@ export class AllSatisfyTests {
       .throws(SpecError)
       .that.has({ message: /expectation should be a function/ });
   }
+
+  @Test("allSatisfy() should identify non-satisfying items.")
+  public allSatisfy_identifiesNonSatisfyingItems() {
+    const lambda = () => Assert([1,2,3]).allSatisfy(e => e < 2);
+    Assert(lambda)
+      .throws().that
+        .has(l => l["actual"]).that
+          .deeplyEquals([2,3]);
+  }
 }
