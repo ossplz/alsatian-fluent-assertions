@@ -1,6 +1,6 @@
 {
   "name": "alsatian-fluent-assertions",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "Fluent assertions extension to Alsatian xUnit framework.",
   "author": "Chris Dibbern <=> (=)",
   "contributors": [
