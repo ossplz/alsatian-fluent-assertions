@@ -26,7 +26,7 @@ namespace Assert {
   }
 
   /**
-   * Configures an Assert factory for spec-aware assertions. For example,
+   * Not yet used. Configures an Assert factory for spec-aware assertions. For example,
    * it allows the test framework to alert you when you forgot to complete
    * an assertion (i.e., this.assert(something) and forgetting .equals(...)).
    * @param container The specification container instance.
@@ -44,7 +44,10 @@ namespace Assert {
    * then configuration and validation will be called automatically.
    */
   export function validateAssertions(ctxt: AssertionContext) {
-    
+    throw new Error("Not implemented.");
+    /*for (let assertion in ctxt.assertions) {
+
+    }*/
   }
 }
 
