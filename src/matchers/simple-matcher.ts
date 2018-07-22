@@ -8,13 +8,19 @@ import { IFluentCore } from "./i-fluent-core";
 import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
 import { Operators } from "./operators";
 import { PropertiesMatcher } from "./properties-matcher";
-import { At } from "../types";
+import { At, AssertionContext } from "../types";
 
 export class SimpleMatcher<T, TNext, TPrev> extends Operators<T, TNext, TPrev>
   implements ISimpleMatcher<T, TNext, TPrev> {
-  constructor(actualValue: any, nextValue: any, initial: boolean) {
-    super(actualValue, nextValue, initial);
-  }
+    constructor(actualValue: any,
+      nextValue: any,
+      initial: boolean,
+      prevCore?: IFluentCore<any, any, any>,
+      ctxt?: AssertionContext
+    ) {
+      super(actualValue, nextValue, initial, prevCore, ctxt);
+    }
+  
 
   public contains(expected: T, location: At = At.anywhere): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode(this.contains.name, location);

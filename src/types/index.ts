@@ -11,3 +11,5 @@ export * from "./subset-property-dict";
 export * from "./subset-property-literals-dict";
 export * from "./all-properties-literals-dict";
 export * from "./at";
+export * from "./assertion-context";
+export * from "./configured-assert";

@@ -7,15 +7,21 @@ import {
   MatchMode,
   SubsetPropertyLiteralsDict,
   SubsetPropertyAssertsDict,
-  AllPropertyAssertsDict
+  AllPropertyAssertsDict,
+  AssertionContext
 } from "../types";
 import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
 import { IFluentCore } from "./i-fluent-core";
 
 export class PropertiesMatcherWithHelpers<T, TNext, TPrev> extends PropertiesMatcher<T, TNext, TPrev>
   implements IPropertiesMatcherWithHelpers<T, TNext, TPrev> {
-  constructor(actualValue: any, nextValue: any, initial: boolean) {
-    super(actualValue, nextValue, initial);
+  constructor(actualValue: any,
+    nextValue: any,
+    initial: boolean,
+    prevCore?: IFluentCore<any, any, any>,
+    ctxt?: AssertionContext)
+  {
+    super(actualValue, nextValue, initial, prevCore, ctxt);
   }
 
   public has<K extends keyof T>(

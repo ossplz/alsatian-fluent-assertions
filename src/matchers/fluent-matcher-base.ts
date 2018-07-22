@@ -1,5 +1,5 @@
 import { SpecError } from "../errors";
-import { RootNode } from "../types";
+import { RootNode, AssertionContext } from "../types";
 import { IFluentNode } from "../types/i-fluent-node";
 import { IFluentCore } from "./i-fluent-core";
 import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
@@ -11,12 +11,18 @@ export class FluentMatcherBase extends RootNode {
   public nextValue: any;
   public hasNext: boolean;
   public parent: IFluentNode;
+  protected assertionContext: AssertionContext;
   protected prevCore: IFluentCore<any, any, any>;
   protected invert: boolean = false;
   protected reason: string;
   protected reasonData: any;
 
-  constructor(actualValue: any, nextValue: any, initial: boolean, prevCore: IFluentCore<any, any, any>) {
+  constructor(actualValue: any,
+      nextValue: any,
+      initial: boolean,
+      prevCore: IFluentCore<any, any, any>,
+      ctxt: AssertionContext
+    ) {
     // not set for non-root until a fluent method is called.
     super(undefined, undefined);
     if (initial) {
@@ -26,6 +32,7 @@ export class FluentMatcherBase extends RootNode {
     this.actualValue = actualValue;
     this.nextValue = nextValue;
     this.prevCore = prevCore;
+    this.assertionContext = ctxt;
   }
 
   /**

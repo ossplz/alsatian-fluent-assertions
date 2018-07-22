@@ -11,7 +11,8 @@ import {
   SubsetPropertyDict,
   SubsetPropertyLiteralsDict,
   AllPropertyDict,
-  AllPropertyLiteralsDict
+  AllPropertyLiteralsDict,
+  AssertionContext
 } from "../types";
 import { IFluentCore } from "./i-fluent-core";
 import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
@@ -21,8 +22,14 @@ import { ElementsMatcher } from "./elements-matcher";
 
 export class PropertiesMatcher<T, TNext, TPrev> extends ElementsMatcher<T, TNext, TPrev>
   implements IPropertiesMatcher<T, TNext, TPrev> {
-  constructor(actualValue: any, nextValue: any, initial: boolean) {
-    super(actualValue, nextValue, initial);
+  constructor(
+    actualValue: any,
+    nextValue: any,
+    initial: boolean,
+    prevCore?: IFluentCore<any, any, any>,
+    ctxt?: AssertionContext
+  ) {
+    super(actualValue, nextValue, initial, prevCore, ctxt);
   }
 
   public hasProperties(
