@@ -3,12 +3,19 @@ import { FluentMatcherBase } from "./fluent-matcher-base";
 import { IFluentCore } from "./i-fluent-core";
 import { INarrowableFluentCore, PropertiesMatcher } from ".";
 import { INarrowableOperators } from "./i-narrowable-operators";
+import { AssertionContext } from "../types";
 
 export class Operators<T, TNext, TPrev> extends FluentMatcherBase
   implements IOperators<T, TNext, TPrev>, INarrowableOperators<TNext, T, TPrev> {
-  constructor(actualValue: T, nextValue: TNext, initial: boolean = false, prevCore: IFluentCore<TPrev, T, void> = null) {
-    super(actualValue, null, initial, prevCore);
-  }
+    constructor(actualValue: any,
+      nextValue: any,
+      initial: boolean,
+      prevCore?: IFluentCore<any, any, any>,
+      ctxt?: AssertionContext
+    ) {
+      super(actualValue, nextValue, initial, prevCore, ctxt);
+    }
+  
 
   public get not(): IFluentCore<T, TNext, TPrev> {
     this.setCurrentNode("not", null);

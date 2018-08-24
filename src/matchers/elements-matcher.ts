@@ -1,5 +1,5 @@
 import { IPropertiesMatcher } from "./i-properties-matcher";
-import { MatchMode, LocationMode, EqType } from "../types";
+import { MatchMode, LocationMode, EqType, AssertionContext } from "../types";
 import { IFluentCore } from "./i-fluent-core";
 import { IElementsMatcher } from "./i-elements-matcher";
 import { INarrowableFluentCore } from "./i-narrowable-fluent-core";
@@ -7,8 +7,13 @@ import { SimpleMatcherWithHelpers } from "./simple-matcher-with-helpers";
 
 export class ElementsMatcher<T, TNext, TPrev> extends SimpleMatcherWithHelpers<T, TNext, TPrev>
   implements IElementsMatcher<T, TNext, TPrev> {
-  constructor(actualValue: any, nextValue: any, initial: boolean) {
-    super(actualValue, nextValue, initial);
+  constructor(actualValue: any,
+    nextValue: any,
+    initial: boolean,
+    prevCore?: IFluentCore<any, any, any>,
+    ctxt?: AssertionContext
+  ) {
+    super(actualValue, nextValue, initial, prevCore, ctxt);
   }
 
   public hasElements(

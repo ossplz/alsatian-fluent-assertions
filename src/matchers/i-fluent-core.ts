@@ -10,4 +10,5 @@ export interface IFluentCore<T, TNext, TPrev>
   extends IPropertiesMatcherWithHelpers<T, TNext, TPrev>,
     IElementsMatcher<T, TNext, TPrev>,
     ISimpleMatcherWithHelpers<T, TNext, TPrev>,
-    IOperators<T, TNext, TPrev> {}
+    IOperators<T, TNext, TPrev>
+     {}
