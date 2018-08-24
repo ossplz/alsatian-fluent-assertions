@@ -164,6 +164,7 @@ export class PropertiesMatcher<T, TNext, TPrev> extends ElementsMatcher<T, TNext
     } else if (mode !== MatchMode.literal && expected instanceof RegExp) {
       this._assertRegExpProperty(k, expected, actual, curPath);
     } else if (
+      expected !== null &&
       typeof expected === "object" &&
       Object.keys(expected as any).length > 0 // not a no-op
     ) {

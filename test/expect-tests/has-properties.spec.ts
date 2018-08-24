@@ -1,4 +1,4 @@
-import { Test, TestCase, Any, MatchError, SpyOn, Expect, createFunctionSpy } from "alsatian";
+import { Test, TestCase, Any, MatchError, SpyOn, Expect, createFunctionSpy, FocusTest } from "alsatian";
 import { Assert } from "../../src/assert";
 import { MatchMode as MM, MatchMode } from "../../src/types";
 
@@ -261,5 +261,19 @@ export class HasPropertiesTests {
 
     Assert(lambda).not.throws();
     Expect(mockFn).not.toHaveBeenCalled();
+  }
+
+  @TestCase(null, false)
+  @TestCase(123, true /* because they're not equal */)
+  @Test()
+  public hasProperties_nullProp_strictCompare(compareVal: any, shouldThrow: boolean) {
+    const lambda = () => {
+      Assert({ one: null })
+        .hasProperties({
+          one: compareVal
+        });
+    };
+
+    Assert(lambda).maybe(shouldThrow).throws();
   }
 }
